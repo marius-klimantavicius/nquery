@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Binding;
 
 namespace NQuery.Symbols
@@ -11,6 +12,7 @@ namespace NQuery.Symbols
 
         internal abstract ValueSlot ValueSlot { get; }
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public sealed override Type Type => ValueSlot.Type;
     }
 }

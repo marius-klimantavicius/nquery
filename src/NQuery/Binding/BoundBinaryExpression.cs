@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Binding
 {
     internal sealed class BoundBinaryExpression : BoundExpression
@@ -12,6 +14,7 @@ namespace NQuery.Binding
 
         public override BoundNodeKind Kind => BoundNodeKind.BinaryExpression;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type =>
             Result.Selected is null
                 ? TypeFacts.Unknown

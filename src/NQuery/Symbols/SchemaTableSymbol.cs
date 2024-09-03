@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NQuery.Symbols
 {
@@ -22,6 +23,7 @@ namespace NQuery.Symbols
 
         public override SymbolKind Kind => SymbolKind.SchemaTable;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => Definition.RowType;
 
         public override ImmutableArray<ColumnSymbol> Columns { get; }

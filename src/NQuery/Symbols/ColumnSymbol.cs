@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Symbols
 {
     public class ColumnSymbol : Symbol
@@ -12,6 +14,7 @@ namespace NQuery.Symbols
 
         public override SymbolKind Kind => SymbolKind.Column;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type { get; }
     }
 }

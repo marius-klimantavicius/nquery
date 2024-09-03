@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
@@ -43,7 +43,9 @@ namespace NQuery.Binding
             return result;
         }
 
-        public override IEnumerable<MethodSymbol> LookupMethods(Type type)
+        public override IEnumerable<MethodSymbol> LookupMethods(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+            Type type)
         {
             var methodProvider = Lookup(_dataContext.MethodProviders, type);
             if (methodProvider is null)

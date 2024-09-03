@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -10,6 +11,7 @@ namespace NQuery.Symbols
         {
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "TODO")] // TODO: is this AOT safe?
         public ReflectionPropertySymbol(PropertyInfo propertyInfo, string name)
             : base(name, propertyInfo.PropertyType)
         {

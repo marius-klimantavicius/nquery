@@ -19,7 +19,8 @@ namespace NQuery.Binding
 
         public string Name => string.Format(_formatString, _number);
 
-        public Type Type { [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] get; }
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+        public Type Type { get; }
 
         public override string? ToString()
         {

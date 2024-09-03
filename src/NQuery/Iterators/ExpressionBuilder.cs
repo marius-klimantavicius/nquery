@@ -1,5 +1,6 @@
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -83,6 +84,7 @@ namespace NQuery.Iterators
             return Expression.Constant(null, type.GetNullableType());
         }
 
+        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "The types should be primitive types and not be trimmed.")]
         private static Expression BuildNullCheck(Expression expression)
         {
             return expression.Type.IsNullableOfT()

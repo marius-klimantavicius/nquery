@@ -1,12 +1,18 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Symbols
 {
     public sealed class VariableSymbol : Symbol
     {
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         private readonly Type _type;
 
         private object? _value;
 
-        public VariableSymbol(string name, Type type, object? value = null)
+        public VariableSymbol(string name, 
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+            Type type, 
+            object? value = null)
             : base(name)
         {
             _type = type;
@@ -15,6 +21,7 @@ namespace NQuery.Symbols
 
         public override SymbolKind Kind => SymbolKind.Variable;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => _type;
 
         public object? Value

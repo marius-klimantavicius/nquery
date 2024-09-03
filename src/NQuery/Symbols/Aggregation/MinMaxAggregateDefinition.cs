@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Symbols.Aggregation
 {
     public abstract class MinMaxAggregateDefinition : AggregateDefinition
@@ -11,7 +13,7 @@ namespace NQuery.Symbols.Aggregation
 
         public override string Name => _isMin ? @"MIN" : @"MAX";
 
-        public override IAggregatable? CreateAggregatable(Type argumentType)
+        public override IAggregatable? CreateAggregatable([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type argumentType)
         {
             return typeof(IComparable).IsAssignableFrom(argumentType)
                 ? new MinMaxAggregatable(argumentType, _isMin)
@@ -22,12 +24,15 @@ namespace NQuery.Symbols.Aggregation
         {
             private readonly bool _isMin;
 
-            public MinMaxAggregatable(Type argumentType, bool isMin)
+            public MinMaxAggregatable(
+                [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+                Type argumentType, bool isMin)
             {
                 ReturnType = argumentType;
                 _isMin = isMin;
             }
 
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             public Type ReturnType { get; }
 
             public IAggregator CreateAggregator()

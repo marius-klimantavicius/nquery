@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
 
 namespace NQuery.Binding
@@ -12,6 +13,8 @@ namespace NQuery.Binding
         }
 
         public override BoundNodeKind Kind => BoundNodeKind.RowNumberExpression;
+
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => typeof(int);
 
         public ImmutableArray<BoundExpression> PartitionBy { get; }
@@ -57,6 +60,7 @@ namespace NQuery.Binding
 
         public override BoundNodeKind Kind => BoundNodeKind.FunctionInvocationExpression;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => Symbol is null ? TypeFacts.Unknown : Symbol.Type;
 
         public FunctionSymbol? Symbol => Result.Selected?.Signature.Symbol;

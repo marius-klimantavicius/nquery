@@ -1,13 +1,22 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using NQuery.Symbols;
 
 namespace NQuery
 {
     public static class TypeFacts
     {
-        private static class MissingType { }
-        private static class UnknownType { }
-        private static class NullType { }
+        private static class MissingType
+        {
+        }
+
+        private static class UnknownType
+        {
+        }
+
+        private static class NullType
+        {
+        }
 
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public static readonly Type Missing = typeof(MissingType);
@@ -226,22 +235,53 @@ namespace NQuery
         public static bool IsNullableOfT(this Type type)
         {
             return type.IsValueType &&
-                   type.IsGenericType &&
-                   type.GetGenericTypeDefinition() == typeof(Nullable<>);
+                type.IsGenericType &&
+                type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
         public static Type GetNonNullableType(this Type type)
         {
             return type.IsNullableOfT()
-                       ? type.GetGenericArguments().Single()
-                       : type;
+                ? type.GetGenericArguments().Single()
+                : type;
         }
 
         public static Type GetNullableType(this Type type)
         {
-            return type.CanBeNull()
-                       ? type
-                       : typeof(Nullable<>).MakeGenericType(type);
+            if (RuntimeFeature.IsDynamicCodeSupported)
+                return GetDynamicNullableType(type);
+
+            return GetStaticNullableType(type);
+
+            [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "This is only called when dynamic code is supported.")]
+            static Type GetDynamicNullableType(Type type)
+            {
+                return type.CanBeNull()
+                    ? type
+                    : typeof(Nullable<>).MakeGenericType(type);
+            }
+
+            static Type GetStaticNullableType(Type type)
+            {
+                if (type.CanBeNull())
+                    return type;
+
+                if (type == typeof(byte)) return typeof(byte?);
+                if (type == typeof(sbyte)) return typeof(sbyte?);
+                if (type == typeof(short)) return typeof(short?);
+                if (type == typeof(ushort)) return typeof(ushort?);
+                if (type == typeof(int)) return typeof(int?);
+                if (type == typeof(uint)) return typeof(uint?);
+                if (type == typeof(long)) return typeof(long?);
+                if (type == typeof(ulong)) return typeof(ulong?);
+                if (type == typeof(decimal)) return typeof(decimal?);
+                if (type == typeof(float)) return typeof(float?);
+                if (type == typeof(double)) return typeof(double?);
+                if (type == typeof(DateTime)) return typeof(DateTime?);
+                if (type == typeof(Guid)) return typeof(Guid?);
+
+                throw new NotSupportedException();
+            }
         }
     }
 }

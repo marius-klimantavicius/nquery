@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace NQuery.Symbols.Aggregation
@@ -13,7 +14,7 @@ namespace NQuery.Symbols.Aggregation
 
         public override string Name => _isVar ? @"VAR" : @"STDEV";
 
-        public override IAggregatable? CreateAggregatable(Type argumentType)
+        public override IAggregatable? CreateAggregatable([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type argumentType)
         {
             if (argumentType == typeof(byte) ||
                 argumentType == typeof(sbyte) ||
@@ -45,6 +46,7 @@ namespace NQuery.Symbols.Aggregation
                 return new VarAndStdDevAggregator(_isVar);
             }
 
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             public Type ReturnType =>
                 _isVar
                     ? typeof(decimal)

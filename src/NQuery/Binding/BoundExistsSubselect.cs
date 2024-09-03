@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Binding
 {
     internal sealed class BoundExistsSubselect : BoundExpression
@@ -11,6 +13,7 @@ namespace NQuery.Binding
 
         public BoundRelation Relation { get; }
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => typeof(bool);
 
         public BoundExistsSubselect Update(BoundRelation relation)

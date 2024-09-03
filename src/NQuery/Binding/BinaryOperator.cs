@@ -10,7 +10,10 @@ namespace NQuery.Binding
     {
         private static readonly BinaryOperatorSignature[] BuiltInMultiplySignatures =
         {
-            new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(int)), new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(uint)), new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(long)), new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(ulong)), new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(float)), new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(double)), new BinaryOperatorSignature(BinaryOperatorKind.Multiply, BuiltInOperators.DecimalMultiplyMethod),
+            new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(int)),
+            new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(uint)),
+            new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(long)),
+            new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(ulong)), new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(float)), new BinaryOperatorSignature(BinaryOperatorKind.Multiply, typeof(double)), new BinaryOperatorSignature(BinaryOperatorKind.Multiply, BuiltInOperators.DecimalMultiplyMethod),
         };
 
         private static readonly BinaryOperatorSignature[] BuiltInDivideSignatures =

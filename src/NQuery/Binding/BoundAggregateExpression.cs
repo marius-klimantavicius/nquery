@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols.Aggregation;
 
 namespace NQuery.Binding
@@ -13,6 +14,7 @@ namespace NQuery.Binding
 
         public override BoundNodeKind Kind => BoundNodeKind.AggregateExpression;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type =>
             Aggregatable is null
                 ? TypeFacts.Unknown

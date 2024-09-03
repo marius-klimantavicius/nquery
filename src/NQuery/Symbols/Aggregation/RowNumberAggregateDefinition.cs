@@ -1,10 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Symbols.Aggregation;
 
 public sealed class RowNumberAggregateDefinition : AggregateDefinition
 {
     public override string Name => "ROW_NUMBER";
 
-    public override IAggregatable CreateAggregatable(Type argumentType)
+    public override IAggregatable CreateAggregatable([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type argumentType)
     {
         return new RowNumberAggregatable();
     }
@@ -16,6 +18,7 @@ public sealed class RowNumberAggregateDefinition : AggregateDefinition
             return new RowNumberAggregator();
         }
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public Type ReturnType => typeof(int);
     }
 

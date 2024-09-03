@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
@@ -152,7 +152,9 @@ namespace NQuery.Binding
             return BinaryOperator.Resolve(operatorKind, left, right);
         }
 
-        public virtual IEnumerable<MethodSymbol> LookupMethods(Type type)
+        public virtual IEnumerable<MethodSymbol> LookupMethods(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+            Type type)
         {
             if (Parent == null)
                 return Enumerable.Empty<MethodSymbol>();
@@ -160,12 +162,18 @@ namespace NQuery.Binding
             return Parent.LookupMethods(type);
         }
 
-        private IEnumerable<MethodSymbol> LookupMethod(Type type, SyntaxToken name)
+        private IEnumerable<MethodSymbol> LookupMethod(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+            Type type, 
+            SyntaxToken name)
         {
             return LookupMethods(type).Where(m => name.Matches(m.Name));
         }
 
-        private OverloadResolutionResult<MethodSymbolSignature> LookupMethod(Type type, SyntaxToken name, ImmutableArray<Type> argumentTypes)
+        private OverloadResolutionResult<MethodSymbolSignature> LookupMethod(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+            Type type, 
+            SyntaxToken name, ImmutableArray<Type> argumentTypes)
         {
             if (name is null) throw new ArgumentNullException(nameof(name));
 

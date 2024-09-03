@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
 
 namespace NQuery.Binding
@@ -9,8 +10,10 @@ namespace NQuery.Binding
             Symbol = symbol;
         }
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type ReturnType => Symbol.Type;
 
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type GetParameterType(int index)
         {
             return Symbol.Parameters[index].Type;

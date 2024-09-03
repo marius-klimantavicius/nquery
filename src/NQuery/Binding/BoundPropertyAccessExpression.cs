@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
 
 namespace NQuery.Binding
@@ -12,6 +13,7 @@ namespace NQuery.Binding
 
         public override BoundNodeKind Kind => BoundNodeKind.PropertyAccessExpression;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => Symbol.Type;
 
         public PropertySymbol Symbol { get; }

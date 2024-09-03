@@ -1,5 +1,5 @@
 using System.Collections.Immutable;
-
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Binding;
 
 namespace NQuery.Symbols
@@ -27,6 +27,7 @@ namespace NQuery.Symbols
 
         public override SymbolKind Kind => SymbolKind.CommonTableExpression;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => TypeFacts.Missing;
 
         public override ImmutableArray<ColumnSymbol> Columns { get; }

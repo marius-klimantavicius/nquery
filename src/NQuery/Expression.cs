@@ -47,6 +47,7 @@ namespace NQuery
             Interlocked.CompareExchange(ref _expressionEvaluator, expressionEvaluator, null);
         }
 
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public Type Resolve()
         {
             EnsureCompiled();

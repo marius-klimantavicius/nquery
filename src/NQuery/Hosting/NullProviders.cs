@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
 
 namespace NQuery.Hosting
@@ -6,7 +7,9 @@ namespace NQuery.Hosting
     {
         private sealed class NullPropertyProvider : IPropertyProvider
         {
-            public IEnumerable<PropertySymbol> GetProperties(Type type)
+            public IEnumerable<PropertySymbol> GetProperties(
+                [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
+                Type type)
             {
                 ArgumentNullException.ThrowIfNull(type);
 
@@ -16,7 +19,9 @@ namespace NQuery.Hosting
 
         private sealed class NullMethodProvider : IMethodProvider
         {
-            public IEnumerable<MethodSymbol> GetMethods(Type type)
+            public IEnumerable<MethodSymbol> GetMethods(
+                [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+                Type type)
             {
                 ArgumentNullException.ThrowIfNull(type);
 

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
 
 namespace NQuery.Binding
@@ -11,6 +12,7 @@ namespace NQuery.Binding
 
         public override BoundNodeKind Kind => BoundNodeKind.VariableExpression;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => Symbol.Type;
 
         public VariableSymbol Symbol { get; }

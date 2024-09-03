@@ -1,10 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Symbols.Aggregation
 {
     public sealed class CountAggregateDefinition : AggregateDefinition
     {
         public override string Name => @"COUNT";
 
-        public override IAggregatable CreateAggregatable(Type argumentType)
+        public override IAggregatable CreateAggregatable([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type argumentType)
         {
             return new CountAggregatable();
         }
@@ -16,6 +18,7 @@ namespace NQuery.Symbols.Aggregation
                 return new CountAggregator();
             }
 
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             public Type ReturnType => typeof(int);
         }
 

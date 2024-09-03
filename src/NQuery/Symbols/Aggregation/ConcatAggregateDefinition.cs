@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
@@ -7,7 +8,7 @@ namespace NQuery.Symbols.Aggregation
     {
         public override string Name => @"CONCAT";
 
-        public override IAggregatable CreateAggregatable(Type argumentType)
+        public override IAggregatable CreateAggregatable([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type argumentType)
         {
             return new ConcatAggregatable();
         }
@@ -19,6 +20,7 @@ namespace NQuery.Symbols.Aggregation
                 return new ConcatAggregator();
             }
 
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             public Type ReturnType => typeof(string);
         }
 

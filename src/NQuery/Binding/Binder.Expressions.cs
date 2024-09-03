@@ -20,7 +20,7 @@ namespace NQuery.Binding
             }
         }
 
-        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         private static Type? FindCommonType(ImmutableArray<BoundExpression> boundExpressions)
         {
             // The common type C among a type set T1..TN is defined as follows:
@@ -73,7 +73,7 @@ namespace NQuery.Binding
             return commonType;
         }
 
-        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         private Type BindType(SyntaxToken typeName)
         {
             var type = LookupType(typeName);
@@ -164,7 +164,7 @@ namespace NQuery.Binding
         }
 
         private BoundExpression BindConversion(TextSpan diagnosticSpan, BoundExpression expression,
-            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             Type targetType)
         {
             var sourceType = expression.Type;

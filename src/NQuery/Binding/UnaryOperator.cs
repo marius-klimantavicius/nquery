@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 using NQuery.Symbols;
@@ -27,7 +28,7 @@ namespace NQuery.Binding
             new UnaryOperatorSignature(UnaryOperatorKind.LogicalNot, typeof(bool), typeof(bool)),
         };
 
-        internal static OverloadResolutionResult<UnaryOperatorSignature> Resolve(UnaryOperatorKind kind, Type type)
+        internal static OverloadResolutionResult<UnaryOperatorSignature> Resolve(UnaryOperatorKind kind, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type)
         {
             var builtInSignatures = GetBuiltInSignatures(kind);
 
@@ -83,7 +84,8 @@ namespace NQuery.Binding
             }
         }
 
-        private static ImmutableArray<UnaryOperatorSignature> GetUserDefinedSignatures(UnaryOperatorKind kind, Type type)
+        private static ImmutableArray<UnaryOperatorSignature> GetUserDefinedSignatures(UnaryOperatorKind kind, 
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type)
         {
             var methodName = GetOperatorMethodName(kind);
             return (from m in GetOperatorMethods(methodName, type)
@@ -108,7 +110,7 @@ namespace NQuery.Binding
             }
         }
 
-        private static IEnumerable<MethodInfo> GetOperatorMethods(string methodName, Type type)
+        private static IEnumerable<MethodInfo> GetOperatorMethods(string methodName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type)
         {
             return type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly)
                        .Where(m => string.Equals(m.Name, methodName, StringComparison.Ordinal));

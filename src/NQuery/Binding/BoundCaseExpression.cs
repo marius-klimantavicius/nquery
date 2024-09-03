@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace NQuery.Binding
@@ -13,6 +14,7 @@ namespace NQuery.Binding
 
         public override BoundNodeKind Kind => BoundNodeKind.CaseExpression;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => CaseLabels.First().ThenExpression.Type;
 
         public ImmutableArray<BoundCaseLabel> CaseLabels { get; }

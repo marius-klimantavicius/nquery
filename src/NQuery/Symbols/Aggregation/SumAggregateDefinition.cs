@@ -1,15 +1,17 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Symbols.Aggregation
 {
     public sealed class SumAggregateDefinition : AggregateDefinition
     {
         public override string Name => @"SUM";
 
-        public override IAggregatable? CreateAggregatable(Type argumentType)
+        public override IAggregatable? CreateAggregatable([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type argumentType)
         {
             // Create an expression to determine the type of inputType + inputType
 
             var addDataContext = DataContext.Empty.AddVariables(new VariableSymbol(@"Left", argumentType),
-                                                                new VariableSymbol(@"Right", argumentType));
+                new VariableSymbol(@"Right", argumentType));
 
             var addExpression = Expression<object>.Create(addDataContext, @"Left + Right");
 
@@ -84,6 +86,7 @@ namespace NQuery.Symbols.Aggregation
                 return new SumAggregator(_sumExpression, _leftParameter, _rightParameter, _convertInputToSumExpression, _conversionInputVariable);
             }
 
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             public Type ReturnType => _sumExpression.Resolve();
         }
 

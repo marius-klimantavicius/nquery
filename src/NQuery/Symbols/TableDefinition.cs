@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Immutable;
-
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Hosting;
 
 namespace NQuery.Symbols
@@ -21,13 +21,18 @@ namespace NQuery.Symbols
         }
 
         public abstract string Name { get; }
+
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public abstract Type RowType { get; }
 
         protected abstract IEnumerable<ColumnDefinition> GetColumns();
 
         public abstract IEnumerable GetRows();
 
-        public static TableDefinition Create<T>(string? name, IEnumerable<T> source)
+        public static TableDefinition Create<
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+            T
+        >(string? name, IEnumerable<T> source)
         {
             ArgumentNullException.ThrowIfNull(name);
             ArgumentNullException.ThrowIfNull(source);
@@ -35,7 +40,11 @@ namespace NQuery.Symbols
             return Create(name, source, new ReflectionProvider());
         }
 
-        public static TableDefinition Create<T>(string? name, IEnumerable<T> source, IPropertyProvider propertyProvider)
+        public static TableDefinition Create
+        <
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+            T
+        >(string? name, IEnumerable<T> source, IPropertyProvider propertyProvider)
         {
             ArgumentNullException.ThrowIfNull(name);
             ArgumentNullException.ThrowIfNull(source);
@@ -44,7 +53,10 @@ namespace NQuery.Symbols
             return Create(name, source, typeof(T), propertyProvider);
         }
 
-        public static TableDefinition Create(string? name, IEnumerable source, Type rowType, IPropertyProvider propertyProvider)
+        public static TableDefinition Create(string? name, IEnumerable source,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+            Type rowType,
+            IPropertyProvider propertyProvider)
         {
             ArgumentNullException.ThrowIfNull(name);
             ArgumentNullException.ThrowIfNull(source);

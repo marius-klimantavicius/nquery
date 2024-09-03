@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Binding
 {
     internal sealed class BoundSingleRowSubselect : BoundExpression
@@ -10,6 +12,7 @@ namespace NQuery.Binding
 
         public override BoundNodeKind Kind => BoundNodeKind.SingleRowSubselect;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => Value.Type;
 
         public ValueSlot Value { get; }

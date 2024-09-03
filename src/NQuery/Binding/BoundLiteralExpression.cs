@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Binding
 {
     internal sealed class BoundLiteralExpression : BoundExpression
@@ -9,6 +11,7 @@ namespace NQuery.Binding
 
         public override BoundNodeKind Kind => BoundNodeKind.LiteralExpression;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type =>
             Value is null
                 ? TypeFacts.Null

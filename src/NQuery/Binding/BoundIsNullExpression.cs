@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Binding
 {
     internal sealed class BoundIsNullExpression : BoundExpression
@@ -9,6 +11,7 @@ namespace NQuery.Binding
 
         public override BoundNodeKind Kind => BoundNodeKind.IsNullExpression;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => typeof(bool);
 
         public BoundExpression Expression { get; }

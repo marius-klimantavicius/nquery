@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Symbols.Aggregation
 {
     public sealed class AggregateSymbol : Symbol
@@ -12,6 +14,7 @@ namespace NQuery.Symbols.Aggregation
 
         public override SymbolKind Kind => SymbolKind.Aggregate;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type => TypeFacts.Missing;
     }
 }

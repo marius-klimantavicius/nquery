@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Symbols
 {
     public class ParameterSymbol : Symbol
@@ -10,6 +12,7 @@ namespace NQuery.Symbols
 
         public override SymbolKind Kind => SymbolKind.Parameter;
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type { get; }
     }
 }

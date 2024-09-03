@@ -1,10 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Symbols.Aggregation
 {
     public sealed class AvgAggregateDefinition : AggregateDefinition
     {
         public override string Name => @"AVG";
 
-        public override IAggregatable? CreateAggregatable(Type argumentType)
+        public override IAggregatable? CreateAggregatable([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type argumentType)
         {
             var sumAggregate = new SumAggregateDefinition();
             var sumAggregatable = sumAggregate.CreateAggregatable(argumentType);
@@ -54,6 +56,7 @@ namespace NQuery.Symbols.Aggregation
                 return new AvgAggregator(sumAggregator, countAggregator, _divisionExpression, _sumArgument, _countArgument);
             }
 
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
             public Type ReturnType => _divisionExpression.Resolve();
         }
 

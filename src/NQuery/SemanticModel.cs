@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using NQuery.Binding;
 using NQuery.Symbols;
 using NQuery.Syntax;
@@ -280,7 +280,9 @@ namespace NQuery
                 select n).FirstOrDefault();
         }
 
-        public IEnumerable<MethodSymbol> LookupMethods(Type type)
+        public IEnumerable<MethodSymbol> LookupMethods(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+            Type type)
         {
             ArgumentNullException.ThrowIfNull(type);
 

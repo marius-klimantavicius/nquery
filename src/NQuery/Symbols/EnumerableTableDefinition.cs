@@ -1,5 +1,5 @@
 using System.Collections;
-
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Hosting;
 
 namespace NQuery.Symbols
@@ -7,10 +7,15 @@ namespace NQuery.Symbols
     internal sealed class EnumerableTableDefinition : TableDefinition
     {
         private readonly IEnumerable _source;
+
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         private readonly Type _rowType;
+        
         private readonly IPropertyProvider _propertyProvider;
 
-        public EnumerableTableDefinition(string name, IEnumerable source, Type rowType, IPropertyProvider propertyProvider)
+        public EnumerableTableDefinition(string name, IEnumerable source,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+            Type rowType, IPropertyProvider propertyProvider)
         {
             Name = name;
             _source = source;
@@ -31,6 +36,7 @@ namespace NQuery.Symbols
 
         public override string Name { get; }
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type RowType => _rowType;
     }
 }

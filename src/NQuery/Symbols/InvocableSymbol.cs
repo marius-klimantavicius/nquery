@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NQuery.Symbols
 {
@@ -11,6 +12,7 @@ namespace NQuery.Symbols
             Parameters = parameters.ToImmutableArray();
         }
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public override Type Type { get; }
 
         public ImmutableArray<ParameterSymbol> Parameters { get; }

@@ -1,3 +1,4 @@
+﻿using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
 
 namespace NQuery
@@ -15,6 +16,7 @@ namespace NQuery
 
         public string Name { get; }
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public abstract Type Type { get; }
 
         public sealed override string ToString()
