@@ -5,14 +5,14 @@ namespace NQuery.Text
 {
     public abstract class SourceText
     {
-        private SourceTextContainer _container;
+        private SourceTextContainer? _container;
 
         protected SourceText()
             : this(null)
         {
         }
 
-        protected SourceText(SourceTextContainer container)
+        protected SourceText(SourceTextContainer? container)
         {
             _container = container;
         }
@@ -24,7 +24,7 @@ namespace NQuery.Text
             return new StringText(text);
         }
 
-        public SourceTextContainer Container
+        public SourceTextContainer? Container
         {
             get
             {
@@ -80,7 +80,7 @@ namespace NQuery.Text
             return GetText(0, Length);
         }
 
-        public SourceText WithChanges(params TextChange[] changes)
+        public SourceText WithChanges(params TextChange[]? changes)
         {
             if (changes is null || changes.Length == 0)
                 return this;
@@ -189,14 +189,14 @@ namespace NQuery.Text
             return changes.ToImmutableArray();
         }
 
-        public SourceText Replace(TextSpan span, string newText)
+        public SourceText Replace(TextSpan span, string? newText)
         {
             ArgumentNullException.ThrowIfNull(newText);
 
             return WithChanges(new TextChange(span, newText));
         }
 
-        public SourceText Replace(int start, int length, string newText)
+        public SourceText Replace(int start, int length, string? newText)
         {
             ArgumentNullException.ThrowIfNull(newText);
 

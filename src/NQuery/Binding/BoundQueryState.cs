@@ -5,23 +5,25 @@ namespace NQuery.Binding
 {
     internal sealed class BoundQueryState
     {
-        public BoundQueryState(BoundQueryState parent)
+        public BoundQueryState(BoundQueryState? parent)
         {
             Parent = parent;
         }
 
-        public BoundQueryState Parent { get; }
+        public BoundQueryState? Parent { get; }
 
-        public Dictionary<TableInstanceSymbol, SyntaxToken> IntroducedTables { get; } = new();
+        public Dictionary<TableInstanceSymbol, SyntaxToken> IntroducedTables { get; } = new Dictionary<TableInstanceSymbol, SyntaxToken>();
 
-        public List<BoundComputedValueWithSyntax> AccessibleComputedValues { get; } = new();
+        public List<BoundComputedValueWithSyntax> AccessibleComputedValues { get; } = new List<BoundComputedValueWithSyntax>();
 
-        public List<BoundComputedValueWithSyntax> ComputedGroupings { get; } = new();
+        public List<BoundComputedValueWithSyntax> ComputedGroupings { get; } = new List<BoundComputedValueWithSyntax>();
 
-        public List<BoundComputedValueWithSyntax> ComputedAggregates { get; } = new();
+        public List<BoundComputedValueWithSyntax> ComputedAggregates { get; } = new List<BoundComputedValueWithSyntax>();
 
-        public List<BoundComputedValueWithSyntax> ComputedProjections { get; } = new();
+        public List<BoundComputedValueWithSyntax> ComputedWindowFunctions { get; } = new List<BoundComputedValueWithSyntax>();
 
-        public Dictionary<ExpressionSyntax, ValueSlot> ReplacedExpression { get; } = new();
+        public List<BoundComputedValueWithSyntax> ComputedProjections { get; } = new List<BoundComputedValueWithSyntax>();
+
+        public Dictionary<ExpressionSyntax, ValueSlot> ReplacedExpression { get; } = new Dictionary<ExpressionSyntax, ValueSlot>();
     }
 }

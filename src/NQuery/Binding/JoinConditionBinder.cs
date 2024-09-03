@@ -7,9 +7,6 @@ namespace NQuery.Binding
         {
         }
 
-        protected override bool InOnClause
-        {
-            get { return true; }
-        }
+        protected override bool InOnClause => true;
     }
 }

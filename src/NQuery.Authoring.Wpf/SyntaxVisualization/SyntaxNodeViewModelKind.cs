@@ -1,4 +1,4 @@
-﻿namespace NQuery.Authoring.Wpf
+namespace NQuery.Authoring.Wpf
 {
     internal enum SyntaxNodeViewModelKind
     {

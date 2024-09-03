@@ -81,7 +81,7 @@ namespace NQuery
 
         // Tables
 
-        public DataContext AddTables(params TableSymbol[] tables)
+        public DataContext AddTables(params TableSymbol[]? tables)
         {
             if (tables is null || tables.Length == 0)
                 return this;
@@ -97,7 +97,7 @@ namespace NQuery
             return WithTables(newTables);
         }
 
-        public DataContext RemoveTables(params TableSymbol[] tables)
+        public DataContext RemoveTables(params TableSymbol[]? tables)
         {
             if (tables is null || tables.Length == 0)
                 return this;
@@ -132,7 +132,7 @@ namespace NQuery
 
         // Relations
 
-        public DataContext AddRelations(params TableRelation[] relations)
+        public DataContext AddRelations(params TableRelation[]? relations)
         {
             if (relations is null || relations.Length == 0)
                 return this;
@@ -148,7 +148,7 @@ namespace NQuery
             return WithRelations(newRelations);
         }
 
-        public DataContext RemoveRelations(params TableRelation[] relations)
+        public DataContext RemoveRelations(params TableRelation[]? relations)
         {
             if (relations is null || relations.Length == 0)
                 return this;
@@ -183,7 +183,7 @@ namespace NQuery
 
         // Functions
 
-        public DataContext AddFunctions(params FunctionSymbol[] functions)
+        public DataContext AddFunctions(params FunctionSymbol[]? functions)
         {
             if (functions is null || functions.Length == 0)
                 return this;
@@ -199,7 +199,7 @@ namespace NQuery
             return WithFunctions(newFunctions);
         }
 
-        public DataContext RemoveFunctions(params FunctionSymbol[] functions)
+        public DataContext RemoveFunctions(params FunctionSymbol[]? functions)
         {
             if (functions is null || functions.Length == 0)
                 return this;
@@ -234,7 +234,7 @@ namespace NQuery
 
         // Aggregates
 
-        public DataContext AddAggregates(params AggregateSymbol[] aggregates)
+        public DataContext AddAggregates(params AggregateSymbol[]? aggregates)
         {
             if (aggregates is null || aggregates.Length == 0)
                 return this;
@@ -250,7 +250,7 @@ namespace NQuery
             return WithAggregates(newAggregates);
         }
 
-        public DataContext RemoveAggregates(params AggregateSymbol[] aggregates)
+        public DataContext RemoveAggregates(params AggregateSymbol[]? aggregates)
         {
             if (aggregates is null || aggregates.Length == 0)
                 return this;
@@ -285,7 +285,7 @@ namespace NQuery
 
         // Variables
 
-        public DataContext AddVariables(params VariableSymbol[] variables)
+        public DataContext AddVariables(params VariableSymbol[]? variables)
         {
             if (variables is null || variables.Length == 0)
                 return this;
@@ -301,7 +301,7 @@ namespace NQuery
             return WithVariables(newVariables);
         }
 
-        public DataContext RemoveVariables(params VariableSymbol[] variables)
+        public DataContext RemoveVariables(params VariableSymbol[]? variables)
         {
             if (variables is null || variables.Length == 0)
                 return this;
@@ -353,7 +353,7 @@ namespace NQuery
             return WithPropertyProviders(newProviders);
         }
 
-        public DataContext RemovePropertyProviders(params Type[] types)
+        public DataContext RemovePropertyProviders(params Type[]? types)
         {
             if (types is null || types.Length == 0)
                 return this;
@@ -404,7 +404,7 @@ namespace NQuery
             return WithMethodProviders(newProviders);
         }
 
-        public DataContext RemoveMethodProviders(params Type[] types)
+        public DataContext RemoveMethodProviders(params Type[]? types)
         {
             if (types is null || types.Length == 0)
                 return this;
@@ -455,7 +455,7 @@ namespace NQuery
             return WithComparers(newProviders);
         }
 
-        public DataContext RemoveComparers(params Type[] types)
+        public DataContext RemoveComparers(params Type[]? types)
         {
             if (types is null || types.Length == 0)
                 return this;

@@ -1,10 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery
 {
     public sealed class Expression<T>
     {
-        private ExpressionEvaluator _expressionEvaluator;
+        private ExpressionEvaluator? _expressionEvaluator;
 
-        private Expression(DataContext dataContext, string text, T nullValue, Type targetType)
+        private Expression(DataContext dataContext, string text, T? nullValue, Type targetType)
         {
             ArgumentNullException.ThrowIfNull(dataContext);
             ArgumentNullException.ThrowIfNull(text);
@@ -22,21 +24,17 @@ namespace NQuery
             TargetType = targetType;
         }
 
-        public static Expression<T> Create(DataContext dataContext, string text)
-        {
-            return Create(dataContext, text, default(T));
-        }
-
-        public static Expression<T> Create(DataContext dataContext, string text, T nullValue)
+        public static Expression<T> Create(DataContext dataContext, string text, T? nullValue = default(T))
         {
             return Create(dataContext, text, nullValue, typeof(T));
         }
 
-        public static Expression<T> Create(DataContext dataContext, string text, T nullValue, Type targetType)
+        public static Expression<T> Create(DataContext dataContext, string text, T? nullValue, Type targetType)
         {
             return new Expression<T>(dataContext, text, nullValue, targetType);
         }
 
+        [MemberNotNull(nameof(_expressionEvaluator))]
         private void EnsureCompiled()
         {
             if (_expressionEvaluator is not null)
@@ -55,7 +53,7 @@ namespace NQuery
             return _expressionEvaluator.Type;
         }
 
-        public T Evaluate()
+        public T? Evaluate()
         {
             EnsureCompiled();
             var result = _expressionEvaluator.Evaluate();
@@ -68,7 +66,7 @@ namespace NQuery
 
         public string Text { get; }
 
-        public T NullValue { get; }
+        public T? NullValue { get; }
 
         public Type TargetType { get; }
     }

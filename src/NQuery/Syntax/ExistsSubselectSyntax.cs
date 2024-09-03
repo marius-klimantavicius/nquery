@@ -11,10 +11,7 @@ namespace NQuery.Syntax
             RightParenthesis = rightParenthesis;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.ExistsSubselect; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.ExistsSubselect;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

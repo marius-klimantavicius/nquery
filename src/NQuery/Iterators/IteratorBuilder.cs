@@ -1,7 +1,6 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
-
 using NQuery.Binding;
 using NQuery.Symbols;
 
@@ -9,9 +8,9 @@ namespace NQuery.Iterators
 {
     internal sealed class IteratorBuilder
     {
-        private readonly Stack<TableSpoolStack> _tableSpoolStack = new();
+        private readonly Stack<TableSpoolStack> _tableSpoolStack = new Stack<TableSpoolStack>();
 
-        private RowBufferAllocation _outerRowBufferAllocation;
+        private RowBufferAllocation? _outerRowBufferAllocation;
 
         public static Iterator Build(BoundRelation relation)
         {
@@ -29,7 +28,7 @@ namespace NQuery.Iterators
             return ExpressionBuilder.BuildIteratorFunction(expression, allocation);
         }
 
-        private static IteratorPredicate BuildPredicate(BoundExpression predicate, bool nullValue, RowBufferAllocation allocation)
+        private static IteratorPredicate BuildPredicate(BoundExpression? predicate, bool nullValue, RowBufferAllocation allocation)
         {
             return ExpressionBuilder.BuildIteratorPredicate(predicate, nullValue, allocation);
         }
@@ -89,16 +88,16 @@ namespace NQuery.Iterators
             var tableDefinition = schemaTableSymbol.Definition;
             var columnInstances = relation.DefinedValues;
             var definedValues = columnInstances.Select(ci => ci.Column)
-                                               .Cast<SchemaColumnSymbol>()
-                                               .Select(c => BuildColumnAccess(c.Definition));
+                .Cast<SchemaColumnSymbol>()
+                .Select(c => BuildColumnAccess(c.Definition));
             return new TableIterator(tableDefinition, definedValues);
         }
 
-        private static Func<object, object> BuildColumnAccess(ColumnDefinition definition)
+        private static Func<object?, object> BuildColumnAccess(ColumnDefinition definition)
         {
             var instance = Expression.Parameter(typeof(object));
             var body = definition.CreateInvocation(instance);
-            var lambda = Expression.Lambda<Func<object, object>>(body, instance);
+            var lambda = Expression.Lambda<Func<object?, object>>(body, instance);
             return lambda.Compile();
         }
 
@@ -167,16 +166,16 @@ namespace NQuery.Iterators
             var input = BuildRelation(relation.Input);
             var allocation = BuildRowBufferAllocation(relation.Input, input.RowBuffer);
             var definedValue = relation.DefinedValues
-                                       .Select(dv => BuildFunction(dv.Expression, allocation))
-                                       .ToImmutableArray();
+                .Select(dv => BuildFunction(dv.Expression, allocation))
+                .ToImmutableArray();
             return new ComputeScalarIterator(input, definedValue);
         }
 
         private Iterator BuildTop(BoundTopRelation relation)
         {
             return relation.TieEntries.Any()
-                       ? BuildTopWithTies(relation)
-                       : BuildTopWithoutTies(relation);
+                ? BuildTopWithTies(relation)
+                : BuildTopWithoutTies(relation);
         }
 
         private Iterator BuildTopWithTies(BoundTopRelation relation)
@@ -199,8 +198,8 @@ namespace NQuery.Iterators
             var input = BuildRelation(relation.Input);
             var inputRowBufferAllocation = BuildRowBufferAllocation(relation.Input, input.RowBuffer);
             var sortEntries = relation.SortedValues
-                                      .Select(v => inputRowBufferAllocation[v.ValueSlot])
-                                      .ToImmutableArray();
+                .Select(v => inputRowBufferAllocation[v.ValueSlot])
+                .ToImmutableArray();
             var comparers = relation.SortedValues.Select(v => v.Comparer).ToImmutableArray();
             return relation.IsDistinct
                 ? new DistinctSortIterator(input, sortEntries, comparers)
@@ -211,10 +210,10 @@ namespace NQuery.Iterators
         {
             var inputs = relation.Inputs.Select(BuildRelation).ToImmutableArray();
             var inputEntries = from i in Enumerable.Range(0, inputs.Length)
-                               let allocation = BuildRowBufferAllocation(relation.Inputs[i], inputs[i].RowBuffer)
-                               let slots = relation.DefinedValues.Select(d => d.InputValueSlots[i])
-                               let entries = slots.Select(s => allocation[s])
-                               select entries.ToImmutableArray();
+                let allocation = BuildRowBufferAllocation(relation.Inputs[i], inputs[i].RowBuffer)
+                let slots = relation.DefinedValues.Select(d => d.InputValueSlots[i])
+                let entries = slots.Select(s => allocation[s])
+                select entries.ToImmutableArray();
 
             return new ConcatenationIterator(inputs, inputEntries);
         }
@@ -224,14 +223,18 @@ namespace NQuery.Iterators
             var input = BuildRelation(relation.Input);
             var allocation = BuildRowBufferAllocation(relation.Input, input.RowBuffer);
             var aggregators = relation.Aggregates
-                                      .Select(a => a.Aggregatable.CreateAggregator())
-                                      .ToImmutableArray();
+                .Select(a =>
+                {
+                    Debug.Assert(a.Aggregatable != null);
+                    return a.Aggregatable.CreateAggregator();
+                })
+                .ToImmutableArray();
             var argumentFunctions = relation.Aggregates
-                                            .Select(a => BuildFunction(a.Argument, allocation))
-                                            .ToImmutableArray();
+                .Select(a => BuildFunction(a.Argument, allocation))
+                .ToImmutableArray();
             var groupEntries = relation.Groups
-                                       .Select(g => allocation[g.ValueSlot])
-                                       .ToImmutableArray();
+                .Select(g => allocation[g.ValueSlot])
+                .ToImmutableArray();
             var comparers = relation.Groups.Select(v => v.Comparer).ToImmutableArray();
             return new StreamAggregateIterator(input, groupEntries, comparers, aggregators, argumentFunctions);
         }

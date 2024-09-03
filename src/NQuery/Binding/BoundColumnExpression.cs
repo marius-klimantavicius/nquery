@@ -9,15 +9,9 @@ namespace NQuery.Binding
             Symbol = symbol;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.ColumnExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.ColumnExpression;
 
-        public override Type Type
-        {
-            get { return Symbol.Type; }
-        }
+        public override Type Type => Symbol.Type;
 
         public ColumnInstanceSymbol Symbol { get; }
 

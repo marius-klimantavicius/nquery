@@ -57,8 +57,8 @@ namespace NQuery
                     // the structure to its containing token which we can then use
                     // to return the logical parent.
                     var parentTrivia = structuredTrivia.ParentTrivia;
-                    var parentToken = parentTrivia.Parent;
-                    node = parentToken.Parent;
+                    var parentToken = parentTrivia?.Parent;
+                    node = parentToken?.Parent;
                 }
             }
         }
@@ -69,14 +69,14 @@ namespace NQuery
         {
             return from n in ChildNodesAndTokens()
                    where n.IsNode
-                   select n.AsNode();
+                   select n.AsNode;
         }
 
         public IEnumerable<SyntaxToken> ChildTokens()
         {
             return from n in ChildNodesAndTokens()
                    where n.IsToken
-                   select n.AsToken();
+                   select n.AsToken;
         }
 
         public IEnumerable<SyntaxNode> DescendantNodes(bool descendIntoTrivia = false)
@@ -88,7 +88,7 @@ namespace NQuery
         {
             return from n in DescendantNodesAndTokensAndSelf(descendIntoTrivia)
                    where n.IsNode
-                   select n.AsNode();
+                   select n.AsNode;
         }
 
         public IEnumerable<SyntaxNodeOrToken> DescendantNodesAndTokens(bool descendIntoTrivia = false)
@@ -109,24 +109,24 @@ namespace NQuery
                 if (!current.IsNode)
                     continue;
 
-                foreach (var child in current.AsNode().ChildNodesAndTokens().Reverse())
+                foreach (var child in current.AsNode.ChildNodesAndTokens().Reverse())
                 {
                     if (child.IsToken && descendIntoTrivia)
                     {
-                        var token = child.AsToken();
+                        var token = child.AsToken;
                         var structures = token.TrailingTrivia.Select(t => t.Structure).Where(s => s is not null);
                         foreach (var structure in structures)
-                            stack.Push(structure);
+                            stack.Push(structure!);
                     }
 
                     stack.Push(child);
 
                     if (child.IsToken && descendIntoTrivia)
                     {
-                        var token = child.AsToken();
+                        var token = child.AsToken;
                         var structures = token.LeadingTrivia.Select(t => t.Structure).Where(s => s is not null);
                         foreach (var structure in structures)
-                            stack.Push(structure);
+                            stack.Push(structure!);
                     }
                 }
             }
@@ -136,15 +136,15 @@ namespace NQuery
         {
             return from n in DescendantNodesAndTokens(descendIntoTrivia)
                    where n.IsToken
-                   select n.AsToken();
+                   select n.AsToken;
         }
 
-        public SyntaxToken FirstToken(bool includeZeroLength = false, bool includeSkippedTokens = false)
+        public SyntaxToken? FirstToken(bool includeZeroLength = false, bool includeSkippedTokens = false)
         {
             return SyntaxTreeNavigation.GetFirstToken(this, includeZeroLength, includeSkippedTokens);
         }
 
-        public SyntaxToken LastToken(bool includeZeroLength = false, bool includeSkippedTokens = false)
+        public SyntaxToken? LastToken(bool includeZeroLength = false, bool includeSkippedTokens = false)
         {
             return SyntaxTreeNavigation.GetLastToken(this, includeZeroLength, includeSkippedTokens);
         }
@@ -165,9 +165,9 @@ namespace NQuery
                          select nodeOrToken).First();
 
             if (child.IsNode)
-                return child.AsNode().FindToken(position, descendIntoTrivia);
+                return child.AsNode.FindToken(position, descendIntoTrivia);
 
-            var token = child.AsToken();
+            var token = child.AsToken;
 
             if (descendIntoTrivia)
             {
@@ -182,7 +182,7 @@ namespace NQuery
             return token;
         }
 
-        public bool IsEquivalentTo(SyntaxNode other)
+        public bool IsEquivalentTo(SyntaxNode? other)
         {
             ArgumentNullException.ThrowIfNull(other);
 
@@ -191,10 +191,7 @@ namespace NQuery
 
         public SyntaxTree SyntaxTree { get; }
 
-        public SyntaxNode Parent
-        {
-            get { return SyntaxTree.GetParentNode(this); }
-        }
+        public SyntaxNode? Parent => SyntaxTree.GetParentNode(this);
 
         public abstract SyntaxKind Kind { get; }
 
@@ -232,9 +229,9 @@ namespace NQuery
             foreach (var syntaxNode in ChildNodesAndTokens())
             {
                 if (syntaxNode.IsToken)
-                    syntaxNode.AsToken().WriteTo(writer);
+                    syntaxNode.AsToken.WriteTo(writer);
                 else
-                    syntaxNode.AsNode().WriteTo(writer);
+                    syntaxNode.AsNode.WriteTo(writer);
             }
         }
 

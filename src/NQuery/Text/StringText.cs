@@ -97,19 +97,10 @@ namespace NQuery.Text
             return _text.Substring(textSpan.Start, textSpan.Length);
         }
 
-        public override int Length
-        {
-            get { return _text.Length; }
-        }
+        public override int Length => _text.Length;
 
-        public override char this[int index]
-        {
-            get { return _text[index]; }
-        }
+        public override char this[int index] => _text[index];
 
-        public override TextLineCollection Lines
-        {
-            get { return _lines; }
-        }
+        public override TextLineCollection Lines => _lines;
     }
 }

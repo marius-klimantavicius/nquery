@@ -201,7 +201,7 @@ namespace NQuery
             }
         }
 
-        public static void Report(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, DiagnosticId diagnosticId, params object[] args)
+        public static void Report(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, DiagnosticId diagnosticId, params object?[] args)
         {
             var diagnostic = Diagnostic.Format(textSpan, diagnosticId, args);
             diagnostics.Add(diagnostic);
@@ -237,37 +237,37 @@ namespace NQuery
             diagnostics.Report(textSpan, DiagnosticId.UnterminatedDate);
         }
 
-        public static void ReportInvalidDate(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string tokenText)
+        public static void ReportInvalidDate(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string? tokenText)
         {
             diagnostics.Report(textSpan, DiagnosticId.InvalidDate, tokenText);
         }
 
-        public static void ReportInvalidInteger(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string tokenText)
+        public static void ReportInvalidInteger(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string? tokenText)
         {
             diagnostics.Report(textSpan, DiagnosticId.InvalidInteger, tokenText);
         }
 
-        public static void ReportInvalidReal(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string tokenText)
+        public static void ReportInvalidReal(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string? tokenText)
         {
             diagnostics.Report(textSpan, DiagnosticId.InvalidReal, tokenText);
         }
 
-        public static void ReportInvalidBinary(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string tokenText)
+        public static void ReportInvalidBinary(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string? tokenText)
         {
             diagnostics.Report(textSpan, DiagnosticId.InvalidBinary, tokenText);
         }
 
-        public static void ReportInvalidOctal(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string tokenText)
+        public static void ReportInvalidOctal(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string? tokenText)
         {
             diagnostics.Report(textSpan, DiagnosticId.InvalidOctal, tokenText);
         }
 
-        public static void ReportInvalidHex(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string tokenText)
+        public static void ReportInvalidHex(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string? tokenText)
         {
             diagnostics.Report(textSpan, DiagnosticId.InvalidHex, tokenText);
         }
 
-        public static void ReportNumberTooLarge(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string tokenText)
+        public static void ReportNumberTooLarge(this ICollection<Diagnostic> diagnostics, TextSpan textSpan, string? tokenText)
         {
             diagnostics.Report(textSpan, DiagnosticId.NumberTooLarge, tokenText);
         }
@@ -386,7 +386,7 @@ namespace NQuery
             diagnostics.Report(name.Span, DiagnosticId.AmbiguousProperty, name.ValueText);
         }
 
-        public static void ReportAmbiguousInvocation(this ICollection<Diagnostic> diagnostics, TextSpan span, InvocableSymbol symbol1, InvocableSymbol symbol2, IReadOnlyList<Type> argumentTypes)
+        public static void ReportAmbiguousInvocation(this ICollection<Diagnostic> diagnostics, TextSpan span, InvocableSymbol? symbol1, InvocableSymbol? symbol2, IReadOnlyList<Type> argumentTypes)
         {
             if (argumentTypes.Count > 0)
             {
@@ -593,7 +593,7 @@ namespace NQuery
             diagnostics.Report(cteTableName.Span, DiagnosticId.CteHasFewerColumnsThanSpecified, cteTableName.ValueText);
         }
 
-        public static void ReportCteHasDuplicateColumnName(this ICollection<Diagnostic> diagnostics, SyntaxToken cteTableName, string columnName)
+        public static void ReportCteHasDuplicateColumnName(this ICollection<Diagnostic> diagnostics, SyntaxToken cteTableName, string? columnName)
         {
             diagnostics.Report(cteTableName.Span, DiagnosticId.CteHasDuplicateColumnName, columnName, cteTableName.ValueText);
         }
@@ -653,7 +653,7 @@ namespace NQuery
             diagnostics.Report(cteTableName.Span, DiagnosticId.CteContainsGroupByHavingOrAggregate, cteTableName.Text);
         }
 
-        public static void ReportCteHasTypeMismatchBetweenAnchorAndRecursivePart(this ICollection<Diagnostic> diagnostics, TextSpan diagnosticSpan, string anchorColumnName, string recursiveColumnName)
+        public static void ReportCteHasTypeMismatchBetweenAnchorAndRecursivePart(this ICollection<Diagnostic> diagnostics, TextSpan diagnosticSpan, string? anchorColumnName, string? recursiveColumnName)
         {
             diagnostics.Report(diagnosticSpan, DiagnosticId.CteHasTypeMismatchBetweenAnchorAndRecursivePart, anchorColumnName, recursiveColumnName);
         }

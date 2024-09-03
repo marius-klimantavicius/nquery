@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 
 namespace NQuery.Iterators
 {
@@ -19,10 +19,7 @@ namespace NQuery.Iterators
             _rowBuffer = new IndirectedRowBuffer(rowBufferSize);
         }
 
-        public override RowBuffer RowBuffer
-        {
-            get { return _rowBuffer; }
-        }
+        public override RowBuffer RowBuffer => _rowBuffer;
 
         public override void Open()
         {

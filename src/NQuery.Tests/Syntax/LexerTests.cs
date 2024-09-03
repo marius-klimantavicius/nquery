@@ -1,4 +1,4 @@
-﻿using NQuery.Text;
+using NQuery.Text;
 
 namespace NQuery.Tests.Syntax
 {

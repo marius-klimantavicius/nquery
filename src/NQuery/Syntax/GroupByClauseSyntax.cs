@@ -10,10 +10,7 @@ namespace NQuery.Syntax
             Columns = columns;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.GroupByClause; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.GroupByClause;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

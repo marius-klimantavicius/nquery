@@ -8,10 +8,7 @@ namespace NQuery.Symbols
             Type = type;
         }
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.Parameter; }
-        }
+        public override SymbolKind Kind => SymbolKind.Parameter;
 
         public override Type Type { get; }
     }

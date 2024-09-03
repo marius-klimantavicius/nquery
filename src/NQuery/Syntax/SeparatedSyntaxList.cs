@@ -8,7 +8,7 @@ namespace NQuery.Syntax
     {
         private readonly ImmutableArray<Entry> _entries;
 
-        public static readonly SeparatedSyntaxList<TNode> Empty = new(Array.Empty<SyntaxNodeOrToken>());
+        public static readonly SeparatedSyntaxList<TNode> Empty = new SeparatedSyntaxList<TNode>(Array.Empty<SyntaxNodeOrToken>());
 
         internal SeparatedSyntaxList(IReadOnlyCollection<SyntaxNodeOrToken> nodeOrTokens)
         {
@@ -33,7 +33,7 @@ namespace NQuery.Syntax
                                          nodeOrToken.IsNode);
                 if (requiresValidNode)
                 {
-                    var isValidNode = nodeOrToken.IsNode && nodeOrToken.AsNode() is TNode;
+                    var isValidNode = nodeOrToken.IsNode && nodeOrToken.AsNode is TNode;
                     if (!isValidNode)
                         throw new ArgumentException(Resources.SeparatedSyntaxListInvalidSequence, nameof(nodeOrTokens));
                 }
@@ -55,12 +55,12 @@ namespace NQuery.Syntax
                 {
                     var itemIndex = entryIndex - 1;
                     var lastEntry = entries[itemIndex];
-                    var separator = nodeOrToken.AsToken();
+                    var separator = nodeOrToken.AsToken;
                     entries[itemIndex] = new Entry(lastEntry.Node, separator);
                 }
                 else
                 {
-                    var node = (TNode)nodeOrToken.AsNode();
+                    var node = (TNode)nodeOrToken.AsNode;
                     entries[entryIndex] = new Entry(node, null);
                     entryIndex++;
                 }
@@ -78,7 +78,7 @@ namespace NQuery.Syntax
             return GetEnumerator();
         }
 
-        public SyntaxToken GetSeparator(int index)
+        public SyntaxToken? GetSeparator(int index)
         {
             return _entries[index].Separator;
         }
@@ -100,10 +100,7 @@ namespace NQuery.Syntax
                    select e.Separator;
         }
 
-        public TNode this[int index]
-        {
-            get { return _entries[index].Node; }
-        }
+        public TNode this[int index] => _entries[index].Node;
 
         public bool Contains(TNode item)
         {
@@ -156,13 +153,13 @@ namespace NQuery.Syntax
         {
             if (itemOrSeparator.IsNode)
             {
-                if (itemOrSeparator.AsNode() is not TNode node)
+                if (itemOrSeparator.AsNode is not TNode node)
                     return -1;
 
                 return IndexOf(node);
             }
 
-            return IndexOf(itemOrSeparator.AsToken());
+            return IndexOf(itemOrSeparator.AsToken);
         }
 
         void IList<TNode>.Insert(int index, TNode item)
@@ -180,7 +177,7 @@ namespace NQuery.Syntax
             throw new NotSupportedException();
         }
 
-        bool ICollection<TNode>.IsReadOnly { get { return true; } }
+        bool ICollection<TNode>.IsReadOnly => true;
 
         void ICollection<TNode>.CopyTo(TNode[] array, int arrayIndex)
         {
@@ -190,18 +187,15 @@ namespace NQuery.Syntax
 
         TNode IList<TNode>.this[int index]
         {
-            get { return this[index]; }
-            set { throw new NotSupportedException(); }
+            get => this[index];
+            set => throw new NotSupportedException();
         }
 
-        public int Count
-        {
-            get { return _entries.Length; }
-        }
+        public int Count => _entries.Length;
 
         private struct Entry
         {
-            public Entry(TNode node, SyntaxToken separator)
+            public Entry(TNode node, SyntaxToken? separator)
             {
                 Node = node;
                 Separator = separator;
@@ -209,7 +203,7 @@ namespace NQuery.Syntax
 
             public TNode Node { get; }
 
-            public SyntaxToken Separator { get; }
+            public SyntaxToken? Separator { get; }
         }
     }
 }

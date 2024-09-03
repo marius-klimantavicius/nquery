@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
-
 using NQuery.Symbols;
 
 namespace NQuery.Hosting
@@ -45,7 +45,7 @@ namespace NQuery.Hosting
 
         private sealed class PropertyTable
         {
-            private readonly Dictionary<string, Entry> _table = new();
+            private readonly Dictionary<string, Entry> _table = new Dictionary<string, Entry>();
 
             public class Entry
             {
@@ -71,7 +71,7 @@ namespace NQuery.Hosting
                 _table.Remove(entry.PropertySymbol.Name);
             }
 
-            public Entry this[string propertyName]
+            public Entry? this[string propertyName]
             {
                 get
                 {
@@ -83,7 +83,7 @@ namespace NQuery.Hosting
 
         private sealed class MethodTable
         {
-            private readonly Dictionary<string, Entry> _table = new();
+            private readonly Dictionary<string, Entry> _table = new Dictionary<string, Entry>();
 
             public class Entry
             {
@@ -101,7 +101,7 @@ namespace NQuery.Hosting
                 public MethodInfo MethodInfo { get; }
             }
 
-            private static string GenerateKey(string methodName, IEnumerable<Type> parameterTypes)
+            private static string GenerateKey(string? methodName, IEnumerable<Type> parameterTypes)
             {
                 var sb = new StringBuilder();
                 sb.Append(methodName);
@@ -135,7 +135,7 @@ namespace NQuery.Hosting
                 _table.Remove(entry.Key);
             }
 
-            public Entry this[string methodName, IEnumerable<Type> parameterTypes]
+            public Entry? this[string? methodName, IEnumerable<Type> parameterTypes]
             {
                 get
                 {
@@ -196,7 +196,9 @@ namespace NQuery.Hosting
             methodList.Add(methodSymbol);
         }
 
-        public IEnumerable<PropertySymbol> GetProperties(Type type)
+        public IEnumerable<PropertySymbol> GetProperties(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
+            Type type)
         {
             ArgumentNullException.ThrowIfNull(type);
 
@@ -261,17 +263,19 @@ namespace NQuery.Hosting
                 return false;
 
             var hasInvalidParameterTypes = (from parameterInfo in methodInfo.GetParameters()
-                                            let hasParamsModifier = parameterInfo.GetCustomAttributes(typeof(ParamArrayAttribute), false).Any()
-                                            where hasParamsModifier ||
-                                                  parameterInfo.IsOut ||
-                                                  parameterInfo.ParameterType.IsByRef ||
-                                                  parameterInfo.ParameterType.IsPointer
-                                            select parameterInfo).Any();
+                let hasParamsModifier = parameterInfo.GetCustomAttributes(typeof(ParamArrayAttribute), false).Any()
+                where hasParamsModifier ||
+                    parameterInfo.IsOut ||
+                    parameterInfo.ParameterType.IsByRef ||
+                    parameterInfo.ParameterType.IsPointer
+                select parameterInfo).Any();
 
             return !hasInvalidParameterTypes;
         }
 
-        public IEnumerable<MethodSymbol> GetMethods(Type type)
+        public IEnumerable<MethodSymbol> GetMethods(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+            Type type)
         {
             ArgumentNullException.ThrowIfNull(type);
 

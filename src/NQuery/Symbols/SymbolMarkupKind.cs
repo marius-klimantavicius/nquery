@@ -14,6 +14,6 @@ namespace NQuery.Symbols
         AggregateName,
         MethodName,
         PropertyName,
-        TypeName
+        TypeName,
     }
 }

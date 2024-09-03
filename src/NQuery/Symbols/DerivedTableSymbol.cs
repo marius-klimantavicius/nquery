@@ -10,15 +10,9 @@ namespace NQuery.Symbols
             Columns = columns.ToImmutableArray();
         }
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.DerivedTable; }
-        }
+        public override SymbolKind Kind => SymbolKind.DerivedTable;
 
-        public override Type Type
-        {
-            get { return TypeFacts.Missing; }
-        }
+        public override Type Type => TypeFacts.Missing;
 
         public override ImmutableArray<ColumnSymbol> Columns { get; }
     }

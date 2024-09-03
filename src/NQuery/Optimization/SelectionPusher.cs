@@ -1,4 +1,4 @@
-﻿using NQuery.Binding;
+using NQuery.Binding;
 
 namespace NQuery.Optimization
 {
@@ -40,9 +40,9 @@ namespace NQuery.Optimization
         {
             if (node.Condition is not null && node.Probe is null)
             {
-                BoundExpression pushedLeft = null;
-                BoundExpression pushedRight = null;
-                BoundExpression remainder = null;
+                BoundExpression? pushedLeft = null;
+                BoundExpression? pushedRight = null;
+                BoundExpression? remainder = null;
 
                 foreach (var conjunction in Expression.SplitConjunctions(node.Condition))
                 {
@@ -147,8 +147,8 @@ namespace NQuery.Optimization
 
         private BoundRelation PushOverCompute(BoundFilterRelation node, BoundComputeRelation input)
         {
-            BoundExpression remainder = null;
-            BoundExpression pushed = null;
+            BoundExpression? remainder = null;
+            BoundExpression? pushed = null;
 
             foreach (var conjunction in Expression.SplitConjunctions(node.Condition))
             {
@@ -190,8 +190,8 @@ namespace NQuery.Optimization
             // Formally, a predicate can be pushed over an aggregate if and only if all disjuncts of the predicate's
             // CNF do reference at least one grouping column.
 
-            BoundExpression remainder = null;
-            BoundExpression pushed = null;
+            BoundExpression? remainder = null;
+            BoundExpression? pushed = null;
 
             foreach (var conjunction in Expression.SplitConjunctions(node.Condition))
             {
@@ -241,9 +241,9 @@ namespace NQuery.Optimization
             }
             else
             {
-                BoundExpression pushedLeft = null;
-                BoundExpression pushedRight = null;
-                BoundExpression remainder = null;
+                BoundExpression? pushedLeft = null;
+                BoundExpression? pushedRight = null;
+                BoundExpression? remainder = null;
 
                 foreach (var conjunction in Expression.SplitConjunctions(node.Condition))
                 {

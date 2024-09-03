@@ -16,10 +16,7 @@ namespace NQuery.Symbols
 
         public abstract Expression CreateInvocation(IEnumerable<Expression> arguments);
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.Function; }
-        }
+        public override SymbolKind Kind => SymbolKind.Function;
     }
 
     public sealed class FunctionSymbol<TResult> : FunctionSymbol

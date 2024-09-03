@@ -15,6 +15,6 @@ namespace NQuery
         Function,
         Aggregate,
         Method,
-        Property
+        Property,
     }
 }

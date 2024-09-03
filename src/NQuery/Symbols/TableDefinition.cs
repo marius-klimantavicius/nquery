@@ -27,7 +27,7 @@ namespace NQuery.Symbols
 
         public abstract IEnumerable GetRows();
 
-        public static TableDefinition Create<T>(string name, IEnumerable<T> source)
+        public static TableDefinition Create<T>(string? name, IEnumerable<T> source)
         {
             ArgumentNullException.ThrowIfNull(name);
             ArgumentNullException.ThrowIfNull(source);
@@ -35,7 +35,7 @@ namespace NQuery.Symbols
             return Create(name, source, new ReflectionProvider());
         }
 
-        public static TableDefinition Create<T>(string name, IEnumerable<T> source, IPropertyProvider propertyProvider)
+        public static TableDefinition Create<T>(string? name, IEnumerable<T> source, IPropertyProvider propertyProvider)
         {
             ArgumentNullException.ThrowIfNull(name);
             ArgumentNullException.ThrowIfNull(source);
@@ -44,7 +44,7 @@ namespace NQuery.Symbols
             return Create(name, source, typeof(T), propertyProvider);
         }
 
-        public static TableDefinition Create(string name, IEnumerable source, Type rowType, IPropertyProvider propertyProvider)
+        public static TableDefinition Create(string? name, IEnumerable source, Type rowType, IPropertyProvider propertyProvider)
         {
             ArgumentNullException.ThrowIfNull(name);
             ArgumentNullException.ThrowIfNull(source);

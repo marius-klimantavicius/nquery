@@ -1,6 +1,5 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Immutable;
-
 using NQuery.Symbols;
 
 namespace NQuery.Iterators
@@ -8,22 +7,19 @@ namespace NQuery.Iterators
     internal sealed class TableIterator : Iterator
     {
         private readonly TableDefinition _table;
-        private readonly ImmutableArray<Func<object, object>> _definedValues;
+        private readonly ImmutableArray<Func<object?, object>> _definedValues;
         private readonly ArrayRowBuffer _rowBuffer;
 
-        private IEnumerator _rows;
+        private IEnumerator? _rows;
 
-        public TableIterator(TableDefinition table, IEnumerable<Func<object, object>> valueSelectors)
+        public TableIterator(TableDefinition table, IEnumerable<Func<object?, object>> valueSelectors)
         {
             _table = table;
             _definedValues = valueSelectors.ToImmutableArray();
             _rowBuffer = new ArrayRowBuffer(_definedValues.Length);
         }
 
-        public override RowBuffer RowBuffer
-        {
-            get { return _rowBuffer; }
-        }
+        public override RowBuffer RowBuffer => _rowBuffer;
 
         public override void Open()
         {
@@ -43,6 +39,9 @@ namespace NQuery.Iterators
 
         public override bool Read()
         {
+            if (_rows == null)
+                throw new InvalidOperationException();
+
             if (!_rows.MoveNext())
                 return false;
 

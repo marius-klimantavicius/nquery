@@ -4,9 +4,9 @@ namespace NQuery.Text
 {
     public sealed class TextChangeSet : IEnumerable<TextChange>
     {
-        private readonly List<TextChange> _changes = new();
+        private readonly List<TextChange> _changes = new List<TextChange>();
 
-        public void ReplaceText(TextSpan span, string newText)
+        public void ReplaceText(TextSpan span, string? newText)
         {
             ArgumentNullException.ThrowIfNull(newText);
 
@@ -14,7 +14,7 @@ namespace NQuery.Text
             RegisterChange(change);
         }
 
-        public void InsertText(int position, string text)
+        public void InsertText(int position, string? text)
         {
             ArgumentNullException.ThrowIfNull(text);
 

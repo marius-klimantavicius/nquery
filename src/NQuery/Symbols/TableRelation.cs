@@ -27,10 +27,7 @@ namespace NQuery.Symbols
             ChildColumns = childColumns.ToImmutableArray();
         }
 
-        public int ColumnCount
-        {
-            get { return ParentColumns.Length; }
-        }
+        public int ColumnCount => ParentColumns.Length;
 
         public TableSymbol ParentTable { get; }
 

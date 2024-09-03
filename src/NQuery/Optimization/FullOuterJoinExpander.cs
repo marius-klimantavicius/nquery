@@ -66,7 +66,7 @@ namespace NQuery.Optimization
             if (node.JoinType != BoundJoinType.FullOuter)
                 return false;
 
-            if (SubqueryChecker.ContainsSubquery(node.Condition))
+            if (node.Condition != null && SubqueryChecker.ContainsSubquery(node.Condition))
                 return true;
 
             var left = node.Left.GetOutputValues().ToImmutableArray();

@@ -12,10 +12,7 @@ namespace NQuery.Symbols
 
         public abstract Expression CreateInvocation(Expression instance);
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.Property; }
-        }
+        public override SymbolKind Kind => SymbolKind.Property;
 
         public override Type Type { get; }
     }

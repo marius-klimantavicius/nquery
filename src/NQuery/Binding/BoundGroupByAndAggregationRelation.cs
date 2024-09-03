@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 
 namespace NQuery.Binding
 {
@@ -11,10 +11,7 @@ namespace NQuery.Binding
             Aggregates = aggregates.ToImmutableArray();
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.GroupByAndAggregationRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.GroupByAndAggregationRelation;
 
         public BoundRelation Input { get; }
 

@@ -1,4 +1,4 @@
-﻿namespace NQuery.Iterators
+namespace NQuery.Iterators
 {
     internal sealed class TableSpoolIterator : Iterator
     {
@@ -11,10 +11,7 @@
             _tableSpoolStack = tableSpoolStack;
         }
 
-        public override RowBuffer RowBuffer
-        {
-            get { return _input.RowBuffer; }
-        }
+        public override RowBuffer RowBuffer => _input.RowBuffer;
 
         public override void Open()
         {

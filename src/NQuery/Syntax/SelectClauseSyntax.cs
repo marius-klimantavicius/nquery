@@ -2,7 +2,7 @@ namespace NQuery.Syntax
 {
     public sealed class SelectClauseSyntax : SyntaxNode
     {
-        internal SelectClauseSyntax(SyntaxTree syntaxTree, SyntaxToken selectKeyword, SyntaxToken distinctAllKeyword, TopClauseSyntax topClause, SeparatedSyntaxList<SelectColumnSyntax> selectColumns)
+        internal SelectClauseSyntax(SyntaxTree syntaxTree, SyntaxToken selectKeyword, SyntaxToken? distinctAllKeyword, TopClauseSyntax? topClause, SeparatedSyntaxList<SelectColumnSyntax> selectColumns)
             : base(syntaxTree)
         {
             SelectKeyword = selectKeyword;
@@ -11,10 +11,7 @@ namespace NQuery.Syntax
             Columns = selectColumns;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.SelectClause; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.SelectClause;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {
@@ -29,9 +26,9 @@ namespace NQuery.Syntax
 
         public SyntaxToken SelectKeyword { get; }
 
-        public SyntaxToken DistinctAllKeyword { get; }
+        public SyntaxToken? DistinctAllKeyword { get; }
 
-        public TopClauseSyntax TopClause { get; }
+        public TopClauseSyntax? TopClause { get; }
 
         public SeparatedSyntaxList<SelectColumnSyntax> Columns { get; }
     }

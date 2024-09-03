@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 
 namespace NQuery.Iterators
 {
@@ -11,7 +11,7 @@ namespace NQuery.Iterators
             _comparer = comparer;
         }
 
-        public int Compare(object x, object y)
+        public int Compare(object? x, object? y)
         {
             return -_comparer.Compare(x, y);
         }

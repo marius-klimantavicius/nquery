@@ -1,4 +1,4 @@
-﻿namespace NQuery.Syntax
+namespace NQuery.Syntax
 {
     public abstract class ExpressionSyntax : SyntaxNode
     {

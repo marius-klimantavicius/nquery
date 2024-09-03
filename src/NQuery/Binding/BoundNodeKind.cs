@@ -48,5 +48,8 @@ namespace NQuery.Binding
         WildcardSelectColumn,
         OrderByColumn,
         CommonTableExpression,
+        
+        // Window
+        RowNumberExpression,
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace NQuery.Binding
+namespace NQuery.Binding
 {
     internal sealed class BoundComputedValue
     {

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
 
 namespace NQuery
@@ -8,8 +9,13 @@ namespace NQuery
         private static class UnknownType { }
         private static class NullType { }
 
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public static readonly Type Missing = typeof(MissingType);
+
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public static readonly Type Unknown = typeof(UnknownType);
+
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
         public static readonly Type Null = typeof(NullType);
 
         public static bool IsMissing(this Type type)
@@ -150,7 +156,7 @@ namespace NQuery
             return null;
         }
 
-        public static string ToDisplayName(this Type type)
+        public static string? ToDisplayName(this Type type)
         {
             if (type.IsUnknown())
                 return Resources.TypeUnknown;

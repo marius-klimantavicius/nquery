@@ -5,7 +5,7 @@ namespace NQuery
 {
     public sealed class SyntaxTree
     {
-        private Dictionary<object, object> _parentFromChild;
+        private Dictionary<object, object>? _parentFromChild;
 
         private SyntaxTree(SourceText text, Func<Parser, CompilationUnitSyntax> parseMethod)
         {
@@ -69,7 +69,7 @@ namespace NQuery
                    select d;
         }
 
-        private T GetParent<T>(object child)
+        private T? GetParent<T>(object child)
              where T : class
         {
             if (_parentFromChild is null)
@@ -79,22 +79,22 @@ namespace NQuery
             return parent as T;
         }
 
-        internal SyntaxNode GetParentNode(SyntaxNode node)
+        internal SyntaxNode? GetParentNode(SyntaxNode node)
         {
             return GetParent<SyntaxNode>(node);
         }
 
-        internal SyntaxNode GetParentNode(SyntaxToken token)
+        internal SyntaxNode? GetParentNode(SyntaxToken token)
         {
             return GetParent<SyntaxNode>(token);
         }
 
-        internal SyntaxToken GetParentToken(SyntaxTrivia trivia)
+        internal SyntaxToken? GetParentToken(SyntaxTrivia trivia)
         {
             return GetParent<SyntaxToken>(trivia);
         }
 
-        internal SyntaxTrivia GetParentTrivia(StructuredTriviaSyntax structuredTrivia)
+        internal SyntaxTrivia? GetParentTrivia(StructuredTriviaSyntax structuredTrivia)
         {
             return GetParent<SyntaxTrivia>(structuredTrivia);
         }
@@ -112,13 +112,13 @@ namespace NQuery
             {
                 if (nodeOrToken.IsNode)
                 {
-                    var node = nodeOrToken.AsNode();
+                    var node = nodeOrToken.AsNode;
                     parents.Add(node, parent);
                     GetParents(parents, node);
                 }
                 else
                 {
-                    var token = nodeOrToken.AsToken();
+                    var token = nodeOrToken.AsToken;
                     parents.Add(token, parent);
 
                     foreach (var trivia in token.LeadingTrivia.Concat(token.TrailingTrivia))
@@ -135,7 +135,7 @@ namespace NQuery
             }
         }
 
-        public SyntaxTree WithChanges(params TextChange[] textChanges)
+        public SyntaxTree WithChanges(params TextChange[]? textChanges)
         {
             if (textChanges is null)
                 return this;

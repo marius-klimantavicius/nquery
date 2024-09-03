@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 
 namespace NQuery.Binding
 {
@@ -16,7 +16,7 @@ namespace NQuery.Binding
 
         public BoundComparedValue Update(ValueSlot valueSlot, IComparer comparer)
         {
-            if (valueSlot == ValueSlot && comparer == Comparer)
+            if (valueSlot == ValueSlot && ReferenceEquals(comparer, Comparer))
                 return this;
 
             return new BoundComparedValue(valueSlot, comparer);

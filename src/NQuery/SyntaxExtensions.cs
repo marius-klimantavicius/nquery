@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using NQuery.Syntax;
 
 namespace NQuery
@@ -32,7 +33,7 @@ namespace NQuery
             //       order of nodes.
             var seenNodes = new HashSet<SyntaxNode>();
             return root.FindStartTokens(position)
-                       .SelectMany(t => t.Parent.AncestorsAndSelf())
+                       .SelectMany(t => t.Parent?.AncestorsAndSelf() ?? Enumerable.Empty<SyntaxNode>())
                        .Where(seenNodes.Add);
         }
 
@@ -65,14 +66,14 @@ namespace NQuery
             return token;
         }
 
-        public static SyntaxToken GetPreviousIfCurrentContainsOrTouchesPosition(this SyntaxToken token, int position)
+        public static SyntaxToken? GetPreviousIfCurrentContainsOrTouchesPosition(this SyntaxToken? token, int position)
         {
             return token is not null && token.Span.ContainsOrTouches(position)
                        ? token.GetPreviousToken()
                        : token;
         }
 
-        public static SyntaxToken FindTokenContext(this SyntaxNode root, int position)
+        public static SyntaxToken FindTokenContext(this SyntaxNode? root, int position)
         {
             ArgumentNullException.ThrowIfNull(root);
 
@@ -176,6 +177,8 @@ namespace NQuery
             ArgumentNullException.ThrowIfNull(root);
 
             var node = root.FindTokenOnLeft(position).Parent;
+            Debug.Assert(node != null);
+
             return node.Span.ContainsOrTouches(position) &&
                    (node is CommonTableExpressionColumnNameSyntax ||
                     node is CommonTableExpressionColumnNameListSyntax);
@@ -189,15 +192,14 @@ namespace NQuery
             return syntaxToken.Parent is DerivedTableReferenceSyntax derivedTable && derivedTable.Name.FullSpan.ContainsOrTouches(position);
         }
 
-        public static SelectQuerySyntax GetAppliedSelectQuery(this OrderedQuerySyntax query)
+        public static SelectQuerySyntax? GetAppliedSelectQuery(this OrderedQuerySyntax? query)
         {
             ArgumentNullException.ThrowIfNull(query);
 
             var node = query.Query;
 
-            while (node is ParenthesizedQuerySyntax)
+            while (node is ParenthesizedQuerySyntax parenthesizedQuery)
             {
-                var parenthesizedQuery = (ParenthesizedQuerySyntax)node;
                 node = parenthesizedQuery.Query;
             }
 

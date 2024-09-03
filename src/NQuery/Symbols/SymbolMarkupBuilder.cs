@@ -1,4 +1,4 @@
-﻿using NQuery.Symbols.Aggregation;
+using NQuery.Symbols.Aggregation;
 
 namespace NQuery.Symbols
 {
@@ -91,12 +91,12 @@ namespace NQuery.Symbols
             markup.AppendPunctuation(@")");
         }
 
-        private static void Append(this ICollection<SymbolMarkupToken> markup, SymbolMarkupKind kind, string text)
+        private static void Append(this ICollection<SymbolMarkupToken> markup, SymbolMarkupKind kind, string? text)
         {
             markup.Add(new SymbolMarkupToken(kind, text));
         }
 
-        private static void AppendName(this ICollection<SymbolMarkupToken> markup, SymbolMarkupKind kind, string name)
+        private static void AppendName(this ICollection<SymbolMarkupToken> markup, SymbolMarkupKind kind, string? name)
         {
             var displayName = string.IsNullOrEmpty(name)
                                   ? @"?"
@@ -104,7 +104,7 @@ namespace NQuery.Symbols
             markup.Append(kind, displayName);
         }
 
-        private static void AppendKeyword(this ICollection<SymbolMarkupToken> markup, string text)
+        private static void AppendKeyword(this ICollection<SymbolMarkupToken> markup, string? text)
         {
             markup.Append(SymbolMarkupKind.Keyword, text);
         }
@@ -114,52 +114,52 @@ namespace NQuery.Symbols
             markup.Append(SymbolMarkupKind.Whitespace, @" ");
         }
 
-        private static void AppendTableName(this ICollection<SymbolMarkupToken> markup, string text)
+        private static void AppendTableName(this ICollection<SymbolMarkupToken> markup, string? text)
         {
             markup.AppendName(SymbolMarkupKind.TableName, text);
         }
 
-        private static void AppendCommonTableExpressionName(this ICollection<SymbolMarkupToken> markup, string text)
+        private static void AppendCommonTableExpressionName(this ICollection<SymbolMarkupToken> markup, string? text)
         {
             markup.AppendName(SymbolMarkupKind.CommonTableExpressionName, text);
         }
 
-        private static void AppendColumnName(this ICollection<SymbolMarkupToken> markup, string text)
+        private static void AppendColumnName(this ICollection<SymbolMarkupToken> markup, string? text)
         {
             markup.AppendName(SymbolMarkupKind.ColumnName, text);
         }
 
-        private static void AppendVariableName(this ICollection<SymbolMarkupToken> markup, string text)
+        private static void AppendVariableName(this ICollection<SymbolMarkupToken> markup, string? text)
         {
             markup.AppendName(SymbolMarkupKind.VariableName, text);
         }
 
-        private static void AppendParameterName(this ICollection<SymbolMarkupToken> markup, string text)
+        private static void AppendParameterName(this ICollection<SymbolMarkupToken> markup, string? text)
         {
             markup.AppendName(SymbolMarkupKind.ParameterName, text);
         }
 
-        private static void AppendFunctionName(this ICollection<SymbolMarkupToken> markup, string text)
+        private static void AppendFunctionName(this ICollection<SymbolMarkupToken> markup, string? text)
         {
             markup.AppendName(SymbolMarkupKind.FunctionName, text);
         }
 
-        private static void AppendAggregateName(this ICollection<SymbolMarkupToken> markup, string text)
+        private static void AppendAggregateName(this ICollection<SymbolMarkupToken> markup, string? text)
         {
             markup.AppendName(SymbolMarkupKind.AggregateName, text);
         }
 
-        private static void AppendMethodName(this ICollection<SymbolMarkupToken> markup, string text)
+        private static void AppendMethodName(this ICollection<SymbolMarkupToken> markup, string? text)
         {
             markup.AppendName(SymbolMarkupKind.MethodName, text);
         }
 
-        private static void AppendPropertyName(this ICollection<SymbolMarkupToken> markup, string text)
+        private static void AppendPropertyName(this ICollection<SymbolMarkupToken> markup, string? text)
         {
             markup.AppendName(SymbolMarkupKind.PropertyName, text);
         }
 
-        private static void AppendPunctuation(this ICollection<SymbolMarkupToken> markup, string text)
+        private static void AppendPunctuation(this ICollection<SymbolMarkupToken> markup, string? text)
         {
             markup.Append(SymbolMarkupKind.Punctuation, text);
         }

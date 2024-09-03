@@ -2,7 +2,7 @@ namespace NQuery.Binding
 {
     internal sealed class BoundJoinRelation : BoundRelation
     {
-        public BoundJoinRelation(BoundJoinType joinType, BoundRelation left, BoundRelation right, BoundExpression condition, ValueSlot probe, BoundExpression passthruPredicate)
+        public BoundJoinRelation(BoundJoinType joinType, BoundRelation left, BoundRelation right, BoundExpression? condition, ValueSlot? probe, BoundExpression? passthruPredicate)
         {
             Left = left;
             Right = right;
@@ -12,10 +12,7 @@ namespace NQuery.Binding
             PassthruPredicate = passthruPredicate;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.JoinRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.JoinRelation;
 
         public BoundRelation Left { get; }
 
@@ -23,13 +20,13 @@ namespace NQuery.Binding
 
         public BoundJoinType JoinType { get; }
 
-        public BoundExpression Condition { get; }
+        public BoundExpression? Condition { get; }
 
-        public ValueSlot Probe { get; }
+        public ValueSlot? Probe { get; }
 
-        public BoundExpression PassthruPredicate { get; }
+        public BoundExpression? PassthruPredicate { get; }
 
-        public BoundJoinRelation Update(BoundJoinType joinType, BoundRelation left, BoundRelation right, BoundExpression condition, ValueSlot probe, BoundExpression passthruPredicate)
+        public BoundJoinRelation Update(BoundJoinType joinType, BoundRelation left, BoundRelation right, BoundExpression? condition, ValueSlot? probe, BoundExpression? passthruPredicate)
         {
             if (joinType == JoinType && left == Left && right == Right && condition == Condition && probe == Probe && passthruPredicate == PassthruPredicate)
                 return this;

@@ -10,10 +10,7 @@ namespace NQuery.Syntax
             RightQuery = rightQuery;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.IntersectQuery; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.IntersectQuery;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

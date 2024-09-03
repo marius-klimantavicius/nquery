@@ -9,20 +9,14 @@ namespace NQuery.Binding
             Symbol = symbol;
         }
 
-        public override Type ReturnType
-        {
-            get { return Symbol.Type; }
-        }
+        public override Type ReturnType => Symbol.Type;
 
         public override Type GetParameterType(int index)
         {
             return Symbol.Parameters[index].Type;
         }
 
-        public override int ParameterCount
-        {
-            get { return Symbol.Parameters.Length; }
-        }
+        public override int ParameterCount => Symbol.Parameters.Length;
 
         public FunctionSymbol Symbol { get; }
 

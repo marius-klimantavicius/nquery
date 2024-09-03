@@ -1,4 +1,4 @@
-﻿namespace NQuery.Iterators
+namespace NQuery.Iterators
 {
     internal sealed class ProjectionIterator : Iterator
     {
@@ -11,10 +11,7 @@
             _rowBuffer = new ProjectedRowBuffer(projectedEntries);
         }
 
-        public override RowBuffer RowBuffer
-        {
-            get { return _rowBuffer; }
-        }
+        public override RowBuffer RowBuffer => _rowBuffer;
 
         public override void Open()
         {

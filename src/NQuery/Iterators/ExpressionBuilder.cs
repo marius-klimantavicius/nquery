@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -9,12 +10,12 @@ namespace NQuery.Iterators
 {
     internal sealed class ExpressionBuilder
     {
-        private static readonly PropertyInfo RowBufferIndexer = typeof(RowBuffer).GetProperty("Item", new[] { typeof(int) });
-        private static readonly PropertyInfo VariableSymbolValueProperty = typeof(VariableSymbol).GetProperty("Value", typeof(object));
+        private static readonly PropertyInfo RowBufferIndexer = typeof(RowBuffer).GetProperty("Item", new[] { typeof(int) })!;
+        private static readonly PropertyInfo VariableSymbolValueProperty = typeof(VariableSymbol).GetProperty("Value", typeof(object))!;
 
         private readonly RowBufferAllocation _rowBufferAllocation;
-        private readonly List<ParameterExpression> _locals = new();
-        private readonly List<Expression> _assignments = new();
+        private readonly List<ParameterExpression> _locals = new List<ParameterExpression>();
+        private readonly List<Expression> _assignments = new List<Expression>();
 
         private ExpressionBuilder(RowBufferAllocation allocation)
         {
@@ -31,7 +32,7 @@ namespace NQuery.Iterators
             return BuildExpression<IteratorFunction>(expression, typeof(object), allocation);
         }
 
-        public static IteratorPredicate BuildIteratorPredicate(BoundExpression predicate, bool nullValue, RowBufferAllocation allocation)
+        public static IteratorPredicate BuildIteratorPredicate(BoundExpression? predicate, bool nullValue, RowBufferAllocation allocation)
         {
             if (predicate is null)
                 return () => nullValue;
@@ -91,9 +92,12 @@ namespace NQuery.Iterators
 
         private static Expression BuildNullCheck(IEnumerable<Expression> expressions)
         {
-            return expressions
+            var result = expressions
                 .Select(BuildNullCheck)
-                .Aggregate<Expression, Expression>(null, (current, nullCheck) => current is null ? nullCheck : Expression.OrElse(current, nullCheck));
+                .Aggregate<Expression?, Expression?>(null, (current, nullCheck) => current is null ? nullCheck : Expression.OrElse(current, nullCheck!));
+
+            Debug.Assert(result != null);
+            return result;
         }
 
         private static Expression BuildNullCheck(Expression instance, IReadOnlyCollection<Expression> arguments)
@@ -108,8 +112,10 @@ namespace NQuery.Iterators
                 );
         }
 
-        private static Expression BuildInvocation(MethodSymbol methodSymbol, Expression instance, IEnumerable<Expression> arguments)
+        private static Expression BuildInvocation(MethodSymbol? methodSymbol, Expression instance, IEnumerable<Expression> arguments)
         {
+            ArgumentNullException.ThrowIfNull(methodSymbol);
+            
             return
                 BuildLiftedExpression(
                     methodSymbol.CreateInvocation(
@@ -183,6 +189,8 @@ namespace NQuery.Iterators
                     return BuildIsNullExpression((BoundIsNullExpression)expression);
                 case BoundNodeKind.CaseExpression:
                     return BuildCaseExpression((BoundCaseExpression)expression);
+                case BoundNodeKind.RowNumberExpression:
+                    return BuildRowNumberExpression((BoundRowNumberExpression)expression);
                 default:
                     throw ExceptionBuilder.UnexpectedValue(expression.Kind);
             }
@@ -192,6 +200,8 @@ namespace NQuery.Iterators
         {
             var liftedInput = BuildCachedExpression(expression.Expression);
             var nullableResultType = expression.Type.GetNullableType();
+
+            Debug.Assert(expression.Result.Best != null);
             var signature = expression.Result.Best.Signature;
 
             return Expression.Condition(
@@ -230,6 +240,8 @@ namespace NQuery.Iterators
             var liftedLeft = BuildCachedExpression(expression.Left);
             var liftedRight = BuildCachedExpression(expression.Right);
             var nullableResultType = expression.Type.GetNullableType();
+        
+            Debug.Assert(expression.Result.Best != null);
             var signature = expression.Result.Best.Signature;
 
             var result = Expression.Condition(
@@ -335,6 +347,7 @@ namespace NQuery.Iterators
                 case BinaryOperatorKind.Like:
                 case BinaryOperatorKind.SimilarTo:
                 case BinaryOperatorKind.SoundsLike:
+                    Debug.Assert(signature.MethodInfo != null);
                     return Expression.Call(signature.MethodInfo, left, right);
                 default:
                     throw ExceptionBuilder.UnexpectedValue(signature.Kind);
@@ -378,6 +391,8 @@ namespace NQuery.Iterators
 
         private Expression BuildFunctionInvocationExpression(BoundFunctionInvocationExpression expression)
         {
+            Debug.Assert(expression.Symbol != null);
+
             var liftedArguments = expression.Arguments.Select(BuildCachedExpression).ToImmutableArray();
             if (liftedArguments.Length == 0)
                 return BuildInvocation(expression.Symbol, liftedArguments);
@@ -470,6 +485,11 @@ namespace NQuery.Iterators
                     BuildLiftedExpression(result),
                     BuildCaseLabel(caseExpression, caseLabelIndex + 1)
                 );
+        }
+
+        private Expression BuildRowNumberExpression(BoundRowNumberExpression expression)
+        {
+            throw new NotImplementedException();
         }
     }
 }

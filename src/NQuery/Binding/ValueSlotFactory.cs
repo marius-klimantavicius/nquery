@@ -23,7 +23,7 @@ namespace NQuery.Binding
             return Create(TemporaryFormatString, type);
         }
 
-        public ValueSlot CreateNamed(string name, Type type)
+        public ValueSlot CreateNamed(string? name, Type type)
         {
             var formatString = $"{name}:{{0}}";
             return Create(formatString, type);

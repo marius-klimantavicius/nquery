@@ -1,5 +1,6 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Immutable;
+using System.Diagnostics;
 
 namespace NQuery.Iterators
 {
@@ -32,27 +33,25 @@ namespace NQuery.Iterators
                                         .ToImmutableArray();
         }
 
-        public override RowBuffer RowBuffer
-        {
-            get { return _spooledRowBuffer; }
-        }
+        public override RowBuffer RowBuffer => _spooledRowBuffer;
 
         public ImmutableArray<int> SortIndices { get; }
 
         public ImmutableArray<IComparer> Comparers { get; }
 
-        protected object[] GetCurrentRow()
+        protected object?[] GetCurrentRow()
         {
+            Debug.Assert(_spooledRowBuffer.Rows != null);
             return _spooledRowBuffer.Rows[_spooledRowBuffer.RowIndex];
         }
 
-        private IReadOnlyList<object[]> SortInput()
+        private IReadOnlyList<object?[]> SortInput()
         {
-            var result = new List<object[]>();
+            var result = new List<object?[]>();
 
             while (_input.Read())
             {
-                var rowValues = new object[_spooledRowBuffer.SpooledCount];
+                var rowValues = new object?[_spooledRowBuffer.SpooledCount];
 
                 // First, we copy the input
 
@@ -108,7 +107,7 @@ namespace NQuery.Iterators
                 SpooledCount = spooledCount;
             }
 
-            public IReadOnlyList<object[]> Rows { get; set; }
+            public IReadOnlyList<object?[]>? Rows { get; set; }
 
             public int RowIndex { get; set; }
 
@@ -116,19 +115,26 @@ namespace NQuery.Iterators
 
             public int SpooledCount { get; }
 
-            public override object this[int index]
+            public override object? this[int index]
             {
-                get { return Rows[RowIndex][index]; }
+                get
+                {
+                    Debug.Assert(Rows != null);
+
+                    return Rows[RowIndex][index];
+                }
             }
 
-            public override void CopyTo(object[] array, int destinationIndex)
+            public override void CopyTo(object?[] array, int destinationIndex)
             {
+                Debug.Assert(Rows != null);
+
                 var source = Rows[RowIndex];
                 Array.Copy(source, 0, array, destinationIndex, Count);
             }
         }
 
-        private sealed class RowComparer : IComparer<object[]>
+        private sealed class RowComparer : IComparer<object?[]>
         {
             private readonly ImmutableArray<int> _sortEntries;
             private readonly ImmutableArray<IComparer> _comparers;
@@ -139,7 +145,7 @@ namespace NQuery.Iterators
                 _comparers = comparers;
             }
 
-            public int Compare(object[] x, object[] y)
+            public int Compare(object?[]? x, object?[]? y)
             {
                 // Compare all columns
 
@@ -148,8 +154,8 @@ namespace NQuery.Iterators
                 {
                     var valueIndex = _sortEntries[index];
 
-                    var value1 = x[valueIndex];
-                    var value2 = y[valueIndex];
+                    var value1 = x![valueIndex];
+                    var value2 = y![valueIndex];
 
                     if (value1 is null && value2 is not null)
                         return -1;

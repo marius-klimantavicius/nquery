@@ -9,10 +9,7 @@ namespace NQuery.Syntax
             Expression = expression;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxFacts.GetUnaryOperatorExpression(OperatorToken.Kind); }
-        }
+        public override SyntaxKind Kind => SyntaxFacts.GetUnaryOperatorExpression(OperatorToken.Kind);
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

@@ -1,4 +1,5 @@
-﻿using NQuery.Binding;
+using System.Diagnostics.CodeAnalysis;
+using NQuery.Binding;
 using NQuery.Symbols;
 using NQuery.Syntax;
 
@@ -18,7 +19,11 @@ namespace NQuery
 
         public SyntaxTree SyntaxTree => Compilation.SyntaxTree;
 
-        public Conversion ClassifyConversion(Type sourceType, Type targetType)
+        public Conversion ClassifyConversion(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+            Type sourceType,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+            Type targetType)
         {
             ArgumentNullException.ThrowIfNull(sourceType);
             ArgumentNullException.ThrowIfNull(targetType);
@@ -26,7 +31,7 @@ namespace NQuery
             return Conversion.Classify(sourceType, targetType);
         }
 
-        public TableInstanceSymbol GetTableInstance(WildcardSelectColumnSyntax selectColumn)
+        public TableInstanceSymbol? GetTableInstance(WildcardSelectColumnSyntax? selectColumn)
         {
             ArgumentNullException.ThrowIfNull(selectColumn);
 
@@ -34,7 +39,7 @@ namespace NQuery
             return boundExpression?.Table;
         }
 
-        public IEnumerable<TableColumnInstanceSymbol> GetColumnInstances(WildcardSelectColumnSyntax selectColumn)
+        public IEnumerable<TableColumnInstanceSymbol> GetColumnInstances(WildcardSelectColumnSyntax? selectColumn)
         {
             ArgumentNullException.ThrowIfNull(selectColumn);
 
@@ -42,7 +47,7 @@ namespace NQuery
             return boundExpression?.TableColumns ?? Enumerable.Empty<TableColumnInstanceSymbol>();
         }
 
-        public IEnumerable<QueryColumnInstanceSymbol> GetOutputColumns(QuerySyntax query)
+        public IEnumerable<QueryColumnInstanceSymbol> GetOutputColumns(QuerySyntax? query)
         {
             ArgumentNullException.ThrowIfNull(query);
 
@@ -50,7 +55,7 @@ namespace NQuery
             return boundQuery?.OutputColumns ?? Enumerable.Empty<QueryColumnInstanceSymbol>();
         }
 
-        public QueryColumnInstanceSymbol GetSymbol(OrderByColumnSyntax orderByColumn)
+        public QueryColumnInstanceSymbol? GetSymbol(OrderByColumnSyntax? orderByColumn)
         {
             ArgumentNullException.ThrowIfNull(orderByColumn);
 
@@ -58,7 +63,7 @@ namespace NQuery
             return boundOrderByColumn?.QueryColumn;
         }
 
-        public Symbol GetSymbol(ExpressionSyntax expression)
+        public Symbol? GetSymbol(ExpressionSyntax? expression)
         {
             ArgumentNullException.ThrowIfNull(expression);
 
@@ -66,7 +71,7 @@ namespace NQuery
             return boundExpression is null ? null : GetSymbol(boundExpression);
         }
 
-        private static Symbol GetSymbol(BoundExpression expression)
+        private static Symbol? GetSymbol(BoundExpression expression)
         {
             switch (expression.Kind)
             {
@@ -104,7 +109,7 @@ namespace NQuery
             return expression.Symbol;
         }
 
-        private static Symbol GetSymbol(BoundFunctionInvocationExpression expression)
+        private static Symbol? GetSymbol(BoundFunctionInvocationExpression expression)
         {
             return expression.Symbol;
         }
@@ -119,12 +124,12 @@ namespace NQuery
             return expression.Symbol;
         }
 
-        private static Symbol GetSymbol(BoundMethodInvocationExpression expression)
+        private static Symbol? GetSymbol(BoundMethodInvocationExpression expression)
         {
             return expression.Symbol;
         }
 
-        public Type GetExpressionType(ExpressionSyntax expression)
+        public Type? GetExpressionType(ExpressionSyntax? expression)
         {
             ArgumentNullException.ThrowIfNull(expression);
 
@@ -132,7 +137,7 @@ namespace NQuery
             return boundExpression?.Type;
         }
 
-        public Conversion GetConversion(CastExpressionSyntax expression)
+        public Conversion? GetConversion(CastExpressionSyntax? expression)
         {
             ArgumentNullException.ThrowIfNull(expression);
 
@@ -140,12 +145,12 @@ namespace NQuery
             return boundExpression?.Conversion;
         }
 
-        private BoundExpression GetBoundExpression(ExpressionSyntax expression)
+        private BoundExpression? GetBoundExpression(ExpressionSyntax expression)
         {
             return _bindingResult.GetBoundNode(expression) as BoundExpression;
         }
 
-        public IEnumerable<TableInstanceSymbol> GetDeclaredSymbols(TableReferenceSyntax tableReference)
+        public IEnumerable<TableInstanceSymbol>? GetDeclaredSymbols(TableReferenceSyntax? tableReference)
         {
             ArgumentNullException.ThrowIfNull(tableReference);
 
@@ -153,7 +158,7 @@ namespace NQuery
             return result?.GetDeclaredTableInstances().AsEnumerable();
         }
 
-        public CommonTableExpressionSymbol GetDeclaredSymbol(CommonTableExpressionSyntax commonTableExpression)
+        public CommonTableExpressionSymbol? GetDeclaredSymbol(CommonTableExpressionSyntax? commonTableExpression)
         {
             ArgumentNullException.ThrowIfNull(commonTableExpression);
 
@@ -161,7 +166,7 @@ namespace NQuery
             return result?.TableSymbol;
         }
 
-        public ColumnSymbol GetDeclaredSymbol(CommonTableExpressionColumnNameSyntax commonTableExpressionColumnName)
+        public ColumnSymbol? GetDeclaredSymbol(CommonTableExpressionColumnNameSyntax commonTableExpressionColumnName)
         {
             ArgumentNullException.ThrowIfNull(commonTableExpressionColumnName);
 
@@ -181,13 +186,14 @@ namespace NQuery
                     if (index < symbol.Columns.Length)
                         return symbol.Columns[index];
                 }
+
                 index++;
             }
 
             return null;
         }
 
-        public TableInstanceSymbol GetDeclaredSymbol(NamedTableReferenceSyntax tableReference)
+        public TableInstanceSymbol? GetDeclaredSymbol(NamedTableReferenceSyntax? tableReference)
         {
             ArgumentNullException.ThrowIfNull(tableReference);
 
@@ -195,7 +201,7 @@ namespace NQuery
             return result?.TableInstance;
         }
 
-        public TableInstanceSymbol GetDeclaredSymbol(DerivedTableReferenceSyntax tableReference)
+        public TableInstanceSymbol? GetDeclaredSymbol(DerivedTableReferenceSyntax? tableReference)
         {
             ArgumentNullException.ThrowIfNull(tableReference);
 
@@ -203,7 +209,7 @@ namespace NQuery
             return result?.TableInstance;
         }
 
-        public QueryColumnInstanceSymbol GetDeclaredSymbol(ExpressionSelectColumnSyntax selectColumn)
+        public QueryColumnInstanceSymbol? GetDeclaredSymbol(ExpressionSelectColumnSyntax? selectColumn)
         {
             ArgumentNullException.ThrowIfNull(selectColumn);
 
@@ -211,7 +217,7 @@ namespace NQuery
             return result?.Column;
         }
 
-        public IEnumerable<QueryColumnInstanceSymbol> GetDeclaredSymbols(WildcardSelectColumnSyntax selectColumn)
+        public IEnumerable<QueryColumnInstanceSymbol> GetDeclaredSymbols(WildcardSelectColumnSyntax? selectColumn)
         {
             ArgumentNullException.ThrowIfNull(selectColumn);
 
@@ -229,11 +235,11 @@ namespace NQuery
             var node = FindClosestNodeWithBinder(_bindingResult.Root, position);
             var binder = node is null ? null : _bindingResult.GetBinder(node);
             return binder is null
-                       ? Enumerable.Empty<Symbol>()
-                       : LookupSymbols(binder);
+                ? Enumerable.Empty<Symbol>()
+                : LookupSymbols(binder);
         }
 
-        private static IEnumerable<Symbol> LookupSymbols(Binder binder)
+        private static IEnumerable<Symbol> LookupSymbols(Binder? binder)
         {
             // NOTE: We want to only show the *available* symbols. That means, we need to
             //       hide symbols from the parent binder that have same name as the ones
@@ -243,13 +249,13 @@ namespace NQuery
             //       Please note that we *do* want to see duplicate names within the
             //       *same* binder.
 
-            var allNames = new HashSet<string>();
+            var allNames = new HashSet<string?>();
 
             while (binder is not null)
             {
-                var localNames = new HashSet<string>();
+                var localNames = new HashSet<string?>();
                 var localSymbols = binder.LocalSymbols
-                                         .Where(s => !string.IsNullOrEmpty(s.Name));
+                    .Where(s => !string.IsNullOrEmpty(s.Name));
 
                 foreach (var symbol in localSymbols)
                 {
@@ -265,13 +271,13 @@ namespace NQuery
             }
         }
 
-        private SyntaxNode FindClosestNodeWithBinder(SyntaxNode root, int position)
+        private SyntaxNode? FindClosestNodeWithBinder(SyntaxNode? root, int position)
         {
             var token = root.FindTokenContext(position);
-            return (from n in token.Parent.AncestorsAndSelf()
-                    let bc = _bindingResult.GetBinder(n)
-                    where bc is not null
-                    select n).FirstOrDefault();
+            return (from n in (token.Parent?.AncestorsAndSelf() ?? Enumerable.Empty<SyntaxNode>())
+                let bc = _bindingResult.GetBinder(n)
+                where bc is not null
+                select n).FirstOrDefault();
         }
 
         public IEnumerable<MethodSymbol> LookupMethods(Type type)
@@ -281,7 +287,9 @@ namespace NQuery
             return _bindingResult.RootBinder.LookupMethods(type);
         }
 
-        public IEnumerable<PropertySymbol> LookupProperties(Type type)
+        public IEnumerable<PropertySymbol> LookupProperties(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
+            Type type)
         {
             ArgumentNullException.ThrowIfNull(type);
 

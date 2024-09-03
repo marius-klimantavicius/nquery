@@ -4,33 +4,22 @@ namespace NQuery.Symbols
     {
         private readonly Type _type;
 
-        private object _value;
+        private object? _value;
 
-        public VariableSymbol(string name, Type type)
-            : this(name, type, null)
-        {
-        }
-
-        public VariableSymbol(string name, Type type, object value)
+        public VariableSymbol(string name, Type type, object? value = null)
             : base(name)
         {
             _type = type;
             Value = value;
         }
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.Variable; }
-        }
+        public override SymbolKind Kind => SymbolKind.Variable;
 
-        public override Type Type
-        {
-            get { return _type; }
-        }
+        public override Type Type => _type;
 
-        public object Value
+        public object? Value
         {
-            get { return _value; }
+            get => _value;
             set
             {
                 if (value is not null && !_type.IsInstanceOfType(value))

@@ -17,7 +17,7 @@ namespace NQuery.Text
             return Line == other.Line && Column == other.Column;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is TextLocation other && Equals(other);
         }

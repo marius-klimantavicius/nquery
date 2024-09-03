@@ -9,10 +9,7 @@ namespace NQuery.Syntax
             Expression = expression;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.GroupByColumn; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.GroupByColumn;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

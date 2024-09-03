@@ -8,10 +8,7 @@ namespace NQuery.Syntax
             Identifier = identifier;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.CommonTableExpressionColumnName; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.CommonTableExpressionColumnName;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

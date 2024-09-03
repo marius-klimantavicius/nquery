@@ -1,4 +1,4 @@
-﻿namespace NQuery.Iterators
+namespace NQuery.Iterators
 {
     internal sealed class LeftOuterNestedLoopsIterator : NestedLoopsIterator
     {
@@ -21,10 +21,7 @@
             _rowBuffer = new LeftOuterNestedLoopsRowBuffer(_left.RowBuffer, _right.RowBuffer);
         }
 
-        public override RowBuffer RowBuffer
-        {
-            get { return _rowBuffer; }
-        }
+        public override RowBuffer RowBuffer => _rowBuffer;
 
         public override void Open()
         {
@@ -102,15 +99,14 @@
             {
                 _left = left;
                 _right = right;
-                _indirectedRowBuffer = new IndirectedRowBuffer(_right.Count);
-                _indirectedRowBuffer.ActiveRowBuffer = _right;
+                _indirectedRowBuffer = new IndirectedRowBuffer(_right.Count)
+                {
+                    ActiveRowBuffer = _right,
+                };
                 _rightNullRowBuffer = new NullRowBuffer(right.Count);
             }
 
-            public override int Count
-            {
-                get { return _left.Count + _right.Count; }
-            }
+            public override int Count => _left.Count + _right.Count;
 
             public void SetRight()
             {
@@ -122,17 +118,12 @@
                 _indirectedRowBuffer.ActiveRowBuffer = _rightNullRowBuffer;
             }
 
-            public override object this[int index]
-            {
-                get
-                {
-                    return index < _left.Count
-                               ? _left[index]
-                               : _indirectedRowBuffer[index - _left.Count];
-                }
-            }
+            public override object? this[int index] =>
+                index < _left.Count
+                    ? _left[index]
+                    : _indirectedRowBuffer[index - _left.Count];
 
-            public override void CopyTo(object[] array, int destinationIndex)
+            public override void CopyTo(object?[] array, int destinationIndex)
             {
                 _left.CopyTo(array, destinationIndex);
                 _indirectedRowBuffer.CopyTo(array, _left.Count + destinationIndex);

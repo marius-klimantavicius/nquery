@@ -13,10 +13,7 @@ namespace NQuery.Binding
             Comparers = comparers.ToImmutableArray();
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.IntersectOrExceptRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.IntersectOrExceptRelation;
 
         public bool IsIntersect { get; }
 

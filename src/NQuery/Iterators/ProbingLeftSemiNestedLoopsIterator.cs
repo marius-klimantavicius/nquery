@@ -18,10 +18,7 @@ namespace NQuery.Iterators
             _rowBuffer = new ProbedRowBuffer(left.RowBuffer);
         }
 
-        public override RowBuffer RowBuffer
-        {
-            get { return _rowBuffer; }
-        }
+        public override RowBuffer RowBuffer => _rowBuffer;
 
         public override void Open()
         {

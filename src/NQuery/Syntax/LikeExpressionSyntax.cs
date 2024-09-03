@@ -2,7 +2,7 @@ namespace NQuery.Syntax
 {
     public sealed class LikeExpressionSyntax : ExpressionSyntax
     {
-        internal LikeExpressionSyntax(SyntaxTree syntaxTree, ExpressionSyntax left, SyntaxToken notKeyword, SyntaxToken likeKeyword, ExpressionSyntax right)
+        internal LikeExpressionSyntax(SyntaxTree syntaxTree, ExpressionSyntax left, SyntaxToken? notKeyword, SyntaxToken likeKeyword, ExpressionSyntax right)
             : base(syntaxTree)
         {
             Left = left;
@@ -11,10 +11,7 @@ namespace NQuery.Syntax
             Right = right;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.LikeExpression; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.LikeExpression;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {
@@ -27,7 +24,7 @@ namespace NQuery.Syntax
 
         public ExpressionSyntax Left { get; }
 
-        public SyntaxToken NotKeyword { get; }
+        public SyntaxToken? NotKeyword { get; }
 
         public SyntaxToken LikeKeyword { get; }
 

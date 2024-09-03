@@ -31,9 +31,6 @@ namespace NQuery.Symbols
 
         public override string Name { get; }
 
-        public override Type RowType
-        {
-            get { return _rowType; }
-        }
+        public override Type RowType => _rowType;
     }
 }

@@ -11,10 +11,7 @@ namespace NQuery.Binding
             Aggregates = aggregates.ToImmutableArray();
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.StreamAggregatesRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.StreamAggregatesRelation;
 
         public BoundRelation Input { get; }
 

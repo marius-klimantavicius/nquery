@@ -27,14 +27,8 @@ namespace NQuery.Symbols
                 );
         }
 
-        public override string Name
-        {
-            get { return _propertySymbol.Name; }
-        }
+        public override string Name => _propertySymbol.Name;
 
-        public override Type DataType
-        {
-            get { return _propertySymbol.Type; }
-        }
+        public override Type DataType => _propertySymbol.Type;
     }
 }

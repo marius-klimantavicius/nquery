@@ -11,10 +11,7 @@ namespace NQuery.Binding
             IsDistinct = isDistinct;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.SortRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.SortRelation;
 
         public BoundRelation Input { get; }
 

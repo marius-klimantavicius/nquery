@@ -1,7 +1,6 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;
-
 using NQuery.Text;
 
 namespace NQuery.Syntax
@@ -11,13 +10,13 @@ namespace NQuery.Syntax
         private readonly SyntaxTree _syntaxTree;
         private readonly SourceText _text;
         private readonly CharReader _charReader;
-        private readonly List<SyntaxTrivia> _leadingTrivia = new();
-        private readonly List<SyntaxTrivia> _trailingTrivia = new();
-        private readonly List<Diagnostic> _diagnostics = new();
+        private readonly List<SyntaxTrivia> _leadingTrivia = new List<SyntaxTrivia>();
+        private readonly List<SyntaxTrivia> _trailingTrivia = new List<SyntaxTrivia>();
+        private readonly List<Diagnostic> _diagnostics = new List<Diagnostic>();
 
         private SyntaxKind _kind;
         private SyntaxKind _contextualKind;
-        private object _value;
+        private object? _value;
         private int _start;
 
         public Lexer(SyntaxTree syntaxTree, SourceText text)
@@ -56,15 +55,9 @@ namespace NQuery.Syntax
             return new SyntaxToken(_syntaxTree, kind, _contextualKind, false, span, text, _value, leadingTrivia, trailingTrivia, diagnostics);
         }
 
-        private TextSpan CurrentSpan
-        {
-            get { return TextSpan.FromBounds(_start, _charReader.Position); }
-        }
+        private TextSpan CurrentSpan => TextSpan.FromBounds(_start, _charReader.Position);
 
-        private TextSpan CurrentSpanStart
-        {
-            get { return TextSpan.FromBounds(_start, Math.Min(_start + 2, _text.Length)); }
-        }
+        private TextSpan CurrentSpanStart => TextSpan.FromBounds(_start, Math.Min(_start + 2, _text.Length));
 
         private void ReadTrivia(List<SyntaxTrivia> target, bool isTrailing)
         {
@@ -80,7 +73,7 @@ namespace NQuery.Syntax
                         if (isTrailing)
                             return;
                     }
-                    break;
+                        break;
                     case '-':
                         if (_charReader.Peek() == '-')
                         {
@@ -91,6 +84,7 @@ namespace NQuery.Syntax
                         {
                             return;
                         }
+
                         break;
                     case '/':
                         if (_charReader.Peek() == '/')
@@ -107,6 +101,7 @@ namespace NQuery.Syntax
                         {
                             return;
                         }
+
                         break;
                     default:
                         if (char.IsWhiteSpace(_charReader.Current))
@@ -118,6 +113,7 @@ namespace NQuery.Syntax
                         {
                             return;
                         }
+
                         break;
                 }
             }
@@ -181,6 +177,7 @@ namespace NQuery.Syntax
                             _charReader.NextChar();
                             return;
                         }
+
                         break;
 
                     default:
@@ -260,6 +257,7 @@ namespace NQuery.Syntax
                         _kind = SyntaxKind.DotToken;
                         _charReader.NextChar();
                     }
+
                     break;
 
                 case '@':
@@ -288,6 +286,7 @@ namespace NQuery.Syntax
                         _kind = SyntaxKind.AsteriskAsteriskToken;
                         _charReader.NextChar();
                     }
+
                     break;
 
                 case '/':
@@ -333,6 +332,7 @@ namespace NQuery.Syntax
                     {
                         ReadInvalidCharacter();
                     }
+
                     break;
 
                 case '<':
@@ -354,6 +354,7 @@ namespace NQuery.Syntax
                     }
                     else
                         _kind = SyntaxKind.LessToken;
+
                     break;
 
                 case '>':
@@ -372,6 +373,7 @@ namespace NQuery.Syntax
                     {
                         _kind = SyntaxKind.GreaterToken;
                     }
+
                     break;
 
                 case '\'':
@@ -449,7 +451,7 @@ namespace NQuery.Syntax
                 }
             }
 
-        ExitLoop:
+            ExitLoop:
             _value = sb.ToString();
         }
 
@@ -486,7 +488,7 @@ namespace NQuery.Syntax
                 }
             }
 
-        ExitLoop:
+            ExitLoop:
             var text = sb.ToString();
             if (!DateTime.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.None, out var result))
                 _diagnostics.ReportInvalidDate(CurrentSpan, text);
@@ -517,7 +519,7 @@ namespace NQuery.Syntax
                         var peek1 = _charReader.Peek(1);
                         var peek2 = _charReader.Peek(2);
                         var startsFloatingPoint = char.IsDigit(peek1) ||
-                                                  ((peek1 == 'e' || peek1 == 'E') && (peek2 == '+' || peek2 == '-' || char.IsDigit(peek2)));
+                            ((peek1 == 'e' || peek1 == 'E') && (peek2 == '+' || peek2 == '-' || char.IsDigit(peek2)));
                         if (!startsFloatingPoint)
                             goto ExitLoop;
 
@@ -539,29 +541,37 @@ namespace NQuery.Syntax
                             sb.Append(_charReader.Current);
                             _charReader.NextChar();
                         }
+
                         break;
 
                     default:
                         if (!char.IsLetterOrDigit(_charReader.Current))
                             goto ExitLoop;
+
                         sb.Append(_charReader.Current);
                         _charReader.NextChar();
                         break;
                 }
             }
 
-        ExitLoop:
+            ExitLoop:
 
             var text = sb.ToString();
             _value = hasDotModifier || hasExponentialModifier
-                         ? ReadDouble(text)
-                         : ReadInt32OrInt64(text);
+                ? ReadDouble(text)
+                : ReadInt32OrInt64(text);
         }
 
-        private double ReadDouble(string text)
+        private double ReadDouble(string? text)
         {
             try
             {
+                if (string.IsNullOrEmpty(text))
+                {
+                    _diagnostics.ReportInvalidReal(CurrentSpan, text);
+                    return 0;
+                }
+
                 return double.Parse(text, NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
             }
             catch (OverflowException)
@@ -572,10 +582,11 @@ namespace NQuery.Syntax
             {
                 _diagnostics.ReportInvalidReal(CurrentSpan, text);
             }
+
             return 0.0;
         }
 
-        private object ReadInt32OrInt64(string text)
+        private object? ReadInt32OrInt64(string text)
         {
             var int64 = ReadInt64(text);
 
@@ -780,6 +791,7 @@ namespace NQuery.Syntax
                             _charReader.NextChar();
                             goto ExitLoop;
                         }
+
                         sb.Append(_charReader.Current);
                         _charReader.NextChar();
                         _charReader.NextChar();
@@ -792,7 +804,7 @@ namespace NQuery.Syntax
                 }
             }
 
-        ExitLoop:
+            ExitLoop:
             var text = sb.ToString();
             _value = text;
         }
@@ -822,6 +834,7 @@ namespace NQuery.Syntax
                             _charReader.NextChar();
                             goto ExitLoop;
                         }
+
                         sb.Append(_charReader.Current);
                         _charReader.NextChar();
                         _charReader.NextChar();
@@ -834,7 +847,7 @@ namespace NQuery.Syntax
                 }
             }
 
-        ExitLoop:
+            ExitLoop:
             var text = sb.ToString();
             _value = text;
         }

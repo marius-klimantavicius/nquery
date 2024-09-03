@@ -4,7 +4,7 @@ namespace NQuery.Syntax
 {
     public sealed class CaseExpressionSyntax : ExpressionSyntax
     {
-        internal CaseExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken caseKeyword, ExpressionSyntax inputExpression, IEnumerable<CaseLabelSyntax> caseLabels, CaseElseLabelSyntax elseLabel, SyntaxToken endKeyword)
+        internal CaseExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken caseKeyword, ExpressionSyntax? inputExpression, IEnumerable<CaseLabelSyntax> caseLabels, CaseElseLabelSyntax? elseLabel, SyntaxToken endKeyword)
             : base(syntaxTree)
         {
             CaseKeyword = caseKeyword;
@@ -14,10 +14,7 @@ namespace NQuery.Syntax
             EndKeyword = endKeyword;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.CaseExpression; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.CaseExpression;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {
@@ -37,11 +34,11 @@ namespace NQuery.Syntax
 
         public SyntaxToken CaseKeyword { get; }
 
-        public ExpressionSyntax InputExpression { get; }
+        public ExpressionSyntax? InputExpression { get; }
 
         public ImmutableArray<CaseLabelSyntax> CaseLabels { get; }
 
-        public CaseElseLabelSyntax ElseLabel { get; }
+        public CaseElseLabelSyntax? ElseLabel { get; }
 
         public SyntaxToken EndKeyword { get; }
     }

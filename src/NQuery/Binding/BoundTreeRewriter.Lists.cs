@@ -1,13 +1,14 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NQuery.Binding
 {
     partial class BoundTreeRewriter
     {
-        private static IEnumerable<T> RewriteArray<T>(ImmutableArray<T> array, Func<T, T> rewriter)
+        private static IEnumerable<T> RewriteArray<T>(ImmutableArray<T> array, Func<T, T?> rewriter)
             where T : class
         {
-            List<T> result = null;
+            List<T>? result = null;
 
             for (var i = 0; i < array.Length; i++)
             {
@@ -26,7 +27,7 @@ namespace NQuery.Binding
                     result.Add(rewrittenElement);
             }
 
-            return (IEnumerable<T>)result ?? array;
+            return (IEnumerable<T>?)result ?? array;
         }
 
         protected IEnumerable<BoundAggregatedValue> RewriteAggregatedValues(ImmutableArray<BoundAggregatedValue> list)
@@ -95,7 +96,8 @@ namespace NQuery.Binding
                                 value.Comparer);
         }
 
-        protected virtual ValueSlot RewriteValueSlot(ValueSlot valueSlot)
+        [return:NotNullIfNotNull(nameof(valueSlot))]
+        protected virtual ValueSlot? RewriteValueSlot(ValueSlot? valueSlot)
         {
             return valueSlot;
         }

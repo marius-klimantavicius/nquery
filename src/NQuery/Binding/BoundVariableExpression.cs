@@ -9,15 +9,9 @@ namespace NQuery.Binding
             Symbol = variableSymbol;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.VariableExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.VariableExpression;
 
-        public override Type Type
-        {
-            get { return Symbol.Type; }
-        }
+        public override Type Type => Symbol.Type;
 
         public VariableSymbol Symbol { get; }
 

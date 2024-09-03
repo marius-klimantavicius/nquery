@@ -1,4 +1,4 @@
-﻿namespace NQuery.Binding
+namespace NQuery.Binding
 {
     internal sealed class BoundAssertRelation : BoundRelation
     {
@@ -9,10 +9,7 @@
             Message = message;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.AssertRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.AssertRelation;
 
         public BoundRelation Input { get; }
 

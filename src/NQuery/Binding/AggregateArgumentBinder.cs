@@ -7,9 +7,6 @@ namespace NQuery.Binding
         {
         }
 
-        protected override bool InAggregateArgument
-        {
-            get { return true; }
-        }
+        protected override bool InAggregateArgument => true;
     }
 }

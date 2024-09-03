@@ -8,7 +8,7 @@ namespace NQuery.Binding
         private readonly Type _leftParameterType;
         private readonly Type _rightParameterType;
 
-        public BinaryOperatorSignature(BinaryOperatorKind kind, Type returnType, Type leftParameterType, Type rightParameterType, MethodInfo methodInfo)
+        public BinaryOperatorSignature(BinaryOperatorKind kind, Type returnType, Type leftParameterType, Type rightParameterType, MethodInfo? methodInfo = null)
         {
             Kind = kind;
             _returnType = returnType;
@@ -32,29 +32,18 @@ namespace NQuery.Binding
         {
         }
 
-        public BinaryOperatorSignature(BinaryOperatorKind kind, Type returnType, Type leftParameterType, Type rightParameterType)
-            : this(kind, returnType, leftParameterType, rightParameterType, null)
-        {
-        }
-
-        public override Type ReturnType
-        {
-            get { return _returnType; }
-        }
+        public override Type ReturnType => _returnType;
 
         public override Type GetParameterType(int index)
         {
             return index == 0 ? _leftParameterType : _rightParameterType;
         }
 
-        public override int ParameterCount
-        {
-            get { return 2; }
-        }
+        public override int ParameterCount => 2;
 
         public BinaryOperatorKind Kind { get; }
 
-        public MethodInfo MethodInfo { get; }
+        public MethodInfo? MethodInfo { get; }
 
         public override string ToString()
         {

@@ -2,7 +2,7 @@ namespace NQuery.Syntax
 {
     public sealed class InQueryExpressionSyntax : ExpressionSyntax
     {
-        internal InQueryExpressionSyntax(SyntaxTree syntaxTree, ExpressionSyntax expression, SyntaxToken notKeyword, SyntaxToken inKeyword, SyntaxToken leftParenthesis, QuerySyntax query, SyntaxToken rightParenthesis)
+        internal InQueryExpressionSyntax(SyntaxTree syntaxTree, ExpressionSyntax expression, SyntaxToken? notKeyword, SyntaxToken inKeyword, SyntaxToken leftParenthesis, QuerySyntax query, SyntaxToken rightParenthesis)
             : base(syntaxTree)
         {
             Expression = expression;
@@ -13,10 +13,7 @@ namespace NQuery.Syntax
             RightParenthesis = rightParenthesis;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.InQueryExpression; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.InQueryExpression;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {
@@ -31,7 +28,7 @@ namespace NQuery.Syntax
 
         public ExpressionSyntax Expression { get; }
 
-        public SyntaxToken NotKeyword { get; }
+        public SyntaxToken? NotKeyword { get; }
 
         public SyntaxToken InKeyword { get; }
 

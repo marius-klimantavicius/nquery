@@ -1,11 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Immutable;
 
 namespace NQuery.Binding
 {
     internal sealed class SymbolTable : IEnumerable<Symbol>
     {
-        public static readonly SymbolTable Empty = new(Enumerable.Empty<Symbol>());
+        public static readonly SymbolTable Empty = new SymbolTable(Enumerable.Empty<Symbol>());
 
         private readonly ImmutableArray<Symbol> _symbols;
         private readonly ILookup<string, Symbol> _lookup;

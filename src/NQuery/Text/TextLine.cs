@@ -16,10 +16,7 @@ namespace NQuery.Text
 
         public SourceText Text { get; }
 
-        public TextSpan Span
-        {
-            get { return new TextSpan(_start, _length); }
-        }
+        public TextSpan Span => new TextSpan(_start, _length);
 
         public TextSpan SpanIncludingLineBreak
         {
@@ -38,17 +35,11 @@ namespace NQuery.Text
             }
         }
 
-        public int LineBreakLength
-        {
-            get { return SpanIncludingLineBreak.Length - Span.Length; }
-        }
+        public int LineBreakLength => SpanIncludingLineBreak.Length - Span.Length;
 
-        public int LineNumber
-        {
-            get { return Text.GetLineNumberFromPosition(_start); }
-        }
+        public int LineNumber => Text.GetLineNumberFromPosition(_start);
 
-        public string GetText()
+        public string? GetText()
         {
             return Text.GetText(_start, _length);
         }
@@ -60,7 +51,7 @@ namespace NQuery.Text
                    _length == other._length;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is TextLine other && Equals(other);
         }

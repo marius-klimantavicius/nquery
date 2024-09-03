@@ -18,18 +18,12 @@ namespace NQuery.Symbols
             ColumnInstances = table.Columns.Select(c => new TableColumnInstanceSymbol(this, c, valueFactory)).ToImmutableArray();
         }
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.TableInstance; }
-        }
+        public override SymbolKind Kind => SymbolKind.TableInstance;
 
         public TableSymbol Table { get; }
 
         public ImmutableArray<TableColumnInstanceSymbol> ColumnInstances { get; }
 
-        public override Type Type
-        {
-            get { return Table.Type; }
-        }
+        public override Type Type => Table.Type;
     }
 }

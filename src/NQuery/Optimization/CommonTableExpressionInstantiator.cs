@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using System.Diagnostics;
 
 using NQuery.Binding;
@@ -8,7 +8,7 @@ namespace NQuery.Optimization
 {
     internal sealed class CommonTableExpressionInstantiator : BoundTreeRewriter
     {
-        private readonly CommonTableExpressionSymbol _symbol;
+        private readonly CommonTableExpressionSymbol? _symbol;
 
         public CommonTableExpressionInstantiator()
         {
@@ -188,7 +188,7 @@ namespace NQuery.Optimization
                 var slots = new[]
                 {
                     initRecursionOutputs[i],
-                    joinOutputs[i]
+                    joinOutputs[i],
                 };
 
                 return new BoundUnifiedValue(v, slots);
@@ -217,17 +217,14 @@ namespace NQuery.Optimization
         private sealed class CommonTableExpressionInstanceFinder : BoundTreeWalker
         {
             private readonly CommonTableExpressionSymbol _symbol;
-            private TableInstanceSymbol _instance;
+            private TableInstanceSymbol? _instance;
 
             public CommonTableExpressionInstanceFinder(CommonTableExpressionSymbol symbol)
             {
                 _symbol = symbol;
             }
 
-            public TableInstanceSymbol Instance
-            {
-                get { return _instance; }
-            }
+            public TableInstanceSymbol? Instance => _instance;
 
             protected override void VisitTableRelation(BoundTableRelation node)
             {

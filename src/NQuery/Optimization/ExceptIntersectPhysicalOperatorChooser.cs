@@ -1,4 +1,4 @@
-﻿using NQuery.Binding;
+using NQuery.Binding;
 
 namespace NQuery.Optimization
 {
@@ -23,9 +23,9 @@ namespace NQuery.Optimization
             return new BoundJoinRelation(joinOperator, sortedLeft, right, condition, null, null);
         }
 
-        private static BoundExpression CreatePredicate(IEnumerable<(ValueSlot, ValueSlot)> pairs)
+        private static BoundExpression? CreatePredicate(IEnumerable<(ValueSlot, ValueSlot)> pairs)
         {
-            BoundExpression result = null;
+            BoundExpression? result = null;
 
             foreach (var pair in pairs)
             {

@@ -23,6 +23,6 @@ namespace NQuery.Binding
         SimilarTo,
         SoundsLike,
         LogicalAnd,
-        LogicalOr
+        LogicalOr,
     }
 }

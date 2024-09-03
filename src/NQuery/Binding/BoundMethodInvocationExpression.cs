@@ -13,20 +13,11 @@ namespace NQuery.Binding
             Result = result;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.MethodInvocationExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.MethodInvocationExpression;
 
-        public override Type Type
-        {
-            get { return Symbol is null ? TypeFacts.Unknown : Symbol.Type; }
-        }
+        public override Type Type => Symbol is null ? TypeFacts.Unknown : Symbol.Type;
 
-        public MethodSymbol Symbol
-        {
-            get { return Result.Selected?.Signature.Symbol; }
-        }
+        public MethodSymbol? Symbol => Result.Selected?.Signature.Symbol;
 
         public BoundExpression Target { get; }
 
@@ -46,7 +37,7 @@ namespace NQuery.Binding
 
         public override string ToString()
         {
-            return $"{Target}.{Symbol.Name}({string.Join(@", ", Arguments)})";
+            return $"{Target}.{Symbol?.Name}({string.Join(@", ", Arguments)})";
         }
     }
 }

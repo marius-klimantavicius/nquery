@@ -1,4 +1,4 @@
-﻿namespace NQuery.Dynamic
+namespace NQuery.Dynamic
 {
     public static class DynamicQueryExtensions
     {

@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 
 namespace NQuery.Authoring.Wpf
 {
@@ -23,8 +23,8 @@ namespace NQuery.Authoring.Wpf
         private static SyntaxNodeViewModel ToViewModel(SyntaxNodeOrToken nodeOrToken)
         {
             return nodeOrToken.IsNode
-                       ? ToViewModel(nodeOrToken.AsNode())
-                       : ToViewModel(nodeOrToken.AsToken());
+                       ? ToViewModel(nodeOrToken.AsNode)
+                       : ToViewModel(nodeOrToken.AsToken);
         }
 
         private static SyntaxNodeViewModel ToViewModel(SyntaxNode node)
@@ -34,12 +34,12 @@ namespace NQuery.Authoring.Wpf
             foreach (var child in node.ChildNodesAndTokens())
             {
                 if (child.IsToken)
-                    children.AddRange(child.AsToken().LeadingTrivia.Select(t => ToViewModel(t, true)));
+                    children.AddRange(child.AsToken.LeadingTrivia.Select(t => ToViewModel(t, true)));
 
                 children.Add(ToViewModel(child));
 
                 if (child.IsToken)
-                    children.AddRange(child.AsToken().TrailingTrivia.Select(t => ToViewModel(t, false)));
+                    children.AddRange(child.AsToken.TrailingTrivia.Select(t => ToViewModel(t, false)));
             }
 
             return new SyntaxNodeViewModel(node, children);

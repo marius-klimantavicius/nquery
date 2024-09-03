@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-
 using NQuery.Symbols;
 
 namespace NQuery
@@ -17,22 +17,22 @@ namespace NQuery
         private static readonly bool[,] ImplicitNumericConversions =
         {
             /*                SByte     Byte     Short     UShort     Int     UInt     Long     ULong     Char     Float     Double*/
-            /* SByte   */  {  N,        N,       Y,        N,         Y,      N,       Y,       N,        N,       Y,        Y},
-            /* Byte    */  {  N,        N,       Y,        Y,         Y,      Y,       Y,       Y,        N,       Y,        Y},
-            /* Short   */  {  N,        N,       N,        N,         Y,      N,       Y,       N,        N,       Y,        Y},
-            /* UShort  */  {  N,        N,       N,        N,         Y,      Y,       Y,       Y,        N,       Y,        Y},
-            /* Int     */  {  N,        N,       N,        N,         N,      N,       Y,       N,        N,       Y,        Y},
-            /* UInt    */  {  N,        N,       N,        N,         N,      N,       Y,       Y,        N,       Y,        Y},
-            /* Long    */  {  N,        N,       N,        N,         N,      N,       N,       N,        N,       Y,        Y},
-            /* ULong   */  {  N,        N,       N,        N,         N,      N,       N,       N,        N,       Y,        Y},
-            /* Char    */  {  N,        N,       N,        Y,         Y,      Y,       Y,       Y,        N,       Y,        Y},
-            /* Float   */  {  N,        N,       N,        N,         N,      N,       N,       N,        N,       N,        Y},
-            /* Double  */  {  N,        N,       N,        N,         N,      N,       N,       N,        N,       N,        N}
+            /* SByte   */ { N, N, Y, N, Y, N, Y, N, N, Y, Y },
+            /* Byte    */ { N, N, Y, Y, Y, Y, Y, Y, N, Y, Y },
+            /* Short   */ { N, N, N, N, Y, N, Y, N, N, Y, Y },
+            /* UShort  */ { N, N, N, N, Y, Y, Y, Y, N, Y, Y },
+            /* Int     */ { N, N, N, N, N, N, Y, N, N, Y, Y },
+            /* UInt    */ { N, N, N, N, N, N, Y, Y, N, Y, Y },
+            /* Long    */ { N, N, N, N, N, N, N, N, N, Y, Y },
+            /* ULong   */ { N, N, N, N, N, N, N, N, N, Y, Y },
+            /* Char    */ { N, N, N, Y, Y, Y, Y, Y, N, Y, Y },
+            /* Float   */ { N, N, N, N, N, N, N, N, N, N, Y },
+            /* Double  */ { N, N, N, N, N, N, N, N, N, N, N },
         };
 
         private readonly bool _isBoxingOrUnboxing;
 
-        private Conversion(bool exists, bool isIdentity, bool isImplicit, bool isBoxingOrUnboxing, bool isReference, IEnumerable<MethodInfo> conversionMethods)
+        private Conversion(bool exists, bool isIdentity, bool isImplicit, bool isBoxingOrUnboxing, bool isReference, IEnumerable<MethodInfo>? conversionMethods)
         {
             Exists = exists;
             IsIdentity = isIdentity;
@@ -42,15 +42,15 @@ namespace NQuery
             ConversionMethods = conversionMethods?.ToImmutableArray() ?? ImmutableArray<MethodInfo>.Empty;
         }
 
-        private static readonly Conversion None = new(false, false, false, false, false, null);
-        private static readonly Conversion Null = new(true, false, true, false, false, null);
-        private static readonly Conversion Identity = new(true, true, true, false, false, null);
-        private static readonly Conversion Implicit = new(true, false, true, false, false, null);
-        private static readonly Conversion Explicit = new(true, false, false, false, false, null);
-        private static readonly Conversion Boxing = new(true, false, true, true, false, null);
-        private static readonly Conversion Unboxing = new(true, false, false, true, false, null);
-        private static readonly Conversion UpCast = new(true, false, true, false, true, null);
-        private static readonly Conversion DownCast = new(true, false, false, false, true, null);
+        private static readonly Conversion None = new Conversion(false, false, false, false, false, null);
+        private static readonly Conversion Null = new Conversion(true, false, true, false, false, null);
+        private static readonly Conversion Identity = new Conversion(true, true, true, false, false, null);
+        private static readonly Conversion Implicit = new Conversion(true, false, true, false, false, null);
+        private static readonly Conversion Explicit = new Conversion(true, false, false, false, false, null);
+        private static readonly Conversion Boxing = new Conversion(true, false, true, true, false, null);
+        private static readonly Conversion Unboxing = new Conversion(true, false, false, true, false, null);
+        private static readonly Conversion UpCast = new Conversion(true, false, true, false, true, null);
+        private static readonly Conversion DownCast = new Conversion(true, false, false, false, true, null);
 
         public bool Exists { get; }
 
@@ -68,7 +68,11 @@ namespace NQuery
 
         public ImmutableArray<MethodInfo> ConversionMethods { get; }
 
-        internal static Conversion Classify(Type sourceType, Type targetType)
+        internal static Conversion Classify(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+            Type sourceType,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+            Type targetType)
         {
             if (sourceType == targetType)
                 return Identity;
@@ -188,7 +192,11 @@ namespace NQuery
             return false;
         }
 
-        private static ImmutableArray<MethodInfo> GetConversionMethods(Type sourceType, Type targetType, bool isImplicit)
+        private static ImmutableArray<MethodInfo> GetConversionMethods(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+            Type sourceType,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+            Type targetType, bool isImplicit)
         {
             var methodName = isImplicit ? ImplicitMethodName : ExplicitMethodName;
             var sourceMethods = sourceType.GetMethods(ConversionMethodBindingFlags);
@@ -196,9 +204,9 @@ namespace NQuery
             var methods = sourceMethods.Concat(targetMethods);
 
             return (from m in methods
-                    where m.Name.Equals(methodName, StringComparison.Ordinal) &&
-                          HasConversionSignature(m, sourceType, targetType)
-                    select m).ToImmutableArray();
+                where m.Name.Equals(methodName, StringComparison.Ordinal) &&
+                    HasConversionSignature(m, sourceType, targetType)
+                select m).ToImmutableArray();
         }
 
         private static bool HasConversionSignature(MethodInfo methodInfo, Type sourceType, Type targetType)
@@ -213,7 +221,9 @@ namespace NQuery
             return parameterInfos[0].ParameterType == sourceType;
         }
 
-        internal static int Compare(Type xType, Conversion xConversion, Type yType, Conversion yConversion)
+        internal static int Compare(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type xType, Conversion xConversion,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type yType, Conversion yConversion)
         {
             if (xConversion.IsIdentity && !yConversion.IsIdentity ||
                 xConversion.IsImplicit && yConversion.IsExplicit)

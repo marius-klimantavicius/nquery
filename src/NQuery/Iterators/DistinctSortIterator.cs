@@ -1,10 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 
 namespace NQuery.Iterators
 {
     internal sealed class DistinctSortIterator : SortIterator
     {
-        private object[] _lastSpooledRow;
+        private object?[]? _lastSpooledRow;
 
         public DistinctSortIterator(Iterator input, IEnumerable<RowBufferEntry> sortEntries, IEnumerable<IComparer> comparers)
             : base(input, sortEntries, comparers)

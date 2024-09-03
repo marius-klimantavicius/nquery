@@ -17,10 +17,7 @@ namespace NQuery.Binding
             DefinedValues = definedValues;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.TableRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.TableRelation;
 
         public TableInstanceSymbol TableInstance { get; }
 

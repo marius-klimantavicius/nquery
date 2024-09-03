@@ -32,7 +32,7 @@ namespace NQuery
                 return;
 
             _iterator.Dispose();
-            _iterator = null;
+            _iterator = null!;
         }
 
         public bool Read()
@@ -59,7 +59,7 @@ namespace NQuery
             return _columnTypes[columnIndex];
         }
 
-        public object this[int columnIndex]
+        public object? this[int columnIndex]
         {
             get
             {
@@ -70,9 +70,6 @@ namespace NQuery
             }
         }
 
-        public int ColumnCount
-        {
-            get { return _iterator.RowBuffer.Count; }
-        }
+        public int ColumnCount => _iterator.RowBuffer.Count;
     }
 }

@@ -5,6 +5,6 @@ namespace NQuery.Binding
         Inner,
         FullOuter,
         RightOuter,
-        LeftOuter
+        LeftOuter,
     }
 }

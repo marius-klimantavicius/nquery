@@ -2,12 +2,9 @@ namespace NQuery.Symbols.Aggregation
 {
     public sealed class AvgAggregateDefinition : AggregateDefinition
     {
-        public override string Name
-        {
-            get { return @"AVG"; }
-        }
+        public override string Name => @"AVG";
 
-        public override IAggregatable CreateAggregatable(Type argumentType)
+        public override IAggregatable? CreateAggregatable(Type argumentType)
         {
             var sumAggregate = new SumAggregateDefinition();
             var sumAggregatable = sumAggregate.CreateAggregatable(argumentType);
@@ -16,9 +13,6 @@ namespace NQuery.Symbols.Aggregation
 
             var countAggregate = new CountAggregateDefinition();
             var countAggregatable = countAggregate.CreateAggregatable(argumentType);
-            if (countAggregatable is null)
-                return null;
-
             var sumVariable = new VariableSymbol(@"Sum", sumAggregatable.ReturnType);
             var countVariable = new VariableSymbol(@"Count", countAggregatable.ReturnType);
             var divisionDataContext = DataContext.Empty.AddVariables(sumVariable, countVariable);
@@ -60,10 +54,7 @@ namespace NQuery.Symbols.Aggregation
                 return new AvgAggregator(sumAggregator, countAggregator, _divisionExpression, _sumArgument, _countArgument);
             }
 
-            public Type ReturnType
-            {
-                get { return _divisionExpression.Resolve(); }
-            }
+            public Type ReturnType => _divisionExpression.Resolve();
         }
 
         private sealed class AvgAggregator : IAggregator
@@ -89,13 +80,13 @@ namespace NQuery.Symbols.Aggregation
                 _countAggregator.Initialize();
             }
 
-            public void Accumulate(object value)
+            public void Accumulate(object? value)
             {
                 _sumAggregator.Accumulate(value);
                 _countAggregator.Accumulate(value);
             }
 
-            public object GetResult()
+            public object? GetResult()
             {
                 var sum = _sumAggregator.GetResult();
                 if (sum is null)

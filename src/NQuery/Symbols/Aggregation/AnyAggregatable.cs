@@ -2,10 +2,7 @@ namespace NQuery.Symbols.Aggregation
 {
     public sealed class AnyAggregateDefinition : AggregateDefinition
     {
-        public override string Name
-        {
-            get { return @"ANY"; }
-        }
+        public override string Name => @"ANY";
 
         public override IAggregatable CreateAggregatable(Type argumentType)
         {
@@ -29,19 +26,19 @@ namespace NQuery.Symbols.Aggregation
 
         private sealed class AnyAggregator : IAggregator
         {
-            private object _value;
+            private object? _value;
 
             public void Initialize()
             {
                 _value = null;
             }
 
-            public void Accumulate(object value)
+            public void Accumulate(object? value)
             {
                 _value = value;
             }
 
-            public object GetResult()
+            public object? GetResult()
             {
                 return _value;
             }

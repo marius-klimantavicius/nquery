@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
-
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
 using NQuery.Symbols.Aggregation;
 using NQuery.Syntax;
@@ -7,7 +8,7 @@ using NQuery.Text;
 
 namespace NQuery.Binding
 {
-    partial class Binder
+    internal partial class Binder
     {
         private void EnsureCaseLabelsEvaluateToBool(ImmutableArray<CaseLabelSyntax> caseLabels, ImmutableArray<BoundCaseLabel> boundCaseLabels)
         {
@@ -19,7 +20,8 @@ namespace NQuery.Binding
             }
         }
 
-        private static Type FindCommonType(ImmutableArray<BoundExpression> boundExpressions)
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+        private static Type? FindCommonType(ImmutableArray<BoundExpression> boundExpressions)
         {
             // The common type C among a type set T1..TN is defined as follows:
             //
@@ -31,7 +33,7 @@ namespace NQuery.Binding
             //
             // (3) C has to be the only type for which (1) and (2) hold.
 
-            Type commonType = null;
+            Type? commonType = null;
 
             foreach (var target in boundExpressions)
             {
@@ -71,6 +73,7 @@ namespace NQuery.Binding
             return commonType;
         }
 
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
         private Type BindType(SyntaxToken typeName)
         {
             var type = LookupType(typeName);
@@ -93,8 +96,8 @@ namespace NQuery.Binding
             // TODO: We need check for ambiguous conversions here as well.
 
             return conversion.IsIdentity
-                       ? expression
-                       : new BoundConversionExpression(expression, targetType, conversion);
+                ? expression
+                : new BoundConversionExpression(expression, targetType, conversion);
         }
 
         private ImmutableArray<BoundExpression> BindToCommonType(IReadOnlyList<ExpressionSyntax> expressions)
@@ -127,18 +130,14 @@ namespace NQuery.Binding
 
             // Not all expressions have the same type. Let's try to find a common type.
 
-            var commonType = FindCommonType(boundExpressions);
-
             // If we couldn't find a common type, we'll just use the first expression's
             // type -- this will cause BindConversion below to report errors.
-
-            if (commonType is null)
-                commonType = boundExpressions.First().Type;
+            var commonType = FindCommonType(boundExpressions) ?? boundExpressions.First().Type;
 
             return boundExpressions.Select((e, i) => BindConversion(diagnosticSpanProvider(i), e, commonType)).ToImmutableArray();
         }
 
-        private void BindToCommonType(TextSpan diagnosticSpan, ValueSlot left, ValueSlot right, out BoundExpression newLeft, out BoundExpression newRight)
+        private void BindToCommonType(TextSpan diagnosticSpan, ValueSlot left, ValueSlot right, out BoundExpression? newLeft, out BoundExpression? newRight)
         {
             newLeft = null;
             newRight = null;
@@ -164,7 +163,9 @@ namespace NQuery.Binding
             }
         }
 
-        private BoundExpression BindConversion(TextSpan diagnosticSpan, BoundExpression expression, Type targetType)
+        private BoundExpression BindConversion(TextSpan diagnosticSpan, BoundExpression expression,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+            Type targetType)
         {
             var sourceType = expression.Type;
             var conversion = Conversion.Classify(sourceType, targetType);
@@ -343,11 +344,11 @@ namespace NQuery.Binding
             return new BoundUnaryExpression(operatorKind, result, convertedArgument);
         }
 
-        private BoundExpression BindOptionalNegation(TextSpan diagnosticSpan, SyntaxToken notKeyword, BoundExpression expression)
+        private BoundExpression BindOptionalNegation(TextSpan diagnosticSpan, SyntaxToken? notKeyword, BoundExpression expression)
         {
             return notKeyword is null
-                       ? expression
-                       : BindUnaryExpression(diagnosticSpan, UnaryOperatorKind.LogicalNot, expression);
+                ? expression
+                : BindUnaryExpression(diagnosticSpan, UnaryOperatorKind.LogicalNot, expression);
         }
 
         private BoundExpression BindBinaryExpression(BinaryExpressionSyntax node)
@@ -399,7 +400,7 @@ namespace NQuery.Binding
             return new BoundBinaryExpression(convertedLeft, operatorKind, result, convertedRight);
         }
 
-        private BoundExpression BindBinaryExpression(TextSpan diagnosticSpan, SyntaxToken notKeyword, BinaryOperatorKind operatorKind, ExpressionSyntax left, ExpressionSyntax right)
+        private BoundExpression BindBinaryExpression(TextSpan diagnosticSpan, SyntaxToken? notKeyword, BinaryOperatorKind operatorKind, ExpressionSyntax left, ExpressionSyntax right)
         {
             var expression = BindBinaryExpression(diagnosticSpan, operatorKind, left, right);
             return BindOptionalNegation(diagnosticSpan, notKeyword, expression);
@@ -461,8 +462,8 @@ namespace NQuery.Binding
         private BoundExpression BindCaseExpression(CaseExpressionSyntax node)
         {
             return node.InputExpression is null
-                       ? BindRegularCase(node)
-                       : BindSearchedCase(node);
+                ? BindRegularCase(node)
+                : BindSearchedCase(node);
         }
 
         private BoundExpression BindRegularCase(CaseExpressionSyntax node)
@@ -477,8 +478,8 @@ namespace NQuery.Binding
             var boundResults = BindCaseResultExpressions(node);
             var boundCaseLabels = node.CaseLabels.Select((l, i) => new BoundCaseLabel(BindExpression(l.WhenExpression), boundResults[i])).ToImmutableArray();
             var boundElse = node.ElseLabel is null
-                                ? null
-                                : boundResults.Last();
+                ? null
+                : boundResults.Last();
 
             EnsureCaseLabelsEvaluateToBool(node.CaseLabels, boundCaseLabels);
 
@@ -487,6 +488,8 @@ namespace NQuery.Binding
 
         private BoundExpression BindSearchedCase(CaseExpressionSyntax node)
         {
+            ArgumentNullException.ThrowIfNull(node.InputExpression);
+
             // CASE x
             //   WHEN e1 THEN r1
             //   WHEN e2 THEN r2
@@ -507,16 +510,16 @@ namespace NQuery.Binding
             var boundResults = BindCaseResultExpressions(node);
 
             var boundCaseLabels = (from t in node.CaseLabels.Select((c, i) => (CaseLabel: c, Index: i))
-                                   let caseLabel = t.CaseLabel
-                                   let i = t.Index
-                                   let boundWhen = BindExpression(caseLabel.WhenExpression)
-                                   let boundCondition = BindBinaryExpression(caseLabel.WhenExpression.Span, BinaryOperatorKind.Equal, boundInput, boundWhen)
-                                   let boundThen = boundResults[i]
-                                   select new BoundCaseLabel(boundCondition, boundThen)).ToImmutableArray();
+                let caseLabel = t.CaseLabel
+                let i = t.Index
+                let boundWhen = BindExpression(caseLabel.WhenExpression)
+                let boundCondition = BindBinaryExpression(caseLabel.WhenExpression.Span, BinaryOperatorKind.Equal, boundInput, boundWhen)
+                let boundThen = boundResults[i]
+                select new BoundCaseLabel(boundCondition, boundThen)).ToImmutableArray();
 
             var boundElse = node.ElseLabel is null
-                                ? null
-                                : boundResults.Last();
+                ? null
+                : boundResults.Last();
 
             EnsureCaseLabelsEvaluateToBool(node.CaseLabels, boundCaseLabels);
 
@@ -525,9 +528,9 @@ namespace NQuery.Binding
 
         private ImmutableArray<BoundExpression> BindCaseResultExpressions(CaseExpressionSyntax node)
         {
-            var elseExpression = node.ElseLabel is null
-                                     ? Enumerable.Empty<ExpressionSyntax>()
-                                     : new[] { node.ElseLabel.Expression };
+            IEnumerable<ExpressionSyntax?> elseExpression = node.ElseLabel is null
+                ? Enumerable.Empty<ExpressionSyntax>()
+                : new[] { node.ElseLabel.Expression };
             var expressions = node.CaseLabels.Select(l => l.ThenExpression).Concat(elseExpression).ToImmutableArray();
             return BindToCommonType(expressions);
         }
@@ -589,12 +592,12 @@ namespace NQuery.Binding
 
             var boundExpression = BindExpression(node.Expression);
             var boundComparisons = from a in node.ArgumentList.Arguments
-                                   let boundArgument = BindExpression(a)
-                                   let boundComparision = BindBinaryExpression(a.Span, BinaryOperatorKind.Equal, boundExpression, boundArgument)
-                                   select boundComparision;
+                let boundArgument = BindExpression(a)
+                let boundComparision = BindBinaryExpression(a.Span, BinaryOperatorKind.Equal, boundExpression, boundArgument)
+                select boundComparision;
 
-            var inExpressionsAggregate = boundComparisons.Aggregate<BoundExpression, BoundExpression>(null, (c, b) => c is null ? b : BindBinaryExpression(node.Span, BinaryOperatorKind.LogicalOr, c, b));
-            return BindOptionalNegation(node.Span, node.NotKeyword, inExpressionsAggregate);
+            var inExpressionsAggregate = boundComparisons.Aggregate<BoundExpression, BoundExpression?>(null, (c, b) => c is null ? b : BindBinaryExpression(node.Span, BinaryOperatorKind.LogicalOr, c, b));
+            return BindOptionalNegation(node.Span, node.NotKeyword, inExpressionsAggregate!);
         }
 
         private BoundExpression BindInQueryExpression(InQueryExpressionSyntax node)
@@ -665,7 +668,7 @@ namespace NQuery.Binding
             if (symbols.Length == 0)
             {
                 var isInvocable = LookupSymbols<FunctionSymbol>(name).Any() ||
-                                  LookupSymbols<AggregateSymbol>(name).Any();
+                    LookupSymbols<AggregateSymbol>(name).Any();
                 if (isInvocable)
                     Diagnostics.ReportInvocationRequiresParenthesis(name);
                 else
@@ -700,21 +703,18 @@ namespace NQuery.Binding
                     //
                     // You cannot obtain a value for D itself.
 
-                    var tableInstance = symbol as TableInstanceSymbol;
-                    if (tableInstance is not null)
-                    {
-                        // TODO: Fully support row access
-                        //var isColumnAccess = node.Parent is PropertyAccessExpressionSyntax;
-                        //var hasNoType = tableInstance.Table.Type.IsMissing();
-                        //if (!isColumnAccess && hasNoType)
-                        //    Diagnostics.ReportInvalidRowReference(name);
+                    var tableInstance = (TableInstanceSymbol)symbol;
+                    // TODO: Fully support row access
+                    //var isColumnAccess = node.Parent is PropertyAccessExpressionSyntax;
+                    //var hasNoType = tableInstance.Table.Type.IsMissing();
+                    //if (!isColumnAccess && hasNoType)
+                    //    Diagnostics.ReportInvalidRowReference(name);
 
-                        var isColumnAccess = node.Parent is PropertyAccessExpressionSyntax;
-                        if (!isColumnAccess)
-                        {
-                            Diagnostics.ReportInvalidRowReference(name);
-                            return new BoundErrorExpression();
-                        }
+                    var isColumnAccess = node.Parent is PropertyAccessExpressionSyntax;
+                    if (!isColumnAccess)
+                    {
+                        Diagnostics.ReportInvalidRowReference(name);
+                        return new BoundErrorExpression();
                     }
 
                     return new BoundTableExpression(tableInstance);
@@ -806,6 +806,39 @@ namespace NQuery.Binding
 
         private BoundExpression BindFunctionInvocationExpression(FunctionInvocationExpressionSyntax node)
         {
+            if (node.ArgumentList.Arguments.Count == 0 && "ROW_NUMBER".Equals(node.Name.ValueText, StringComparison.OrdinalIgnoreCase))
+            {
+                var partitionBy = ImmutableArray<BoundExpression>.Empty;
+                var orderBy = ImmutableArray<BoundExpression>.Empty;
+                if (node.OverClause == null)
+                {
+                    // Diagnostics.Repo
+                }
+                else
+                {
+                    var overClause = node.OverClause;
+                    if (overClause.PartitionBy != null)
+                        partitionBy = overClause.PartitionBy.Columns.Select(s => BindExpression(s.ColumnSelector)).ToImmutableArray();
+
+                    if (overClause.OrderBy != null)
+                        orderBy = overClause.OrderBy.Columns.Select(s => BindExpression(s.ColumnSelector)).ToImmutableArray();
+                }
+
+                var queryState = QueryState;
+                if (queryState != null)
+                {
+                    var rowNumber = new BoundRowNumberExpression(partitionBy, orderBy);
+                    var existingSlot = FindComputedValue(node, queryState.ComputedWindowFunctions);
+                    if (existingSlot is null)
+                    {
+                        var slot = ValueSlotFactory.CreateTemporary(rowNumber.Type);
+                        queryState.ComputedWindowFunctions.Add(new BoundComputedValueWithSyntax(node, rowNumber, slot));
+                    }
+
+                    return rowNumber;
+                }
+            }
+
             if (node.ArgumentList.Arguments.Count == 1)
             {
                 // Could be an aggregate or a function.
@@ -874,7 +907,7 @@ namespace NQuery.Binding
             return BindAggregate(node, boundAggregate);
         }
 
-        private IAggregatable BindAggregatable(TextSpan errorSpan, AggregateSymbol aggregate, BoundExpression boundArgument)
+        private IAggregatable? BindAggregatable(TextSpan errorSpan, AggregateSymbol aggregate, BoundExpression boundArgument)
         {
             var aggregatable = boundArgument.Type.IsError()
                 ? null
@@ -889,20 +922,20 @@ namespace NQuery.Binding
         private BoundExpression BindAggregate(ExpressionSyntax aggregate, BoundAggregateExpression boundAggregate)
         {
             var affectedQueryScopes = aggregate.DescendantNodes()
-                                               .Select(GetBoundNode<BoundColumnExpression>)
-                                               .Where(n => n is not null)
-                                               .Select(b => b.Symbol)
-                                               .OfType<TableColumnInstanceSymbol>()
-                                               .Select(c => FindQueryState(c.TableInstance))
-                                               .Distinct()
-                                               .Take(2)
-                                               .ToImmutableArray();
+                .Select(GetBoundNode<BoundColumnExpression>)
+                .Where(n => n is not null)
+                .Select(b => b!.Symbol)
+                .OfType<TableColumnInstanceSymbol>()
+                .Select(c => FindQueryState(c.TableInstance))
+                .Distinct()
+                .Take(2)
+                .ToImmutableArray();
 
             if (affectedQueryScopes.Length > 1)
                 Diagnostics.ReportAggregateContainsColumnsFromDifferentQueries(aggregate.Span);
 
             var queryState = affectedQueryScopes.DefaultIfEmpty(QueryState)
-                                                .First();
+                .First();
 
             if (queryState is null)
             {

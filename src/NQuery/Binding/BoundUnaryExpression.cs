@@ -9,20 +9,12 @@ namespace NQuery.Binding
             Result = result;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.UnaryExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.UnaryExpression;
 
-        public override Type Type
-        {
-            get
-            {
-                return Result.Selected is null
-                           ? TypeFacts.Unknown
-                           : Result.Selected.Signature.ReturnType;
-            }
-        }
+        public override Type Type =>
+            Result.Selected is null
+                ? TypeFacts.Unknown
+                : Result.Selected.Signature.ReturnType;
 
         public UnaryOperatorKind OperatorKind { get; }
 

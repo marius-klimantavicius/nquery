@@ -44,11 +44,11 @@ namespace NQuery.Authoring.Classifications
 
         private void ClassifyNodeOrToken(SyntaxNodeOrToken nodeOrToken)
         {
-            var asNode = nodeOrToken.AsNode();
+            var asNode = nodeOrToken.AsNode;
             if (asNode is not null)
                 ClassifyNode(asNode);
             else
-                ClassifyToken(nodeOrToken.AsToken());
+                ClassifyToken(nodeOrToken.AsToken);
         }
 
         private void ClassifyToken(SyntaxToken token)

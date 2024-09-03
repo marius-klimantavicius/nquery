@@ -1,11 +1,8 @@
-﻿namespace NQuery.Binding
+namespace NQuery.Binding
 {
     internal sealed class BoundEmptyRelation : BoundRelation
     {
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.EmptyRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.EmptyRelation;
 
         public override IEnumerable<ValueSlot> GetDefinedValues()
         {

@@ -2,14 +2,14 @@ namespace NQuery.Text
 {
     public struct TextChange : IEquatable<TextChange>
     {
-        public static TextChange ForReplacement(TextSpan span, string newText)
+        public static TextChange ForReplacement(TextSpan span, string? newText)
         {
             ArgumentNullException.ThrowIfNull(newText);
 
             return new TextChange(span, newText);
         }
 
-        public static TextChange ForInsertion(int position, string text)
+        public static TextChange ForInsertion(int position, string? text)
         {
             ArgumentNullException.ThrowIfNull(text);
 
@@ -22,7 +22,7 @@ namespace NQuery.Text
             return new TextChange(span, string.Empty);
         }
 
-        public TextChange(TextSpan span, string newText)
+        public TextChange(TextSpan span, string? newText)
         {
             ArgumentNullException.ThrowIfNull(newText);
 
@@ -32,14 +32,14 @@ namespace NQuery.Text
 
         public TextSpan Span { get; }
 
-        public string NewText { get; }
+        public string? NewText { get; }
 
         public bool Equals(TextChange other)
         {
             return Span.Equals(other.Span) && string.Equals(NewText, other.NewText);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is TextChange other && Equals(other);
         }

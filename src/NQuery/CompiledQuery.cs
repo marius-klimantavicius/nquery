@@ -42,7 +42,7 @@ namespace NQuery
             return new ExpressionEvaluator(expressionType, expression);
         }
 
-        private Func<object> CreateExpression()
+        private Func<object?> CreateExpression()
         {
             // In the general case evaluating an expression means evaluating the query.
             // That's because an expression might contain sub queries.
@@ -75,7 +75,7 @@ namespace NQuery
             return ExpressionBuilder.BuildFunction(computedValue.Expression);
         }
 
-        private object EvaluateQueryAsExpression()
+        private object? EvaluateQueryAsExpression()
         {
             using var reader = CreateReader();
             return !reader.Read() || reader.ColumnCount == 0

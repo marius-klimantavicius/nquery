@@ -9,10 +9,7 @@ namespace NQuery.Syntax
             TableReferences = tableReferences;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.FromClause; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.FromClause;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

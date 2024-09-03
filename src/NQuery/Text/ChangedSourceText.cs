@@ -32,19 +32,10 @@ namespace NQuery.Text
             return NewText.GetText(textSpan);
         }
 
-        public override char this[int index]
-        {
-            get { return NewText[index]; }
-        }
+        public override char this[int index] => NewText[index];
 
-        public override int Length
-        {
-            get { return NewText.Length; }
-        }
+        public override int Length => NewText.Length;
 
-        public override TextLineCollection Lines
-        {
-            get { return NewText.Lines; }
-        }
+        public override TextLineCollection Lines => NewText.Lines;
     }
 }

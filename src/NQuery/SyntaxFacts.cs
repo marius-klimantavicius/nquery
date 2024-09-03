@@ -26,12 +26,12 @@ namespace NQuery
             return syntaxTree.Root.DescendantTokens(descendIntoTrivia: true);
         }
 
-        public static ExpressionSyntax ParseExpression(string text)
+        public static ExpressionSyntax? ParseExpression(string text)
         {
             ArgumentNullException.ThrowIfNull(text);
 
             var tree = SyntaxTree.ParseExpression(text);
-            return (ExpressionSyntax)tree.Root.Root;
+            return (ExpressionSyntax?)tree.Root.Root;
         }
 
         public static bool IsLiteral(this SyntaxKind kind)
@@ -89,6 +89,7 @@ namespace NQuery
             yield return SyntaxKind.OrderKeyword;
             yield return SyntaxKind.OrKeyword;
             yield return SyntaxKind.OuterKeyword;
+            yield return SyntaxKind.OverKeyword;
             yield return SyntaxKind.RecursiveKeyword;
             yield return SyntaxKind.SelectKeyword;
             yield return SyntaxKind.SimilarKeyword;
@@ -274,7 +275,7 @@ namespace NQuery
             }
         }
 
-        public static string GetDisplayText(this SyntaxKind kind)
+        public static string? GetDisplayText(this SyntaxKind kind)
         {
             switch (kind)
             {
@@ -298,7 +299,7 @@ namespace NQuery
             }
         }
 
-        public static string GetDisplayText(this SyntaxToken token)
+        public static string? GetDisplayText(this SyntaxToken token)
         {
             ArgumentNullException.ThrowIfNull(token);
 
@@ -413,7 +414,7 @@ namespace NQuery
             }
         }
 
-        public static string GetValidIdentifier(string name)
+        public static string GetValidIdentifier(string? name)
         {
             ArgumentNullException.ThrowIfNull(name);
 
@@ -422,7 +423,7 @@ namespace NQuery
                        : GetParenthesizedIdentifier(name);
         }
 
-        public static bool IsValidIdentifier(string name)
+        public static bool IsValidIdentifier(string? name)
         {
             ArgumentNullException.ThrowIfNull(name);
 
@@ -439,7 +440,7 @@ namespace NQuery
             return GetKeywordKind(name) == SyntaxKind.IdentifierToken;
         }
 
-        public static string GetParenthesizedIdentifier(string name)
+        public static string GetParenthesizedIdentifier(string? name)
         {
             ArgumentNullException.ThrowIfNull(name);
 
@@ -479,7 +480,7 @@ namespace NQuery
             return sb.ToString();
         }
 
-        public static SyntaxKind GetKeywordKind(string text)
+        public static SyntaxKind GetKeywordKind(string? text)
         {
             ArgumentNullException.ThrowIfNull(text);
 
@@ -632,12 +633,15 @@ namespace NQuery
                 case "RECURSIVE":
                     return SyntaxKind.RecursiveKeyword;
 
+                case "OVER":
+                    return SyntaxKind.OverKeyword;
+
                 default:
                     return SyntaxKind.IdentifierToken;
             }
         }
 
-        public static SyntaxKind GetContextualKeywordKind(string text)
+        public static SyntaxKind GetContextualKeywordKind(string? text)
         {
             ArgumentNullException.ThrowIfNull(text);
 
@@ -648,6 +652,9 @@ namespace NQuery
 
                 case "RIGHT":
                     return SyntaxKind.RightKeyword;
+
+                case "PARTITION":
+                    return SyntaxKind.PartitionKeyword;
 
                 default:
                     return SyntaxKind.IdentifierToken;
@@ -672,7 +679,7 @@ namespace NQuery
                    token.Text[0] == '[';
         }
 
-        public static bool Matches(this SyntaxToken token, string text)
+        public static bool Matches(this SyntaxToken token, string? text)
         {
             ArgumentNullException.ThrowIfNull(token);
             ArgumentNullException.ThrowIfNull(text);
@@ -1257,7 +1264,7 @@ namespace NQuery
                            @"DOUBLE",
                            @"DECIMAL",
                            @"STRING",
-                           @"OBJECT"
+                           @"OBJECT",
                        };
         }
 
@@ -1364,14 +1371,14 @@ namespace NQuery
             return parentPrecedence < childPrecedence;
         }
 
-        private static int GetPrecedence(ExpressionSyntax expression)
+        private static int GetPrecedence(ExpressionSyntax? expression)
         {
             return expression switch
             {
                 BinaryExpressionSyntax => GetBinaryOperatorPrecedence(expression.Kind),
                 UnaryExpressionSyntax => GetUnaryOperatorPrecedence(expression.Kind),
                 BetweenExpressionSyntax => GetTernaryOperatorPrecedence(expression.Kind),
-                _ => 0
+                _ => 0,
             };
         }
     }

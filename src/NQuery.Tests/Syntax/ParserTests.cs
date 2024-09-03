@@ -1,4 +1,4 @@
-﻿namespace NQuery.Tests.Syntax
+namespace NQuery.Tests.Syntax
 {
     public partial class ParserTests
     {

@@ -7,6 +7,6 @@ namespace NQuery.Binding
         LeftOuter,
         RightOuter,
         LeftSemi,
-        LeftAntiSemi
+        LeftAntiSemi,
     }
 }

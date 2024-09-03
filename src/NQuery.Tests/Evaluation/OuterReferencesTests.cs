@@ -1,4 +1,4 @@
-﻿namespace NQuery.Tests.Evaluation
+namespace NQuery.Tests.Evaluation
 {
     public class OuterReferencesTests : EvaluationTest
     {

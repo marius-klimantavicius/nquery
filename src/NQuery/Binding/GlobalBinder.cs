@@ -1,6 +1,6 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Immutable;
-
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
 
 namespace NQuery.Binding
@@ -9,8 +9,8 @@ namespace NQuery.Binding
     {
         private readonly DataContext _dataContext;
 
-        private readonly Dictionary<Type, ImmutableArray<PropertySymbol>> _propertySymbols = new();
-        private readonly Dictionary<Type, ImmutableArray<MethodSymbol>> _methodSymbols = new();
+        private readonly Dictionary<Type, ImmutableArray<PropertySymbol>> _propertySymbols = new Dictionary<Type, ImmutableArray<PropertySymbol>>();
+        private readonly Dictionary<Type, ImmutableArray<MethodSymbol>> _methodSymbols = new Dictionary<Type, ImmutableArray<MethodSymbol>>();
 
         public GlobalBinder(SharedBinderState sharedBinderState, DataContext dataContext)
             : base(sharedBinderState, null)
@@ -26,7 +26,9 @@ namespace NQuery.Binding
 
         public override SymbolTable LocalSymbols { get; }
 
-        public override IEnumerable<PropertySymbol> LookupProperties(Type type)
+        public override IEnumerable<PropertySymbol> LookupProperties(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
+            Type type)
         {
             var propertyProvider = Lookup(_dataContext.PropertyProviders, type);
             if (propertyProvider is null)
@@ -56,7 +58,7 @@ namespace NQuery.Binding
             return result;
         }
 
-        public override IComparer LookupComparer(Type type)
+        public override IComparer? LookupComparer(Type type)
         {
             var registeredComparer = Lookup(_dataContext.Comparers, type);
             if (registeredComparer is not null)
@@ -65,7 +67,7 @@ namespace NQuery.Binding
             return type.IsComparable() ? Comparer.Default : null;
         }
 
-        private static T Lookup<T>(IReadOnlyDictionary<Type, T> dictionary, Type key) where T : class
+        private static T? Lookup<T>(IReadOnlyDictionary<Type, T> dictionary, Type? key) where T : class
         {
             while (key is not null)
             {

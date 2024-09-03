@@ -15,7 +15,7 @@ namespace NQuery
             Message = message;
         }
 
-        public static Diagnostic Format(TextSpan textSpan, DiagnosticId diagnosticId, params object[] args)
+        public static Diagnostic Format(TextSpan textSpan, DiagnosticId diagnosticId, params object?[] args)
         {
             var message = diagnosticId.GetMessage();
             var formattedMessage = string.Format(CultureInfo.CurrentCulture, message, args);

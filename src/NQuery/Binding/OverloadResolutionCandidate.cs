@@ -18,10 +18,7 @@ namespace NQuery.Binding
             HasBetterAlternative = hasBetterAlternative;
         }
 
-        public bool IsSuitable
-        {
-            get { return IsApplicable && !HasBetterAlternative; }
-        }
+        public bool IsSuitable => IsApplicable && !HasBetterAlternative;
 
         public bool IsApplicable { get; }
 

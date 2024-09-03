@@ -1,4 +1,5 @@
-﻿using NQuery.Binding;
+using System.Diagnostics.CodeAnalysis;
+using NQuery.Binding;
 
 namespace NQuery.Iterators
 {
@@ -12,13 +13,13 @@ namespace NQuery.Iterators
         private readonly IteratorPredicate _remainder;
         private readonly HashMatchRowBuffer _rowBuffer;
 
-        private Dictionary<object, HashMatchEntry> _hashTable;
-        private HashMatchEntry _entry;
-        private IEnumerator<HashMatchEntry> _entryEnumerator;
+        private Dictionary<object, HashMatchEntry>? _hashTable;
+        private HashMatchEntry? _entry;
+        private IEnumerator<HashMatchEntry>? _entryEnumerator;
         private Phase _currentPhase;
         private bool _probeMatched;
 
-        private static readonly object NullKey = new();
+        private static readonly object NullKey = new object();
 
         public HashMatchIterator(BoundHashMatchOperator logicalOperator, Iterator build, Iterator probe, int buildIndex, int probeIndex, IteratorPredicate remainder, HashMatchRowBuffer rowBuffer)
         {
@@ -31,10 +32,7 @@ namespace NQuery.Iterators
             _rowBuffer = rowBuffer;
         }
 
-        public override RowBuffer RowBuffer
-        {
-            get { return _rowBuffer; }
-        }
+        public override RowBuffer RowBuffer => _rowBuffer;
 
         public override void Open()
         {
@@ -54,6 +52,7 @@ namespace NQuery.Iterators
             _probe.Dispose();
         }
 
+        [MemberNotNull(nameof(_hashTable))]
         private void BuildHashtable()
         {
             _hashTable = new Dictionary<object, HashMatchEntry>();
@@ -63,13 +62,13 @@ namespace NQuery.Iterators
                 var keyValue = _build.RowBuffer[_buildIndex] ?? NullKey;
                 var rowValues = new object[_build.RowBuffer.Count];
                 _build.RowBuffer.CopyTo(rowValues, 0);
-                AddToHashtable(keyValue, rowValues);
+                AddToHashtable(_hashTable, keyValue, rowValues);
             }
         }
 
-        private void AddToHashtable(object keyValue, object[] values)
+        private void AddToHashtable(Dictionary<object, HashMatchEntry> hashTable, object keyValue, object[] values)
         {
-            _hashTable.TryGetValue(keyValue, out var entry);
+            hashTable.TryGetValue(keyValue, out var entry);
 
             if (entry is null)
             {
@@ -82,11 +81,14 @@ namespace NQuery.Iterators
             }
 
             entry.RowValues = values;
-            _hashTable[keyValue] = entry;
+            hashTable[keyValue] = entry;
         }
 
         public override bool Read()
         {
+            if (_hashTable == null)
+                throw new InvalidOperationException("Iterator must opened before calling Read");
+
             switch (_currentPhase)
             {
                 case Phase.ProduceMatch:
@@ -196,7 +198,7 @@ namespace NQuery.Iterators
         private enum Phase
         {
             ProduceMatch,
-            ReturnUnmatchedRowsFromBuildInput
+            ReturnUnmatchedRowsFromBuildInput,
         }
     }
 }

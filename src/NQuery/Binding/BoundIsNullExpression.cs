@@ -7,15 +7,9 @@ namespace NQuery.Binding
             Expression = expression;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.IsNullExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.IsNullExpression;
 
-        public override Type Type
-        {
-            get { return typeof(bool); }
-        }
+        public override Type Type => typeof(bool);
 
         public BoundExpression Expression { get; }
 

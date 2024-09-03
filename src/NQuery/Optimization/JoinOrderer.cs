@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using System.Diagnostics;
 
 using NQuery.Binding;
@@ -114,7 +114,7 @@ namespace NQuery.Optimization
             var remainingEdges = new HashSet<JoinEdge>(edges);
             var candidateNodes = new HashSet<JoinNode>();
 
-            BoundRelation result = null;
+            BoundRelation? result = null;
 
             while (remainingNodes.Count > 0)
             {
@@ -142,9 +142,7 @@ namespace NQuery.Optimization
                     }
 
                     var nextNode = usableEdges.SelectMany(e => new[] { e.Left, e.Right })
-                                              .Where(candidateNodes.Contains)
-                                              .OrderBy(n => n, nodeComparer)
-                                              .FirstOrDefault();
+                        .Where(candidateNodes.Contains).MinBy(n => n, nodeComparer);
 
                     if (nextNode is not null)
                     {
@@ -170,6 +168,7 @@ namespace NQuery.Optimization
             }
 
             Debug.Assert(remainingNodes.Count == 0, @"Found remaining nodes");
+            Debug.Assert(result != null);
 
             // Add filter for remaining predicates
 
@@ -219,9 +218,9 @@ namespace NQuery.Optimization
             }
 
             public BoundRelation Relation { get; }
-            public List<JoinEdge> Edges { get; } = new();
+            public List<JoinEdge> Edges { get; } = new List<JoinEdge>();
 
-            public override string ToString()
+            public override string? ToString()
             {
                 return Relation.ToString();
             }
@@ -237,7 +236,7 @@ namespace NQuery.Optimization
 
             public JoinNode Left { get; }
             public JoinNode Right { get; }
-            public List<BoundExpression> Conditions { get; } = new();
+            public List<BoundExpression> Conditions { get; } = new List<BoundExpression>();
 
             public JoinNode Other(JoinNode node)
             {
@@ -245,9 +244,9 @@ namespace NQuery.Optimization
                 return node == Left ? Right : Left;
             }
 
-            public override string ToString()
+            public override string? ToString()
             {
-                return Expression.And(Conditions).ToString();
+                return Expression.And(Conditions)?.ToString();
             }
         }
     }

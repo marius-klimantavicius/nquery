@@ -16,6 +16,6 @@ namespace NQuery.Symbols
         Decimal,
         Boolean,
         String,
-        Object
+        Object,
     }
 }

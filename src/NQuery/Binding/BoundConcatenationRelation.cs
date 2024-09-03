@@ -10,10 +10,7 @@ namespace NQuery.Binding
             DefinedValues = definedValues.ToImmutableArray();
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.ConcatenationRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.ConcatenationRelation;
 
         public ImmutableArray<BoundRelation> Inputs { get; }
 

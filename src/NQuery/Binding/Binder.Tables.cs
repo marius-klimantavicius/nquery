@@ -1,11 +1,11 @@
 using System.Collections.Immutable;
-
+using System.Diagnostics;
 using NQuery.Symbols;
 using NQuery.Syntax;
 
 namespace NQuery.Binding
 {
-    partial class Binder
+    internal partial class Binder
     {
         private BoundRelation BindTableReference(TableReferenceSyntax node)
         {
@@ -72,6 +72,7 @@ namespace NQuery.Binding
 
             var tableInstance = new TableInstanceSymbol(alias, table, ValueSlotFactory);
 
+            Debug.Assert(QueryState != null);
             QueryState.IntroducedTables.Add(tableInstance, aliasIdentifier);
 
             return new BoundTableRelation(tableInstance);
@@ -140,6 +141,7 @@ namespace NQuery.Binding
             var derivedTableInstance = new TableInstanceSymbol(node.Name.ValueText, derivedTable, valueSlotFactory);
             var boundTableReference = new BoundDerivedTableRelation(derivedTableInstance, query.Relation);
 
+            Debug.Assert(QueryState != null);
             QueryState.IntroducedTables.Add(derivedTableInstance, node.Name);
 
             return boundTableReference;

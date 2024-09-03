@@ -2,17 +2,14 @@ namespace NQuery.Syntax
 {
     public sealed class CompilationUnitSyntax : SyntaxNode
     {
-        internal CompilationUnitSyntax(SyntaxTree syntaxTree, SyntaxNode root, SyntaxToken endOfFileToken)
+        internal CompilationUnitSyntax(SyntaxTree syntaxTree, SyntaxNode? root, SyntaxToken endOfFileToken)
             : base(syntaxTree)
         {
             Root = root;
             EndOfFileToken = endOfFileToken;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.CompilationUnit; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.CompilationUnit;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {
@@ -21,7 +18,7 @@ namespace NQuery.Syntax
             yield return EndOfFileToken;
         }
 
-        public SyntaxNode Root { get; }
+        public SyntaxNode? Root { get; }
 
         public SyntaxToken EndOfFileToken { get; }
     }

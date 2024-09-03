@@ -1,4 +1,4 @@
-﻿using NQuery.Authoring.Highlighting;
+using NQuery.Authoring.Highlighting;
 
 namespace NQuery.Authoring.Tests.Highlighting
 {

@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Binding
 {
     partial class BoundTreeRewriter
     {
-        public virtual BoundExpression RewriteExpression(BoundExpression node)
+        [return: NotNullIfNotNull(nameof(node))]
+        public virtual BoundExpression? RewriteExpression(BoundExpression? node)
         {
             if (node is null)
                 return null;
@@ -43,6 +46,8 @@ namespace NQuery.Binding
                     return RewriteExistsSubselect((BoundExistsSubselect)node);
                 case BoundNodeKind.ValueSlotExpression:
                     return RewriteValueSlotExpression((BoundValueSlotExpression)node);
+                case BoundNodeKind.RowNumberExpression:
+                    return RewriteRowNumberExpression((BoundRowNumberExpression)node);
                 default:
                     throw ExceptionBuilder.UnexpectedValue(node.Kind);
             }
@@ -146,6 +151,11 @@ namespace NQuery.Binding
         protected virtual BoundExpression RewriteValueSlotExpression(BoundValueSlotExpression node)
         {
             return node.Update(RewriteValueSlot(node.ValueSlot));
+        }
+
+        protected virtual BoundExpression RewriteRowNumberExpression(BoundRowNumberExpression node)
+        {
+            return node.Update(RewriteExpressions(node.PartitionBy), RewriteExpressions(node.OrderBy));
         }
     }
 }

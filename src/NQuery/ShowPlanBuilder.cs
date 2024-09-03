@@ -1,5 +1,5 @@
+using System.Collections.Immutable;
 using System.Text;
-
 using NQuery.Binding;
 using NQuery.Optimization;
 
@@ -83,6 +83,8 @@ namespace NQuery
                     return BuildSingleRowSubselect((BoundSingleRowSubselect)node);
                 case BoundNodeKind.ExistsSubselect:
                     return BuildExistsSubselect((BoundExistsSubselect)node);
+                case BoundNodeKind.RowNumberExpression:
+                    return BuildRowNumber((BoundRowNumberExpression)node);
                 default:
                     throw ExceptionBuilder.UnexpectedValue(node.Kind);
             }
@@ -138,10 +140,10 @@ namespace NQuery
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var input = new[] { Build(node.Input) };
             var aggregates = from d in node.DefinedValues
-                             let dName = d.ValueSlot.Name
-                             let dProperties = Enumerable.Empty<KeyValuePair<string, string>>()
-                             let dChildren = new[] { Build(d.Expression) }
-                             select new ShowPlanNode(dName, dProperties, dChildren);
+                let dName = d.ValueSlot.Name
+                let dProperties = Enumerable.Empty<KeyValuePair<string, string>>()
+                let dChildren = new[] { Build(d.Expression) }
+                select new ShowPlanNode(dName, dProperties, dChildren);
             var children = input.Concat(aggregates);
             return new ShowPlanNode(@"Compute", properties, children);
         }
@@ -155,8 +157,8 @@ namespace NQuery
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var leftAndRight = new[] { Build(node.Left), Build(node.Right) };
             var children = node.Condition is null
-                               ? leftAndRight
-                               : leftAndRight.Concat(new[] { Build(node.Condition) });
+                ? leftAndRight
+                : leftAndRight.Concat(new[] { Build(node.Condition) });
 
             return new ShowPlanNode(name, properties, children);
         }
@@ -165,21 +167,21 @@ namespace NQuery
         {
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var leftAndRight = new[]
-                               {
-                                   Build(node.Build),
-                                   Build(node.Probe)
-                               };
+            {
+                Build(node.Build),
+                Build(node.Probe),
+            };
 
             var children = node.Remainder is null
-                               ? leftAndRight
-                               : leftAndRight.Concat(new[] { Build(node.Remainder) });
+                ? leftAndRight
+                : leftAndRight.Concat(new[] { Build(node.Remainder) });
 
             return new ShowPlanNode($"Hash Match ({node.LogicalOperator}) [{node.BuildKey} = {node.ProbeKey}]", properties, children);
         }
 
         private static ShowPlanNode BuildTop(BoundTopRelation node)
         {
-            var tieEntries = string.Join(@", ", node.TieEntries.Select(v => v.ValueSlot.Name));
+            var tieEntries = string.Join(@", ", node.TieEntries.Select(v => v.ValueSlot?.Name));
             var operatorName = $"Top {node.Limit}{(!node.TieEntries.Any() ? string.Empty : $" With Ties ({tieEntries})")}";
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var children = new[] { Build(node.Input) };
@@ -190,7 +192,7 @@ namespace NQuery
         {
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var children = new[] { Build(node.Input) };
-            var slots = string.Join(@", ", node.SortedValues.Select(v => v.ValueSlot.Name));
+            var slots = string.Join(@", ", node.SortedValues.Select(v => v.ValueSlot?.Name));
             var op = node.IsDistinct ? @"DistinctSort" : @"Sort";
             var name = $"{op} {slots}";
             return new ShowPlanNode(name, properties, children);
@@ -201,7 +203,7 @@ namespace NQuery
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var children = node.Inputs.Select(Build);
             var kind = node.IsUnionAll ? @"UnionAll" : @"Union";
-            var outputs = string.Join(@", ", node.DefinedValues.Select(d => $"{d.ValueSlot.Name} := [{string.Join(@", ", d.InputValueSlots.Select(i => i.Name))}]"));
+            var outputs = string.Join(@", ", node.DefinedValues.Select(d => $"{d.ValueSlot?.Name} := [{string.Join(@", ", d.InputValueSlots.Select(i => i.Name))}]"));
             var name = $"{kind} {outputs}";
             return new ShowPlanNode(name, properties, children);
         }
@@ -210,7 +212,7 @@ namespace NQuery
         {
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var children = node.Inputs.Select(Build);
-            var outputs = string.Join(@", ", node.DefinedValues.Select(d => $"{d.ValueSlot.Name} := [{string.Join(@", ", d.InputValueSlots.Select(i => i.Name))}]"));
+            var outputs = string.Join(@", ", node.DefinedValues.Select(d => $"{d.ValueSlot?.Name} := [{string.Join(@", ", d.InputValueSlots.Select(i => i.Name))}]"));
             var name = $"Concatenation {outputs}";
             return new ShowPlanNode(name, properties, children);
         }
@@ -228,12 +230,12 @@ namespace NQuery
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var input = new[] { Build(node.Input) };
             var aggregates = from a in node.Aggregates
-                             let aName = $"{a.Output} = {a.Aggregate.Name}"
-                             let aProperties = Enumerable.Empty<KeyValuePair<string, string>>()
-                             let aChildren = new[] { Build(a.Argument) }
-                             select new ShowPlanNode(aName, aProperties, aChildren);
+                let aName = $"{a.Output} = {a.Aggregate.Name}"
+                let aProperties = Enumerable.Empty<KeyValuePair<string, string>>()
+                let aChildren = new[] { Build(a.Argument) }
+                select new ShowPlanNode(aName, aProperties, aChildren);
             var children = input.Concat(aggregates);
-            var slots = string.Join(@", ", node.Groups.Select(g => g.ValueSlot.Name));
+            var slots = string.Join(@", ", node.Groups.Select(g => g.ValueSlot?.Name));
             return new ShowPlanNode($"GroupByAndAggregation {slots}", properties, children);
         }
 
@@ -242,12 +244,12 @@ namespace NQuery
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var input = new[] { Build(node.Input) };
             var aggregates = from a in node.Aggregates
-                             let aName = $"{a.Output} = {a.Aggregate.Name}"
-                             let aProperties = Enumerable.Empty<KeyValuePair<string, string>>()
-                             let aChildren = new[] { Build(a.Argument) }
-                             select new ShowPlanNode(aName, aProperties, aChildren);
+                let aName = $"{a.Output} = {a.Aggregate.Name}"
+                let aProperties = Enumerable.Empty<KeyValuePair<string, string>>()
+                let aChildren = new[] { Build(a.Argument) }
+                select new ShowPlanNode(aName, aProperties, aChildren);
             var children = input.Concat(aggregates);
-            var slots = string.Join(@", ", node.Groups.Select(g => g.ValueSlot.Name));
+            var slots = string.Join(@", ", node.Groups.Select(g => g.ValueSlot?.Name));
             return new ShowPlanNode($"StreamAggregates {slots}", properties, children);
         }
 
@@ -299,11 +301,13 @@ namespace NQuery
         {
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var children = Enumerable.Empty<ShowPlanNode>();
-            var value = node.Value is null
-                            ? @"NULL"
-                            : node.Value is string
-                                  ? @"'" + node.Value.ToString().Replace(@"'", @"''") + @"'"
-                                  : node.Value.ToString();
+            var nodeValue = node.Value;
+            var value = nodeValue switch
+            {
+                null => @"NULL",
+                string stringValue => @"'" + stringValue.Replace(@"'", @"''") + @"'",
+                _ => nodeValue.ToString(),
+            };
             return new ShowPlanNode($"Literal ({value})", properties, children, true);
         }
 
@@ -325,7 +329,7 @@ namespace NQuery
         {
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var children = node.Arguments.Select(Build);
-            return new ShowPlanNode(node.Symbol.ToString(), properties, children, true);
+            return new ShowPlanNode(node.Symbol?.ToString(), properties, children, true);
         }
 
         private static ShowPlanNode BuildPropertyAccessExpression(BoundPropertyAccessExpression node)
@@ -339,7 +343,7 @@ namespace NQuery
         {
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var children = new[] { Build(node.Target) }.Concat(node.Arguments.Select(Build));
-            return new ShowPlanNode(node.Symbol.ToString(), properties, children, true);
+            return new ShowPlanNode(node.Symbol?.ToString(), properties, children, true);
         }
 
         private static ShowPlanNode BuildConversionExpression(BoundConversionExpression node)
@@ -361,8 +365,8 @@ namespace NQuery
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var caseLabels = node.CaseLabels.Select(BuildCaseLabel);
             var elseLabel = node.ElseExpression is null
-                                ? Enumerable.Empty<ShowPlanNode>()
-                                : new[] { Build(node.ElseExpression) };
+                ? Enumerable.Empty<ShowPlanNode>()
+                : new[] { Build(node.ElseExpression) };
             var children = caseLabels.Concat(elseLabel);
             return new ShowPlanNode(@"Case", properties, children, true);
         }
@@ -371,10 +375,10 @@ namespace NQuery
         {
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var children = new[]
-                               {
-                                   Build(node.Condition),
-                                   Build(node.ThenExpression)
-                               };
+            {
+                Build(node.Condition),
+                Build(node.ThenExpression),
+            };
             return new ShowPlanNode(@"When", properties, children, true);
         }
 
@@ -390,6 +394,19 @@ namespace NQuery
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
             var children = new[] { Build(node.Relation) };
             return new ShowPlanNode(@"Exists", properties, children, true);
+        }
+
+        private static ShowPlanNode BuildRowNumber(BoundRowNumberExpression node)
+        {
+            var properties = Enumerable.Empty<KeyValuePair<string, string>>();
+
+            var partitionBy = node.PartitionBy.Select(Build).ToImmutableArray();
+            var orderBy = node.OrderBy.Select(Build).ToImmutableArray();
+            return new ShowPlanNode(@"RowNumber", properties, new[]
+            {
+                new ShowPlanNode(@"Partition by", properties, partitionBy),
+                new ShowPlanNode(@"Order by", properties, orderBy),
+            });
         }
 
         private static string GetOuterReferences(BoundJoinRelation node)

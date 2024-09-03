@@ -1,4 +1,4 @@
-﻿namespace NQuery.Iterators
+namespace NQuery.Iterators
 {
     internal sealed class HashMatchRowBuffer : RowBuffer
     {
@@ -19,33 +19,25 @@
             _probeNull = new NullRowBuffer(probeCount);
         }
 
-        public void SetBuild(HashMatchEntry entry)
+        public void SetBuild(HashMatchEntry? entry)
         {
             _buildEntry.Entry = entry;
             _build.ActiveRowBuffer = entry is null ? _buildNull : _buildEntry;
         }
 
-        public void SetProbe(RowBuffer rowBuffer)
+        public void SetProbe(RowBuffer? rowBuffer)
         {
             _probe.ActiveRowBuffer = rowBuffer ?? _probeNull;
         }
 
-        public override int Count
-        {
-            get { return _buildNull.Count + _probeNull.Count; }
-        }
+        public override int Count => _buildNull.Count + _probeNull.Count;
 
-        public override object this[int index]
-        {
-            get
-            {
-                return index < _build.Count
-                    ? _build[index]
-                    : _probe[index - _build.Count];
-            }
-        }
+        public override object? this[int index] =>
+            index < _build.Count
+                ? _build[index]
+                : _probe[index - _build.Count];
 
-        public override void CopyTo(object[] array, int destinationIndex)
+        public override void CopyTo(object?[] array, int destinationIndex)
         {
             _build.CopyTo(array, destinationIndex);
             _probe.CopyTo(array, _build.Count + destinationIndex);

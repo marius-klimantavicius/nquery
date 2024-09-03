@@ -1,4 +1,4 @@
-﻿namespace NQuery.Tests.Syntax
+namespace NQuery.Tests.Syntax
 {
     partial class ParserTests
     {
@@ -60,7 +60,7 @@
                 if (_enumerator.Current.IsNode)
                     return;
 
-                var diagnostics = _enumerator.Current.AsToken().Diagnostics;
+                var diagnostics = _enumerator.Current.AsToken.Diagnostics;
                 var unexpectedDiagnostics = diagnostics.Where(d => !_assertedDiagnostics.Contains(d));
 
                 Assert.Empty(unexpectedDiagnostics);
@@ -121,7 +121,7 @@
                     Assert.Equal(kind, _enumerator.Current.Kind);
                     Assert.True(_enumerator.Current.IsToken);
 
-                    var token = _enumerator.Current.AsToken();
+                    var token = _enumerator.Current.AsToken;
                     var sourceText = token.Parent.SyntaxTree.Text;
 
                     Assert.False(token.IsMissing);
@@ -143,7 +143,7 @@
                     Assert.Equal(kind, _enumerator.Current.Kind);
                     Assert.True(_enumerator.Current.IsToken);
 
-                    var token = _enumerator.Current.AsToken();
+                    var token = _enumerator.Current.AsToken;
 
                     Assert.True(token.IsMissing);
                     Assert.Equal(0, token.Span.Length);
@@ -159,7 +159,7 @@
                 {
                     Assert.True(_enumerator.Current.IsToken);
 
-                    var token = _enumerator.Current.AsToken();
+                    var token = _enumerator.Current.AsToken;
                     var diagnostic = Assert.Single(token.Diagnostics, d => d.DiagnosticId == diagnosticId);
 
                     Assert.Equal(text, diagnostic.Message);

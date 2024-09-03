@@ -11,10 +11,7 @@ namespace NQuery.Syntax
             Columns = columns;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.OrderedQuery; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.OrderedQuery;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

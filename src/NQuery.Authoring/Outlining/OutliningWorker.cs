@@ -30,7 +30,7 @@ namespace NQuery.Authoring.Outlining
 
             if (nodeOrToken.IsNode)
             {
-                var children = nodeOrToken.AsNode()
+                var children = nodeOrToken.AsNode
                                           .ChildNodesAndTokens()
                                           .SkipWhile(c => !c.FullSpan.IntersectsWith(_span))
                                           .TakeWhile(c => c.FullSpan.IntersectsWith(_span));

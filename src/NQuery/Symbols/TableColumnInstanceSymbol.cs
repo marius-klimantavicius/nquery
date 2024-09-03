@@ -12,10 +12,7 @@ namespace NQuery.Symbols
             ValueSlot = valueSlotFactory(tableInstance, column);
         }
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.TableColumnInstance; }
-        }
+        public override SymbolKind Kind => SymbolKind.TableColumnInstance;
 
         internal override ValueSlot ValueSlot { get; }
 

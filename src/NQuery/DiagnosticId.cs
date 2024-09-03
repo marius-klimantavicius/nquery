@@ -95,6 +95,6 @@ namespace NQuery
         CteContainsTop,
         CteContainsOuterJoin,
         CteContainsGroupByHavingOrAggregate,
-        CteHasTypeMismatchBetweenAnchorAndRecursivePart
+        CteHasTypeMismatchBetweenAnchorAndRecursivePart,
     }
 }

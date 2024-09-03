@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 
 namespace NQuery.Binding
 {
@@ -10,10 +10,7 @@ namespace NQuery.Binding
             Outputs = outputs.ToImmutableArray();
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.ProjectRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.ProjectRelation;
 
         public BoundRelation Input { get; }
 

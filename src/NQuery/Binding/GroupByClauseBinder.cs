@@ -7,9 +7,6 @@ namespace NQuery.Binding
         {
         }
 
-        protected override bool InGroupByClause
-        {
-            get { return true; }
-        }
+        protected override bool InGroupByClause => true;
     }
 }

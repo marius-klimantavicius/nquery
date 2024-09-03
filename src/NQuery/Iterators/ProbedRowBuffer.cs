@@ -1,4 +1,4 @@
-﻿namespace NQuery.Iterators
+namespace NQuery.Iterators
 {
     internal sealed class ProbedRowBuffer : RowBuffer
     {
@@ -6,7 +6,7 @@
         private static readonly object BoxedFalse = false;
 
         private readonly RowBuffer _rowBuffer;
-        private object _value;
+        private object? _value;
 
         public ProbedRowBuffer(RowBuffer rowBuffer)
         {
@@ -18,22 +18,14 @@
             _value = value ? BoxedTrue : BoxedFalse;
         }
 
-        public override int Count
-        {
-            get { return _rowBuffer.Count + 1; }
-        }
+        public override int Count => _rowBuffer.Count + 1;
 
-        public override object this[int index]
-        {
-            get
-            {
-                return index < _rowBuffer.Count
-                    ? _rowBuffer[index]
-                    : _value;
-            }
-        }
+        public override object? this[int index] =>
+            index < _rowBuffer.Count
+                ? _rowBuffer[index]
+                : _value;
 
-        public override void CopyTo(object[] array, int destinationIndex)
+        public override void CopyTo(object?[] array, int destinationIndex)
         {
             _rowBuffer.CopyTo(array, destinationIndex);
             array[_rowBuffer.Count + destinationIndex] = _value;

@@ -9,10 +9,7 @@ namespace NQuery.Binding
             Column = column;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.SelectColumn; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.SelectColumn;
 
         public QueryColumnInstanceSymbol Column { get; }
     }

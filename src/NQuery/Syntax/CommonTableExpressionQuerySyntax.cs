@@ -10,10 +10,7 @@ namespace NQuery.Syntax
             CommonTableExpressions = commonTableExpressions;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.CommonTableExpressionQuery; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.CommonTableExpressionQuery;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

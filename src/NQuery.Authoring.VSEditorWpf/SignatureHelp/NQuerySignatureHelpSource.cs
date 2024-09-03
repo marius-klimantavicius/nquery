@@ -33,17 +33,21 @@ namespace NQuery.Authoring.VSEditorWpf.SignatureHelp
             if (model is null)
                 return;
 
-            var snapshot = _textBuffer.CurrentSnapshot;
-            var span = model.ApplicableSpan;
-            var trackingSpan = snapshot.CreateTrackingSpan(span.Start, span.Length, SpanTrackingMode.EdgeExclusive);
+            try
+            {
+                var snapshot = _textBuffer.CurrentSnapshot;
+                var span = model.ApplicableSpan;
+                var trackingSpan = snapshot.CreateTrackingSpan(span.Start, span.Length, SpanTrackingMode.EdgeExclusive);
 
-            var signaturesMap = ToSignatures(trackingSpan, model.Signatures, model.SelectedParameter);
-            var signatureMapKey = typeof(Dictionary<SignatureItem, ISignature>);
-            session.Properties.RemoveProperty(signatureMapKey);
-            session.Properties.AddProperty(signatureMapKey, signaturesMap);
+                var signaturesMap = ToSignatures(trackingSpan, model.Signatures, model.SelectedParameter);
+                var signatureMapKey = typeof(Dictionary<SignatureItem, ISignature>);
+                session.Properties.RemoveProperty(signatureMapKey);
+                session.Properties.AddProperty(signatureMapKey, signaturesMap);
 
-            foreach (var signature in model.Signatures)
-                signatures.Add(signaturesMap[signature]);
+                foreach (var signature in model.Signatures)
+                    signatures.Add(signaturesMap[signature]);
+            }
+            catch (ArgumentException) { }
         }
 
         private static Dictionary<SignatureItem, ISignature> ToSignatures(ITrackingSpan applicableSpan, IEnumerable<SignatureItem> signatures, int selectedParameter)

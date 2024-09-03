@@ -12,7 +12,7 @@ namespace NQuery.Iterators
 
         public int Index { get; }
 
-        public object GetValue()
+        public object? GetValue()
         {
             return RowBuffer[Index];
         }
@@ -23,12 +23,12 @@ namespace NQuery.Iterators
                    Index == other.Index;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj))
                 return false;
 
-            return obj is RowBufferEntry && Equals((RowBufferEntry)obj);
+            return obj is RowBufferEntry entry && Equals(entry);
         }
 
         public override int GetHashCode()

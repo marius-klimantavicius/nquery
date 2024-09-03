@@ -6,7 +6,7 @@ namespace NQuery.Authoring.Outlining
         {
             return !nodeOrToken.IsToken
                 ? Enumerable.Empty<OutliningRegionSpan>()
-                : FindRegions(nodeOrToken.AsToken());
+                : FindRegions(nodeOrToken.AsToken);
         }
 
         protected abstract IEnumerable<OutliningRegionSpan> FindRegions(SyntaxToken token);

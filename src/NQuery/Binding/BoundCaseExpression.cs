@@ -5,27 +5,21 @@ namespace NQuery.Binding
 {
     internal sealed class BoundCaseExpression : BoundExpression
     {
-        public BoundCaseExpression(IEnumerable<BoundCaseLabel> caseLabels, BoundExpression elseExpression)
+        public BoundCaseExpression(IEnumerable<BoundCaseLabel> caseLabels, BoundExpression? elseExpression)
         {
             CaseLabels = caseLabels.ToImmutableArray();
             ElseExpression = elseExpression;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.CaseExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.CaseExpression;
 
-        public override Type Type
-        {
-            get { return CaseLabels.First().ThenExpression.Type; }
-        }
+        public override Type Type => CaseLabels.First().ThenExpression.Type;
 
         public ImmutableArray<BoundCaseLabel> CaseLabels { get; }
 
-        public BoundExpression ElseExpression { get; }
+        public BoundExpression? ElseExpression { get; }
 
-        public BoundCaseExpression Update(IEnumerable<BoundCaseLabel> caseLabels, BoundExpression elseExpression)
+        public BoundCaseExpression Update(IEnumerable<BoundCaseLabel> caseLabels, BoundExpression? elseExpression)
         {
             var newCaseLabels = caseLabels.ToImmutableArray();
 

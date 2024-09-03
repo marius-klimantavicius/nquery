@@ -1,4 +1,4 @@
-﻿using NQuery.Binding;
+using NQuery.Binding;
 using NQuery.Iterators;
 
 namespace NQuery.Tests.Iterators

@@ -10,20 +10,12 @@ namespace NQuery.Binding
             Right = right;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.BinaryExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.BinaryExpression;
 
-        public override Type Type
-        {
-            get
-            {
-                return Result.Selected is null
-                           ? TypeFacts.Unknown
-                           : Result.Selected.Signature.ReturnType;
-            }
-        }
+        public override Type Type =>
+            Result.Selected is null
+                ? TypeFacts.Unknown
+                : Result.Selected.Signature.ReturnType;
 
         public BoundExpression Left { get; }
 

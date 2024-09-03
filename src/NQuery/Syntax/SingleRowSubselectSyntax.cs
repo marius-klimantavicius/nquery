@@ -10,10 +10,7 @@ namespace NQuery.Syntax
             RightParenthesis = rightParenthesis;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.SingleRowSubselect; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.SingleRowSubselect;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

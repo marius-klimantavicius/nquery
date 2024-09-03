@@ -2,10 +2,7 @@ namespace NQuery.Symbols.Aggregation
 {
     public sealed class CountAggregateDefinition : AggregateDefinition
     {
-        public override string Name
-        {
-            get { return @"COUNT"; }
-        }
+        public override string Name => @"COUNT";
 
         public override IAggregatable CreateAggregatable(Type argumentType)
         {
@@ -19,10 +16,7 @@ namespace NQuery.Symbols.Aggregation
                 return new CountAggregator();
             }
 
-            public Type ReturnType
-            {
-                get { return typeof(int); }
-            }
+            public Type ReturnType => typeof(int);
         }
 
         private sealed class CountAggregator : IAggregator
@@ -34,7 +28,7 @@ namespace NQuery.Symbols.Aggregation
                 _count = 0;
             }
 
-            public void Accumulate(object value)
+            public void Accumulate(object? value)
             {
                 if (value is not null)
                     _count++;

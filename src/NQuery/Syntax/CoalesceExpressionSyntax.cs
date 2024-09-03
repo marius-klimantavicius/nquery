@@ -9,10 +9,7 @@ namespace NQuery.Syntax
             ArgumentList = argumentList;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.CoalesceExpression; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.CoalesceExpression;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

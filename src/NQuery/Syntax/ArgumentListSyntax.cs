@@ -10,10 +10,7 @@ namespace NQuery.Syntax
             RightParenthesis = rightParenthesis;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.ArgumentList; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.ArgumentList;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

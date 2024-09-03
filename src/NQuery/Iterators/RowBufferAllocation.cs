@@ -8,14 +8,15 @@ namespace NQuery.Iterators
     {
         private readonly Dictionary<ValueSlot, int> _mapping;
 
-        public static readonly RowBufferAllocation Empty = new();
+        public static readonly RowBufferAllocation Empty = new RowBufferAllocation();
 
         private RowBufferAllocation()
         {
             _mapping = new Dictionary<ValueSlot, int>();
+            RowBuffer = null!;
         }
 
-        public RowBufferAllocation(RowBufferAllocation parent, RowBuffer rowBuffer, IEnumerable<ValueSlot> valueSlots)
+        public RowBufferAllocation(RowBufferAllocation? parent, RowBuffer rowBuffer, IEnumerable<ValueSlot> valueSlots)
         {
             Parent = parent;
             RowBuffer = rowBuffer;
@@ -28,25 +29,19 @@ namespace NQuery.Iterators
             for (var i = 0; i < valueSlots.Length; i++)
             {
                 var outputValue = valueSlots[i];
-                if (!dictionary.ContainsKey(outputValue))
-                    dictionary[outputValue] = i;
+                dictionary.TryAdd(outputValue, i);
             }
 
             return dictionary;
         }
 
-        public RowBufferAllocation Parent { get; }
+        public RowBufferAllocation? Parent { get; }
 
         public RowBuffer RowBuffer { get; }
 
-        public RowBufferEntry this[ValueSlot valueSlot]
-        {
-            get
-            {
-                return !_mapping.ContainsKey(valueSlot) && Parent is not null
-                            ? Parent[valueSlot]
-                            : new RowBufferEntry(RowBuffer, _mapping[valueSlot]);
-            }
-        }
+        public RowBufferEntry this[ValueSlot valueSlot] =>
+            !_mapping.ContainsKey(valueSlot) && Parent is not null
+                ? Parent[valueSlot]
+                : new RowBufferEntry(RowBuffer, _mapping[valueSlot]);
     }
 }

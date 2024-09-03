@@ -25,15 +25,9 @@ namespace NQuery.Symbols
             RecursiveMembers = recursiveBinder(this);
         }
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.CommonTableExpression; }
-        }
+        public override SymbolKind Kind => SymbolKind.CommonTableExpression;
 
-        public override Type Type
-        {
-            get { return TypeFacts.Missing; }
-        }
+        public override Type Type => TypeFacts.Missing;
 
         public override ImmutableArray<ColumnSymbol> Columns { get; }
 

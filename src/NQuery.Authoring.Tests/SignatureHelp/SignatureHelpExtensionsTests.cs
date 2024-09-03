@@ -1,4 +1,4 @@
-﻿using NQuery.Authoring.SignatureHelp;
+using NQuery.Authoring.SignatureHelp;
 
 namespace NQuery.Authoring.Tests.SignatureHelp
 {

@@ -1,8 +1,10 @@
+#nullable enable
+
 namespace NQuery
 {
     internal static class ExceptionBuilder
     {
-        public static Exception UnexpectedValue(object value)
+        public static Exception UnexpectedValue(object? value)
         {
             var message = value is null
                 ? @"A null value was unexpected"

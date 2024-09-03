@@ -6,43 +6,25 @@ namespace NQuery.Binding
     {
         private readonly SharedBinderState _sharedBinderState;
 
-        protected Binder(SharedBinderState sharedBinderState, Binder parent)
+        protected Binder(SharedBinderState sharedBinderState, Binder? parent)
         {
             Parent = parent;
             _sharedBinderState = sharedBinderState;
         }
 
-        public Binder Parent { get; }
+        public Binder? Parent { get; }
 
-        private List<Diagnostic> Diagnostics
-        {
-            get { return _sharedBinderState.Diagnostics; }
-        }
+        private List<Diagnostic> Diagnostics => _sharedBinderState.Diagnostics;
 
-        private ValueSlotFactory ValueSlotFactory
-        {
-            get { return _sharedBinderState.ValueSlotFactory; }
-        }
+        private ValueSlotFactory ValueSlotFactory => _sharedBinderState.ValueSlotFactory;
 
-        protected virtual bool InWhereClause
-        {
-            get { return Parent is not null && Parent.InWhereClause; }
-        }
+        protected virtual bool InWhereClause => Parent is not null && Parent.InWhereClause;
 
-        protected virtual bool InOnClause
-        {
-            get { return Parent is not null && Parent.InOnClause; }
-        }
+        protected virtual bool InOnClause => Parent is not null && Parent.InOnClause;
 
-        protected virtual bool InGroupByClause
-        {
-            get { return Parent is not null && Parent.InGroupByClause; }
-        }
+        protected virtual bool InGroupByClause => Parent is not null && Parent.InGroupByClause;
 
-        protected virtual bool InAggregateArgument
-        {
-            get { return Parent is not null && Parent.InAggregateArgument; }
-        }
+        protected virtual bool InAggregateArgument => Parent is not null && Parent.InAggregateArgument;
 
         private Binder CreateLocalBinder(IEnumerable<Symbol> symbols)
         {
@@ -90,14 +72,14 @@ namespace NQuery.Binding
             return new BindingResult(compilationUnit, boundRoot, sharedBinderState.BoundNodeFromSyntaxNode, sharedBinderState.BinderFromBoundNode, sharedBinderState.Diagnostics);
         }
 
-        private BoundNode BindRoot(SyntaxNode root)
+        private BoundNode BindRoot(SyntaxNode? root)
         {
             return root switch
             {
                 null => BindEmptyQuery(),
                 QuerySyntax query => BindQuery(query),
                 ExpressionSyntax expression => BindExpression(expression),
-                _ => throw ExceptionBuilder.UnexpectedValue(root)
+                _ => throw ExceptionBuilder.UnexpectedValue(root),
             };
         }
 
@@ -121,7 +103,7 @@ namespace NQuery.Binding
                 _sharedBinderState.BinderFromBoundNode.Add(boundNode, this);
         }
 
-        private T GetBoundNode<T>(SyntaxNode node)
+        private T? GetBoundNode<T>(SyntaxNode node)
             where T : BoundNode
         {
             _sharedBinderState.BoundNodeFromSyntaxNode.TryGetValue(node, out var result);

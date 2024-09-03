@@ -1,4 +1,4 @@
-﻿using NQuery.Authoring.Outlining;
+using NQuery.Authoring.Outlining;
 using NQuery.Authoring.Outlining.Outliners;
 
 namespace NQuery.Authoring.Tests.Outlining.Outliners

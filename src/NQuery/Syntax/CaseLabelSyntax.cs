@@ -11,10 +11,7 @@ namespace NQuery.Syntax
             ThenExpression = thenExpression;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.CaseLabel; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.CaseLabel;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

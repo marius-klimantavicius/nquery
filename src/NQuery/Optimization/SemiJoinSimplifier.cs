@@ -1,10 +1,10 @@
-﻿using NQuery.Binding;
+using NQuery.Binding;
 
 namespace NQuery.Optimization
 {
     internal sealed class SemiJoinSimplifier : BoundTreeRewriter
     {
-        private readonly Stack<bool> _semiJoinContextFlagStack = new();
+        private readonly Stack<bool> _semiJoinContextFlagStack = new Stack<bool>();
 
         public bool IsSemiJoinContext
         {

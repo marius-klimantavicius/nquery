@@ -10,10 +10,7 @@ namespace NQuery.Syntax
             RightParenthesis = rightParenthesis;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.CommonTableExpressionColumnNameList; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.CommonTableExpressionColumnNameList;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

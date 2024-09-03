@@ -9,10 +9,7 @@ namespace NQuery.Binding
             TableSymbol = tableSymbol;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.CommonTableExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.CommonTableExpression;
 
         public CommonTableExpressionSymbol TableSymbol { get; }
     }

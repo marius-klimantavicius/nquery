@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Binding
 {
     internal sealed class BoundValueSlotExpression : BoundExpression
@@ -7,14 +9,12 @@ namespace NQuery.Binding
             ValueSlot = valueSlot;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.ValueSlotExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.ValueSlotExpression;
+
 
         public override Type Type
         {
-            get { return ValueSlot.Type; }
+            [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] get => ValueSlot.Type;
         }
 
         public ValueSlot ValueSlot { get; }
@@ -27,7 +27,7 @@ namespace NQuery.Binding
             return new BoundValueSlotExpression(valueSlot);
         }
 
-        public override string ToString()
+        public override string? ToString()
         {
             return ValueSlot.Name;
         }

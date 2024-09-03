@@ -7,9 +7,6 @@ namespace NQuery.Syntax
         {
         }
 
-        public SyntaxTrivia ParentTrivia
-        {
-            get { return SyntaxTree?.GetParentTrivia(this); }
-        }
+        public SyntaxTrivia? ParentTrivia => SyntaxTree.GetParentTrivia(this);
     }
 }

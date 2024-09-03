@@ -8,10 +8,7 @@ namespace NQuery.Syntax
             Name = name;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.NameExpression; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.NameExpression;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

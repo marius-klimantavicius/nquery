@@ -2,7 +2,7 @@ namespace NQuery.Binding
 {
     internal sealed class BoundHashMatchRelation : BoundRelation
     {
-        public BoundHashMatchRelation(BoundHashMatchOperator logicalOperator, BoundRelation build, BoundRelation probe, ValueSlot buildKey, ValueSlot probeKey, BoundExpression remainder)
+        public BoundHashMatchRelation(BoundHashMatchOperator logicalOperator, BoundRelation build, BoundRelation probe, ValueSlot buildKey, ValueSlot probeKey, BoundExpression? remainder)
         {
             LogicalOperator = logicalOperator;
             Build = build;
@@ -12,10 +12,7 @@ namespace NQuery.Binding
             Remainder = remainder;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.HashMatchRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.HashMatchRelation;
 
         public BoundHashMatchOperator LogicalOperator { get; }
 
@@ -27,9 +24,9 @@ namespace NQuery.Binding
 
         public ValueSlot ProbeKey { get; }
 
-        public BoundExpression Remainder { get; }
+        public BoundExpression? Remainder { get; }
 
-        public BoundHashMatchRelation Update(BoundHashMatchOperator logicalOperator, BoundRelation build, BoundRelation probe, ValueSlot buildKey, ValueSlot probeKey, BoundExpression remainder)
+        public BoundHashMatchRelation Update(BoundHashMatchOperator logicalOperator, BoundRelation build, BoundRelation probe, ValueSlot buildKey, ValueSlot probeKey, BoundExpression? remainder)
         {
             if (logicalOperator == LogicalOperator && build == Build && probe == Probe && buildKey == BuildKey && probeKey == ProbeKey && remainder == Remainder)
                 return this;

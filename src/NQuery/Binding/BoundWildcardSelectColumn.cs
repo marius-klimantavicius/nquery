@@ -8,24 +8,18 @@ namespace NQuery.Binding
     {
         private readonly ImmutableArray<TableColumnInstanceSymbol> _tableColumns;
 
-        public BoundWildcardSelectColumn(TableInstanceSymbol table, IEnumerable<TableColumnInstanceSymbol> columns)
+        public BoundWildcardSelectColumn(TableInstanceSymbol? table, IEnumerable<TableColumnInstanceSymbol> columns)
         {
             Table = table;
             _tableColumns = columns.ToImmutableArray();
             QueryColumns = _tableColumns.Select(c => new QueryColumnInstanceSymbol(c.Name, c.ValueSlot)).ToImmutableArray();
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.WildcardSelectColumn; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.WildcardSelectColumn;
 
-        public TableInstanceSymbol Table { get; }
+        public TableInstanceSymbol? Table { get; }
 
-        public ImmutableArray<TableColumnInstanceSymbol> TableColumns
-        {
-            get { return _tableColumns; }
-        }
+        public ImmutableArray<TableColumnInstanceSymbol> TableColumns => _tableColumns;
 
         public ImmutableArray<QueryColumnInstanceSymbol> QueryColumns { get; }
     }

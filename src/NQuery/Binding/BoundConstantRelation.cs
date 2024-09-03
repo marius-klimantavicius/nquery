@@ -1,11 +1,8 @@
-﻿namespace NQuery.Binding
+namespace NQuery.Binding
 {
     internal sealed class BoundConstantRelation : BoundRelation
     {
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.ConstantRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.ConstantRelation;
 
         public override IEnumerable<ValueSlot> GetDefinedValues()
         {

@@ -10,10 +10,7 @@ namespace NQuery.Syntax
             Tokens = tokens.ToImmutableArray();
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.SkippedTokensTrivia; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.SkippedTokensTrivia;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

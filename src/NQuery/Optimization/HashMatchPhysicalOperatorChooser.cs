@@ -59,7 +59,7 @@ namespace NQuery.Optimization
             }
         }
 
-        private static EqualPredicatesInfo GetEqualPredicatesInfo(BoundExpression condition, ImmutableArray<ValueSlot> leftValues, ImmutableArray<ValueSlot> rightValues)
+        private static EqualPredicatesInfo GetEqualPredicatesInfo(BoundExpression? condition, ImmutableArray<ValueSlot> leftValues, ImmutableArray<ValueSlot> rightValues)
         {
             var conjunctions = Expression.SplitConjunctions(condition);
             var remainingConjunctions = new List<BoundExpression>();
@@ -78,7 +78,7 @@ namespace NQuery.Optimization
             return new EqualPredicatesInfo(remainder, equalPredicates);
         }
 
-        private static EqualPredicate GetEqualPredicate(BoundExpression predicate, ImmutableArray<ValueSlot> left, ImmutableArray<ValueSlot> right)
+        private static EqualPredicate? GetEqualPredicate(BoundExpression predicate, ImmutableArray<ValueSlot> left, ImmutableArray<ValueSlot> right)
         {
             if (predicate is not BoundBinaryExpression binary || binary.OperatorKind != BinaryOperatorKind.Equal)
                 return null;
@@ -99,13 +99,13 @@ namespace NQuery.Optimization
 
         private sealed class EqualPredicatesInfo
         {
-            public EqualPredicatesInfo(BoundExpression remainder, IEnumerable<EqualPredicate> equalPredicates)
+            public EqualPredicatesInfo(BoundExpression? remainder, IEnumerable<EqualPredicate> equalPredicates)
             {
                 Remainder = remainder;
                 Predicates = equalPredicates.ToImmutableArray();
             }
 
-            public BoundExpression Remainder { get; }
+            public BoundExpression? Remainder { get; }
 
             public ImmutableArray<EqualPredicate> Predicates { get; }
         }

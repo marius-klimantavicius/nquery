@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Binding;
 using NQuery.Symbols.Aggregation;
 
@@ -5,18 +7,18 @@ namespace NQuery.Optimization
 {
     internal sealed class SubqueryExpander : BoundTreeRewriter
     {
-        private readonly Stack<List<Subquery>> _subqueryStack = new();
-        private readonly Stack<BoundExpression> _passthruStack = new();
+        private readonly Stack<List<Subquery>> _subqueryStack = new Stack<List<Subquery>>();
+        private readonly Stack<BoundExpression?> _passthruStack = new Stack<BoundExpression?>();
 
         private enum SubqueryKind
         {
             Exists,
-            Subselect
+            Subselect,
         }
 
         private sealed class Subquery
         {
-            public Subquery(SubqueryKind kind, ValueSlot valueSlot, BoundRelation relation, BoundExpression passthru)
+            public Subquery(SubqueryKind kind, ValueSlot valueSlot, BoundRelation relation, BoundExpression? passthru)
             {
                 Kind = kind;
                 ValueSlot = valueSlot;
@@ -27,13 +29,10 @@ namespace NQuery.Optimization
             public SubqueryKind Kind { get; }
             public ValueSlot ValueSlot { get; }
             public BoundRelation Relation { get; }
-            public BoundExpression Passthru { get; }
+            public BoundExpression? Passthru { get; }
         }
 
-        public BoundExpression CurrentPassthru
-        {
-            get { return _passthruStack.Count == 0 ? null : _passthruStack.Peek(); }
-        }
+        public BoundExpression? CurrentPassthru => _passthruStack.Count == 0 ? null : _passthruStack.Peek();
 
         public override BoundRelation RewriteRelation(BoundRelation node)
         {
@@ -104,7 +103,7 @@ namespace NQuery.Optimization
             var aggregates = new[]
             {
                 new BoundAggregatedValue(anyOutput, anyAggregateSymbol, anyAggregatable, Expression.Value(valueSlot)),
-                new BoundAggregatedValue(countOutput, countAggregatedSymbol, countAggregatable, Expression.Literal(0))
+                new BoundAggregatedValue(countOutput, countAggregatedSymbol, countAggregatable, Expression.Literal(0)),
             };
 
             var aggregation = new BoundGroupByAndAggregationRelation(relation, Enumerable.Empty<BoundComparedValue>(), aggregates);
@@ -220,7 +219,7 @@ namespace NQuery.Optimization
             return new BoundJoinRelation(BoundJoinType.LeftOuter, result, subselect.Relation, null, null, subselect.Passthru);
         }
 
-        private static BoundRelation RewriteConjunctions(BoundRelation input, BoundExpression condition)
+        private static BoundRelation? RewriteConjunctions(BoundRelation input, BoundExpression? condition)
         {
             var current = input;
             var scalarPredicates = new List<BoundExpression>();
@@ -264,10 +263,12 @@ namespace NQuery.Optimization
             // Otherwise we add a filter for the scalars.
 
             var predicate = Expression.And(scalarPredicates);
+            Debug.Assert(predicate != null);
+            
             return new BoundFilterRelation(current, predicate);
         }
 
-        private static BoundRelation RewriteDisjunctions(BoundExpression condition)
+        private static BoundRelation? RewriteDisjunctions(BoundExpression condition)
         {
             var scalarPredicates = new List<BoundExpression>();
             var relationalPredicates = new List<BoundRelation>();
@@ -314,6 +315,8 @@ namespace NQuery.Optimization
             {
                 var constantRelation = new BoundConstantRelation();
                 var predicate = Expression.Or(scalarPredicates);
+                Debug.Assert(predicate != null);
+                
                 var filter = new BoundFilterRelation(constantRelation, predicate);
                 relationalPredicates.Insert(0, filter);
             }
@@ -321,9 +324,9 @@ namespace NQuery.Optimization
             return new BoundConcatenationRelation(relationalPredicates, Enumerable.Empty<BoundUnifiedValue>());
         }
 
-        private static bool TryGetExistsSubselect(BoundExpression expression, out BoundExistsSubselect existsSubselect, out bool isNegated)
+        private static bool TryGetExistsSubselect(BoundExpression expression, [NotNullWhen(true)] out BoundExistsSubselect? existsSubselect, out bool isNegated)
         {
-            if (expression is BoundUnaryExpression negation && negation.Result.Selected.Signature.Kind == UnaryOperatorKind.LogicalNot)
+            if (expression is BoundUnaryExpression negation && negation.Result.Selected?.Signature.Kind == UnaryOperatorKind.LogicalNot)
             {
                 if (!TryGetExistsSubselect(negation.Expression, out existsSubselect, out isNegated))
                     return false;

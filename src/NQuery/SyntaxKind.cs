@@ -63,6 +63,7 @@ namespace NQuery
         TrueKeyword,
         FalseKeyword,
         ToKeyword,
+        OverKeyword,
 
         // Contextual keywords
 
@@ -95,6 +96,7 @@ namespace NQuery
         WithKeyword,
         TiesKeyword,
         RecursiveKeyword,
+        PartitionKeyword,
 
         // Trivia
 
@@ -197,6 +199,9 @@ namespace NQuery
         GroupByClause,
         GroupByColumn,
         HavingClause,
+        OverClause,
+        OrderByClause,
+        PartitionByClause,
         Alias,
     }
 }

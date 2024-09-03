@@ -11,15 +11,9 @@ namespace NQuery.Binding
             Conversion = conversion;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.ConversionExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.ConversionExpression;
 
-        public override Type Type
-        {
-            get { return _type; }
-        }
+        public override Type Type => _type;
 
         public BoundExpression Expression { get; }
 

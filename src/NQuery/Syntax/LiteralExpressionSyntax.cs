@@ -2,17 +2,14 @@ namespace NQuery.Syntax
 {
     public sealed class LiteralExpressionSyntax : ExpressionSyntax
     {
-        internal LiteralExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken token, object value)
+        internal LiteralExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken token, object? value)
             : base(syntaxTree)
         {
             Token = token;
             Value = value;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.LiteralExpression; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.LiteralExpression;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {
@@ -21,6 +18,6 @@ namespace NQuery.Syntax
 
         public SyntaxToken Token { get; }
 
-        public object Value { get; }
+        public object? Value { get; }
     }
 }

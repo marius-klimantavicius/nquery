@@ -1,5 +1,5 @@
 using System.Collections.Immutable;
-
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Binding;
 using NQuery.Symbols;
 
@@ -20,7 +20,7 @@ namespace NQuery.Optimization
 
         private sealed class ValueSlotRewriter : BoundTreeRewriter
         {
-            private readonly Dictionary<ValueSlot, ValueSlot> _valueSlotMapping = new();
+            private readonly Dictionary<ValueSlot, ValueSlot> _valueSlotMapping = new Dictionary<ValueSlot, ValueSlot>();
 
             public ValueSlotRewriter(IEnumerable<KeyValuePair<ValueSlot, ValueSlot>> mapping)
             {
@@ -38,12 +38,13 @@ namespace NQuery.Optimization
                 }
             }
 
-            protected override ValueSlot RewriteValueSlot(ValueSlot valueSlot)
+            [return:NotNullIfNotNull(nameof(valueSlot))]
+            protected override ValueSlot? RewriteValueSlot(ValueSlot? valueSlot)
             {
                 if (valueSlot is null)
                     return null;
 
-                return _valueSlotMapping.TryGetValue(valueSlot, out var newSlot) ? newSlot : valueSlot;
+                return _valueSlotMapping.GetValueOrDefault(valueSlot, valueSlot);
             }
 
             public override BoundRelation RewriteRelation(BoundRelation node)

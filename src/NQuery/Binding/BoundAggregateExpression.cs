@@ -4,40 +4,29 @@ namespace NQuery.Binding
 {
     internal sealed class BoundAggregateExpression : BoundExpression
     {
-        public BoundAggregateExpression(AggregateSymbol aggregate, IAggregatable aggregatable, BoundExpression argument)
+        public BoundAggregateExpression(AggregateSymbol aggregate, IAggregatable? aggregatable, BoundExpression argument)
         {
             Symbol = aggregate;
             Aggregatable = aggregatable;
             Argument = argument;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.AggregateExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.AggregateExpression;
 
-        public override Type Type
-        {
-            get
-            {
-                return Aggregatable is null
-                    ? TypeFacts.Unknown
-                    : Aggregatable.ReturnType;
-            }
-        }
+        public override Type Type =>
+            Aggregatable is null
+                ? TypeFacts.Unknown
+                : Aggregatable.ReturnType;
 
         public AggregateSymbol Symbol { get; }
 
-        public AggregateSymbol Aggregate
-        {
-            get { return Symbol; }
-        }
+        public AggregateSymbol Aggregate => Symbol;
 
-        public IAggregatable Aggregatable { get; }
+        public IAggregatable? Aggregatable { get; }
 
         public BoundExpression Argument { get; }
 
-        public BoundAggregateExpression Update(AggregateSymbol aggregate, IAggregatable aggregatable, BoundExpression argument)
+        public BoundAggregateExpression Update(AggregateSymbol aggregate, IAggregatable? aggregatable, BoundExpression argument)
         {
             if (aggregate == Symbol && aggregatable == Aggregatable && argument == Argument)
                 return this;

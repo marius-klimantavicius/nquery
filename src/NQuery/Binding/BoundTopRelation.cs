@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 
 namespace NQuery.Binding
 {
@@ -11,10 +11,7 @@ namespace NQuery.Binding
             TieEntries = tieEntries.ToImmutableArray();
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.TopRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.TopRelation;
 
         public BoundRelation Input { get; }
 

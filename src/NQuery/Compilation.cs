@@ -1,5 +1,5 @@
 using System.Collections.Immutable;
-
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Binding;
 using NQuery.Optimization;
 using NQuery.Symbols;
@@ -49,7 +49,7 @@ namespace NQuery
             return syntaxDiagnostics.Concat(semanticDiagnostics).ToImmutableArray();
         }
 
-        public ShowPlan GetShowPlan()
+        public ShowPlan? GetShowPlan()
         {
             return GetShowPlanSteps().LastOrDefault();
         }
@@ -83,7 +83,8 @@ namespace NQuery
             yield return ShowPlanBuilder.Build(Resources.ShowPlanOptimized, outputQuery);
         }
 
-        private static BoundQuery GetBoundQuery(BoundNode boundRoot)
+        [return: NotNullIfNotNull(nameof(boundRoot))]
+        private static BoundQuery? GetBoundQuery(BoundNode? boundRoot)
         {
             if (boundRoot is null)
                 return null;

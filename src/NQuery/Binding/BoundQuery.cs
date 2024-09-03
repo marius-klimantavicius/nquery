@@ -12,10 +12,7 @@ namespace NQuery.Binding
             OutputColumns = output.ToImmutableArray();
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.Query; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.Query;
 
         public ImmutableArray<QueryColumnInstanceSymbol> OutputColumns { get; }
 

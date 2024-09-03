@@ -13,11 +13,9 @@ namespace NQuery.Syntax
             RightParenthesis = rightParenthesis;
         }
 
-        public override SyntaxKind Kind
-        {
+        public override SyntaxKind Kind =>
             // TODO: May be we should have different values for ALL, ANY, and SOME?
-            get { return SyntaxKind.AllAnySubselect; }
-        }
+            SyntaxKind.AllAnySubselect;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

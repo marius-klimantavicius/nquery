@@ -9,10 +9,7 @@ namespace NQuery.Syntax
             Expression = expression;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.CaseElseLabel; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.CaseElseLabel;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

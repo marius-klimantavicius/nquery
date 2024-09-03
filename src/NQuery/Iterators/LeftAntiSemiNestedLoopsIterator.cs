@@ -1,4 +1,4 @@
-﻿namespace NQuery.Iterators
+namespace NQuery.Iterators
 {
     internal sealed class LeftAntiSemiNestedLoopsIterator : NestedLoopsIterator
     {
@@ -18,10 +18,7 @@
             _passthruPredicate = passthruPredicate;
         }
 
-        public override RowBuffer RowBuffer
-        {
-            get { return _left.RowBuffer; }
-        }
+        public override RowBuffer RowBuffer => _left.RowBuffer;
 
         public override void Open()
         {

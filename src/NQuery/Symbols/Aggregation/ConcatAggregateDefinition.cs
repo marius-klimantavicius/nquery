@@ -5,10 +5,7 @@ namespace NQuery.Symbols.Aggregation
 {
     public sealed class ConcatAggregateDefinition : AggregateDefinition
     {
-        public override string Name
-        {
-            get { return @"CONCAT"; }
-        }
+        public override string Name => @"CONCAT";
 
         public override IAggregatable CreateAggregatable(Type argumentType)
         {
@@ -22,22 +19,19 @@ namespace NQuery.Symbols.Aggregation
                 return new ConcatAggregator();
             }
 
-            public Type ReturnType
-            {
-                get { return typeof(string); }
-            }
+            public Type ReturnType => typeof(string);
         }
 
         private sealed class ConcatAggregator : IAggregator
         {
-            private readonly SortedSet<string> _valueList = new();
+            private readonly SortedSet<string> _valueList = new SortedSet<string>();
 
             public void Initialize()
             {
                 _valueList.Clear();
             }
 
-            public void Accumulate(object value)
+            public void Accumulate(object? value)
             {
                 if (value is null)
                     return;
@@ -48,9 +42,6 @@ namespace NQuery.Symbols.Aggregation
                     return;
 
                 strValue = strValue.Trim();
-
-                if (_valueList.Contains(strValue))
-                    return;
 
                 _valueList.Add(strValue);
             }

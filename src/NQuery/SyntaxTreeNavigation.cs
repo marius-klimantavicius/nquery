@@ -21,7 +21,7 @@ namespace NQuery
             return includeSkippedTokens ? SkippedTokensTriviaPredicate : NoTriviaPredicate;
         }
 
-        public static SyntaxToken GetFirstToken(SyntaxNode node, bool includeZeroLength, bool includeSkippedTokens)
+        public static SyntaxToken? GetFirstToken(SyntaxNode node, bool includeZeroLength, bool includeSkippedTokens)
         {
             ArgumentNullException.ThrowIfNull(node);
 
@@ -30,7 +30,7 @@ namespace NQuery
             return GetFirstToken(node, tokenPredicate, triviaPredicate);
         }
 
-        public static SyntaxToken GetLastToken(SyntaxNode node, bool includeZeroLength, bool includeSkippedTokens)
+        public static SyntaxToken? GetLastToken(SyntaxNode node, bool includeZeroLength, bool includeSkippedTokens)
         {
             ArgumentNullException.ThrowIfNull(node);
 
@@ -39,7 +39,7 @@ namespace NQuery
             return GetLastToken(node, tokenPredicate, triviaPredicate);
         }
 
-        public static SyntaxToken GetPreviousToken(SyntaxToken token, bool includeZeroLength, bool includeSkippedTokens)
+        public static SyntaxToken? GetPreviousToken(SyntaxToken token, bool includeZeroLength, bool includeSkippedTokens)
         {
             ArgumentNullException.ThrowIfNull(token);
 
@@ -48,7 +48,7 @@ namespace NQuery
             return GetPreviousToken(token, true, tokenPredicate, triviaPredicate);
         }
 
-        public static SyntaxToken GetNextToken(SyntaxToken token, bool includeZeroLength, bool includeSkippedTokens)
+        public static SyntaxToken? GetNextToken(SyntaxToken token, bool includeZeroLength, bool includeSkippedTokens)
         {
             ArgumentNullException.ThrowIfNull(token);
 
@@ -57,19 +57,19 @@ namespace NQuery
             return GetNextToken(token, true, tokenPredicate, triviaPredicate);
         }
 
-        private static SyntaxToken GetFirstToken(SyntaxNode node, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetFirstToken(SyntaxNode node, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             foreach (var nodeOrToken in node.ChildNodesAndTokens())
             {
                 if (nodeOrToken.IsToken)
                 {
-                    var t = GetFirstToken(nodeOrToken.AsToken(), tokenPredicate, triviaPredicate);
+                    var t = GetFirstToken(nodeOrToken.AsToken, tokenPredicate, triviaPredicate);
                     if (t is not null)
                         return t;
                 }
                 else
                 {
-                    var t = GetFirstToken(nodeOrToken.AsNode(), tokenPredicate, triviaPredicate);
+                    var t = GetFirstToken(nodeOrToken.AsNode, tokenPredicate, triviaPredicate);
                     if (t is not null)
                         return t;
                 }
@@ -78,7 +78,7 @@ namespace NQuery
             return null;
         }
 
-        private static SyntaxToken GetFirstToken(SyntaxToken token, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetFirstToken(SyntaxToken token, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             var lt = GetFirstToken(token.LeadingTrivia, tokenPredicate, triviaPredicate);
             if (lt is not null)
@@ -91,7 +91,7 @@ namespace NQuery
             return tt;
         }
 
-        private static SyntaxToken GetFirstToken(IEnumerable<SyntaxTrivia> triviaList, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetFirstToken(IEnumerable<SyntaxTrivia> triviaList, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             foreach (var trivia in triviaList)
             {
@@ -106,19 +106,19 @@ namespace NQuery
             return null;
         }
 
-        private static SyntaxToken GetLastToken(SyntaxNode node, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetLastToken(SyntaxNode node, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             foreach (var nodeOrToken in node.ChildNodesAndTokens().Reverse())
             {
                 if (nodeOrToken.IsToken)
                 {
-                    var t = GetLastToken(nodeOrToken.AsToken(), tokenPredicate, triviaPredicate);
+                    var t = GetLastToken(nodeOrToken.AsToken, tokenPredicate, triviaPredicate);
                     if (t is not null)
                         return t;
                 }
                 else
                 {
-                    var t = GetLastToken(nodeOrToken.AsNode(), tokenPredicate, triviaPredicate);
+                    var t = GetLastToken(nodeOrToken.AsNode, tokenPredicate, triviaPredicate);
                     if (t is not null)
                         return t;
                 }
@@ -127,7 +127,7 @@ namespace NQuery
             return null;
         }
 
-        private static SyntaxToken GetLastToken(SyntaxToken token, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetLastToken(SyntaxToken token, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             var tt = GetLastToken(token.TrailingTrivia, tokenPredicate, triviaPredicate);
             if (tt is not null)
@@ -140,7 +140,7 @@ namespace NQuery
             return lt;
         }
 
-        private static SyntaxToken GetLastToken(IEnumerable<SyntaxTrivia> triviaList, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetLastToken(IEnumerable<SyntaxTrivia> triviaList, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             foreach (var trivia in triviaList.Reverse())
             {
@@ -155,7 +155,7 @@ namespace NQuery
             return null;
         }
 
-        private static SyntaxToken GetPreviousToken(SyntaxToken token, bool searchLeadingTrivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetPreviousToken(SyntaxToken token, bool searchLeadingTrivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             if (searchLeadingTrivia)
             {
@@ -175,19 +175,19 @@ namespace NQuery
                 {
                     if (nodeOrToken.IsToken)
                     {
-                        var t = GetLastToken(nodeOrToken.AsToken(), tokenPredicate, triviaPredicate);
+                        var t = GetLastToken(nodeOrToken.AsToken, tokenPredicate, triviaPredicate);
                         if (t is not null)
                             return t;
                     }
                     else
                     {
-                        var t = GetLastToken(nodeOrToken.AsNode(), tokenPredicate, triviaPredicate);
+                        var t = GetLastToken(nodeOrToken.AsNode, tokenPredicate, triviaPredicate);
                         if (t is not null)
                             return t;
                     }
 
                 }
-                else if (nodeOrToken.IsToken && nodeOrToken.AsToken() == token)
+                else if (nodeOrToken.IsToken && nodeOrToken.AsToken == token)
                 {
                     returnNext = true;
                 }
@@ -196,7 +196,7 @@ namespace NQuery
             return GetPreviousToken(token.Parent, tokenPredicate, triviaPredicate);
         }
 
-        private static SyntaxToken GetPreviousToken(SyntaxNode node, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetPreviousToken(SyntaxNode node, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             if (node.Parent is not null)
             {
@@ -208,19 +208,19 @@ namespace NQuery
                     {
                         if (nodeOrToken.IsToken)
                         {
-                            var t = GetLastToken(nodeOrToken.AsToken(), tokenPredicate, triviaPredicate);
+                            var t = GetLastToken(nodeOrToken.AsToken, tokenPredicate, triviaPredicate);
                             if (t is not null)
                                 return t;
                         }
                         else
                         {
-                            var t = GetLastToken(nodeOrToken.AsNode(), tokenPredicate, triviaPredicate);
+                            var t = GetLastToken(nodeOrToken.AsNode, tokenPredicate, triviaPredicate);
                             if (t is not null)
                                 return t;
                         }
                     }
 
-                    if (nodeOrToken.IsNode && nodeOrToken.AsNode() == node)
+                    if (nodeOrToken.IsNode && nodeOrToken.AsNode == node)
                         returnNext = true;
                 }
 
@@ -232,11 +232,11 @@ namespace NQuery
 
             var trivia = structuredTrivia.ParentTrivia;
             return trivia is null
-                       ? null
-                       : GetPreviousToken(trivia, tokenPredicate, triviaPredicate);
+                ? null
+                : GetPreviousToken(trivia, tokenPredicate, triviaPredicate);
         }
 
-        private static SyntaxToken GetPreviousToken(SyntaxTrivia trivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetPreviousToken(SyntaxTrivia trivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             if (trivia.Parent is null)
                 return null;
@@ -252,7 +252,7 @@ namespace NQuery
             return GetPreviousToken(trivia.Parent, false, tokenPredicate, triviaPredicate);
         }
 
-        private static SyntaxToken GetPreviousToken(ImmutableArray<SyntaxTrivia> triviaList, SyntaxTrivia trivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetPreviousToken(ImmutableArray<SyntaxTrivia> triviaList, SyntaxTrivia trivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             var returnNext = false;
 
@@ -274,14 +274,14 @@ namespace NQuery
                 }
             }
 
-            var isTrailing = triviaList == trivia.Parent.TrailingTrivia;
-            if (returnNext && isTrailing && tokenPredicate(trivia.Parent))
+            var isTrailing = triviaList == trivia.Parent?.TrailingTrivia;
+            if (returnNext && isTrailing && trivia.Parent != null && tokenPredicate(trivia.Parent))
                 return trivia.Parent;
 
             return null;
         }
 
-        private static SyntaxToken GetNextToken(SyntaxToken token, bool searchTrailingTrivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetNextToken(SyntaxToken token, bool searchTrailingTrivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             if (searchTrailingTrivia)
             {
@@ -301,19 +301,19 @@ namespace NQuery
                 {
                     if (nodeOrToken.IsToken)
                     {
-                        var t = GetFirstToken(nodeOrToken.AsToken(), tokenPredicate, triviaPredicate);
+                        var t = GetFirstToken(nodeOrToken.AsToken, tokenPredicate, triviaPredicate);
                         if (t is not null)
                             return t;
                     }
                     else
                     {
-                        var t = GetFirstToken(nodeOrToken.AsNode(), tokenPredicate, triviaPredicate);
+                        var t = GetFirstToken(nodeOrToken.AsNode, tokenPredicate, triviaPredicate);
                         if (t is not null)
                             return t;
                     }
 
                 }
-                else if (nodeOrToken.IsToken && nodeOrToken.AsToken() == token)
+                else if (nodeOrToken.IsToken && nodeOrToken.AsToken == token)
                 {
                     returnNext = true;
                 }
@@ -322,7 +322,7 @@ namespace NQuery
             return GetNextToken(token.Parent, tokenPredicate, triviaPredicate);
         }
 
-        private static SyntaxToken GetNextToken(SyntaxNode node, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetNextToken(SyntaxNode node, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             if (node.Parent is not null)
             {
@@ -334,19 +334,19 @@ namespace NQuery
                     {
                         if (nodeOrToken.IsToken)
                         {
-                            var t = GetFirstToken(nodeOrToken.AsToken(), tokenPredicate, triviaPredicate);
+                            var t = GetFirstToken(nodeOrToken.AsToken, tokenPredicate, triviaPredicate);
                             if (t is not null)
                                 return t;
                         }
                         else
                         {
-                            var t = GetFirstToken(nodeOrToken.AsNode(), tokenPredicate, triviaPredicate);
+                            var t = GetFirstToken(nodeOrToken.AsNode, tokenPredicate, triviaPredicate);
                             if (t is not null)
                                 return t;
                         }
                     }
 
-                    if (nodeOrToken.IsNode && nodeOrToken.AsNode() == node)
+                    if (nodeOrToken.IsNode && nodeOrToken.AsNode == node)
                         returnNext = true;
                 }
 
@@ -358,11 +358,11 @@ namespace NQuery
 
             var trivia = structuredTrivia.ParentTrivia;
             return trivia is null
-                       ? null
-                       : GetNextToken(trivia, tokenPredicate, triviaPredicate);
+                ? null
+                : GetNextToken(trivia, tokenPredicate, triviaPredicate);
         }
 
-        private static SyntaxToken GetNextToken(SyntaxTrivia trivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetNextToken(SyntaxTrivia trivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             if (trivia.Parent is null)
                 return null;
@@ -378,7 +378,7 @@ namespace NQuery
             return GetNextToken(trivia.Parent, false, tokenPredicate, triviaPredicate);
         }
 
-        private static SyntaxToken GetNextToken(ImmutableArray<SyntaxTrivia> triviaList, SyntaxTrivia trivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
+        private static SyntaxToken? GetNextToken(ImmutableArray<SyntaxTrivia> triviaList, SyntaxTrivia trivia, Func<SyntaxToken, bool> tokenPredicate, Func<SyntaxTrivia, bool> triviaPredicate)
         {
             var returnNext = false;
 
@@ -400,8 +400,8 @@ namespace NQuery
                 }
             }
 
-            var isLeading = triviaList == trivia.Parent.LeadingTrivia;
-            if (returnNext && isLeading && tokenPredicate(trivia.Parent))
+            var isLeading = triviaList == trivia.Parent?.LeadingTrivia;
+            if (returnNext && isLeading && trivia.Parent != null && tokenPredicate(trivia.Parent))
                 return trivia.Parent;
 
             return null;

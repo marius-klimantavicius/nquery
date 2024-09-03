@@ -10,24 +10,15 @@ namespace NQuery.Binding
             Symbol = propertySymbol;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.PropertyAccessExpression; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.PropertyAccessExpression;
 
-        public override Type Type
-        {
-            get { return Symbol.Type; }
-        }
+        public override Type Type => Symbol.Type;
 
         public PropertySymbol Symbol { get; }
 
         public BoundExpression Target { get; }
 
-        public PropertySymbol PropertySymbol
-        {
-            get { return Symbol; }
-        }
+        public PropertySymbol PropertySymbol => Symbol;
 
         public BoundPropertyAccessExpression Update(BoundExpression target, PropertySymbol propertySymbol)
         {

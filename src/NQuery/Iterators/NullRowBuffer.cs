@@ -9,17 +9,11 @@ namespace NQuery.Iterators
             _count = count;
         }
 
-        public override int Count
-        {
-            get { return _count; }
-        }
+        public override int Count => _count;
 
-        public override object this[int index]
-        {
-            get { return null; }
-        }
+        public override object? this[int index] => null;
 
-        public override void CopyTo(object[] array, int destinationIndex)
+        public override void CopyTo(object?[] array, int destinationIndex)
         {
             Array.Clear(array, destinationIndex, _count);
         }

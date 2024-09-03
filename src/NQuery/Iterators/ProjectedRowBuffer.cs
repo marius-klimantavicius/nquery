@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 
 namespace NQuery.Iterators
 {
@@ -11,17 +11,11 @@ namespace NQuery.Iterators
             _projectedIndices = projectedEntries.ToImmutableArray();
         }
 
-        public override int Count
-        {
-            get { return _projectedIndices.Length; }
-        }
+        public override int Count => _projectedIndices.Length;
 
-        public override object this[int index]
-        {
-            get { return _projectedIndices[index].GetValue(); }
-        }
+        public override object? this[int index] => _projectedIndices[index].GetValue();
 
-        public override void CopyTo(object[] array, int destinationIndex)
+        public override void CopyTo(object?[] array, int destinationIndex)
         {
             for (var i = 0; i < _projectedIndices.Length; i++)
                 array[i] = _projectedIndices[i].GetValue();

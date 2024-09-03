@@ -22,10 +22,7 @@ namespace NQuery.Text
 
         public int Start { get; }
 
-        public int End
-        {
-            get { return Start + Length; }
-        }
+        public int End => Start + Length;
 
         public int Length { get; }
 
@@ -62,7 +59,7 @@ namespace NQuery.Text
                    Length == other.Length;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is TextSpan other && Equals(other);
         }

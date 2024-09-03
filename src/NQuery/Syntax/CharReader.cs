@@ -18,13 +18,7 @@ namespace NQuery.Syntax
 
         public int Position { get; private set; }
 
-        public char Current
-        {
-            get
-            {
-                return Peek(0);
-            }
-        }
+        public char Current => Peek(0);
 
         public char Peek()
         {

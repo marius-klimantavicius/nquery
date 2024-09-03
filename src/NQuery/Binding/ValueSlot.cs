@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery.Binding
 {
     internal sealed class ValueSlot
@@ -17,9 +19,9 @@ namespace NQuery.Binding
 
         public string Name => string.Format(_formatString, _number);
 
-        public Type Type { get; }
+        public Type Type { [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] get; }
 
-        public override string ToString()
+        public override string? ToString()
         {
             return Name;
         }

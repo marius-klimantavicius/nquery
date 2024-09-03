@@ -10,10 +10,7 @@ namespace NQuery.Syntax
             Name = name;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.PropertyAccessExpression; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.PropertyAccessExpression;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

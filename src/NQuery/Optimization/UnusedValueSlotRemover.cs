@@ -1,12 +1,11 @@
 using System.Collections.Immutable;
-
 using NQuery.Binding;
 
 namespace NQuery.Optimization
 {
     internal sealed class UnusedValueSlotRemover : BoundTreeRewriter
     {
-        private ValueSlotRecorder _recorder;
+        private ValueSlotRecorder _recorder = null!;
 
         public override BoundRelation RewriteRelation(BoundRelation node)
         {
@@ -19,9 +18,16 @@ namespace NQuery.Optimization
             return base.RewriteRelation(node);
         }
 
-        private ImmutableArray<T> RemoveUnusedSlots<T>(ImmutableArray<T> array, Func<T, ValueSlot> valueSlotSelector)
+        private ImmutableArray<T> RemoveUnusedSlots<T>(ImmutableArray<T> array, Func<T, ValueSlot?> valueSlotSelector)
         {
-            return array.RemoveAll(v => !_recorder.UsedValueSlots.Contains(valueSlotSelector(v)));
+            return array.RemoveAll(v =>
+            {
+                var valueSlot = valueSlotSelector(v);
+                if (valueSlot == null)
+                    return false;
+
+                return !_recorder.UsedValueSlots.Contains(valueSlot);
+            });
         }
 
         protected override BoundRelation RewriteTableRelation(BoundTableRelation node)
@@ -187,7 +193,7 @@ namespace NQuery.Optimization
                 _finder = new ValueSlotDependencyFinder(UsedValueSlots);
             }
 
-            public HashSet<ValueSlot> UsedValueSlots { get; } = new();
+            public HashSet<ValueSlot> UsedValueSlots { get; } = new HashSet<ValueSlot>();
 
             public void Record(BoundExpression expression)
             {
@@ -199,16 +205,18 @@ namespace NQuery.Optimization
                 UsedValueSlots.UnionWith(valueSlots);
             }
 
-            public void Record(ValueSlot valueSlot)
+            public void Record(ValueSlot? valueSlot)
             {
-                UsedValueSlots.Add(valueSlot);
+                if (valueSlot != null)
+                    UsedValueSlots.Add(valueSlot);
             }
 
             public void Record(ImmutableArray<BoundComputedValue> definedValues)
             {
                 foreach (var definedValue in definedValues)
                 {
-                    UsedValueSlots.Add(definedValue.ValueSlot);
+                    if (definedValue.ValueSlot != null)
+                        UsedValueSlots.Add(definedValue.ValueSlot);
                     _finder.VisitExpression(definedValue.Expression);
                 }
             }
@@ -217,7 +225,8 @@ namespace NQuery.Optimization
             {
                 foreach (var definedValue in definedValues)
                 {
-                    UsedValueSlots.Add(definedValue.Output);
+                    if (definedValue.Output != null)
+                        UsedValueSlots.Add(definedValue.Output);
                     _finder.VisitExpression(definedValue.Argument);
                 }
             }
@@ -226,7 +235,8 @@ namespace NQuery.Optimization
             {
                 foreach (var definedValue in definedValues)
                 {
-                    UsedValueSlots.Add(definedValue.ValueSlot);
+                    if (definedValue.ValueSlot != null)
+                        UsedValueSlots.Add(definedValue.ValueSlot);
                     UsedValueSlots.UnionWith(definedValue.InputValueSlots);
                 }
             }
@@ -234,7 +244,10 @@ namespace NQuery.Optimization
             public void Record(ImmutableArray<BoundComparedValue> definedValues)
             {
                 foreach (var definedValue in definedValues)
-                    UsedValueSlots.Add(definedValue.ValueSlot);
+                {
+                    if (definedValue.ValueSlot != null)
+                        UsedValueSlots.Add(definedValue.ValueSlot);
+                }
             }
         }
     }

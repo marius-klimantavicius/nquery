@@ -9,10 +9,7 @@ namespace NQuery.Syntax
             Predicate = predicate;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.HavingClause; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.HavingClause;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

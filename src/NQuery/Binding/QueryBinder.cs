@@ -10,24 +10,12 @@ namespace NQuery.Binding
 
         public override BoundQueryState QueryState { get; }
 
-        protected override bool InWhereClause
-        {
-            get { return false; }
-        }
+        protected override bool InWhereClause => false;
 
-        protected override bool InOnClause
-        {
-            get { return false; }
-        }
+        protected override bool InOnClause => false;
 
-        protected override bool InGroupByClause
-        {
-            get { return false; }
-        }
+        protected override bool InGroupByClause => false;
 
-        protected override bool InAggregateArgument
-        {
-            get { return false; }
-        }
+        protected override bool InAggregateArgument => false;
     }
 }

@@ -1,14 +1,11 @@
-﻿namespace NQuery.Iterators
+namespace NQuery.Iterators
 {
     internal sealed class ConstantIterator : Iterator
     {
-        private readonly EmptyRowBuffer _rowBuffer = new();
+        private readonly EmptyRowBuffer _rowBuffer = new EmptyRowBuffer();
         private bool _isEof;
 
-        public override RowBuffer RowBuffer
-        {
-            get { return _rowBuffer; }
-        }
+        public override RowBuffer RowBuffer => _rowBuffer;
 
         public override void Open()
         {

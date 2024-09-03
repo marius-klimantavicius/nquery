@@ -1,4 +1,4 @@
-﻿namespace NQuery.Binding
+namespace NQuery.Binding
 {
     internal sealed class BoundTableSpoolPusher : BoundRelation
     {
@@ -9,15 +9,9 @@
             _input = input;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.TableSpoolPusher; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.TableSpoolPusher;
 
-        public BoundRelation Input
-        {
-            get { return _input; }
-        }
+        public BoundRelation Input => _input;
 
         public BoundTableSpoolPusher Update(BoundRelation input)
         {

@@ -10,14 +10,8 @@ namespace NQuery.Symbols.Aggregation
 
         public AggregateDefinition Definition { get; }
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.Aggregate; }
-        }
+        public override SymbolKind Kind => SymbolKind.Aggregate;
 
-        public override Type Type
-        {
-            get { return TypeFacts.Missing; }
-        }
+        public override Type Type => TypeFacts.Missing;
     }
 }

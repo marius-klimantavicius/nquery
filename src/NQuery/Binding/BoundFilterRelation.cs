@@ -1,4 +1,4 @@
-﻿namespace NQuery.Binding
+namespace NQuery.Binding
 {
     internal sealed class BoundFilterRelation : BoundRelation
     {
@@ -8,10 +8,7 @@
             Condition = condition;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.FilterRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.FilterRelation;
 
         public BoundRelation Input { get; }
 

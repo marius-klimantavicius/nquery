@@ -13,10 +13,7 @@ namespace NQuery.Syntax
             RightParenthesisToken = rightParenthesisToken;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.CastExpression; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.CastExpression;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

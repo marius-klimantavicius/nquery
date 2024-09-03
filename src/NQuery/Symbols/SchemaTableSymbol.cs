@@ -20,15 +20,9 @@ namespace NQuery.Symbols
 
         public TableDefinition Definition { get; }
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.SchemaTable; }
-        }
+        public override SymbolKind Kind => SymbolKind.SchemaTable;
 
-        public override Type Type
-        {
-            get { return Definition.RowType; }
-        }
+        public override Type Type => Definition.RowType;
 
         public override ImmutableArray<ColumnSymbol> Columns { get; }
     }

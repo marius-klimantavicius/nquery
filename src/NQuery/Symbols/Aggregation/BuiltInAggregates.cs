@@ -13,11 +13,12 @@ namespace NQuery.Symbols.Aggregation
                 new AggregateSymbol(new SumAggregateDefinition()),
                 new AggregateSymbol(new StdDevAggregateDefinition()),
                 new AggregateSymbol(new VarAggregateDefinition()),
-                new AggregateSymbol(new ConcatAggregateDefinition())
+                new AggregateSymbol(new ConcatAggregateDefinition()),
+                new AggregateSymbol(new RowNumberAggregateDefinition()),
             };
         }
 
-        public static readonly AggregateSymbol Count = new(new CountAggregateDefinition());
-        public static readonly AggregateSymbol Any = new(new AnyAggregateDefinition());
+        public static readonly AggregateSymbol Count = new AggregateSymbol(new CountAggregateDefinition());
+        public static readonly AggregateSymbol Any = new AggregateSymbol(new AnyAggregateDefinition());
     }
 }

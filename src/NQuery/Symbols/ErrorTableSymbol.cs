@@ -9,19 +9,10 @@ namespace NQuery.Symbols
         {
         }
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.ErrorTable; }
-        }
+        public override SymbolKind Kind => SymbolKind.ErrorTable;
 
-        public override Type Type
-        {
-            get { return TypeFacts.Unknown; }
-        }
+        public override Type Type => TypeFacts.Unknown;
 
-        public override ImmutableArray<ColumnSymbol> Columns
-        {
-            get { return ImmutableArray<ColumnSymbol>.Empty; }
-        }
+        public override ImmutableArray<ColumnSymbol> Columns => ImmutableArray<ColumnSymbol>.Empty;
     }
 }

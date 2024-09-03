@@ -1,10 +1,10 @@
-﻿using NQuery.Binding;
+using NQuery.Binding;
 
 namespace NQuery.Optimization
 {
     internal static class Expression
     {
-        public static BoundExpression Literal(object value)
+        public static BoundExpression Literal(object? value)
         {
             return new BoundLiteralExpression(value);
         }
@@ -46,30 +46,33 @@ namespace NQuery.Optimization
             return Merge(left, right, BinaryOperatorKind.LessOrEqual);
         }
 
-        public static BoundExpression And(BoundExpression left, BoundExpression right)
+        public static BoundExpression And(BoundExpression? left, BoundExpression? right)
         {
             return Merge(left, right, BinaryOperatorKind.LogicalAnd);
         }
 
-        public static BoundExpression And(IEnumerable<BoundExpression> conditions)
+        public static BoundExpression? And(IEnumerable<BoundExpression> conditions)
         {
             return Merge(conditions, BinaryOperatorKind.LogicalAnd);
         }
 
-        public static BoundExpression Or(BoundExpression left, BoundExpression right)
+        public static BoundExpression Or(BoundExpression? left, BoundExpression right)
         {
             return Merge(left, right, BinaryOperatorKind.LogicalOr);
         }
 
-        public static BoundExpression Or(IEnumerable<BoundExpression> conditions)
+        public static BoundExpression? Or(IEnumerable<BoundExpression> conditions)
         {
             return Merge(conditions, BinaryOperatorKind.LogicalOr);
         }
 
-        private static BoundExpression Merge(BoundExpression left, BoundExpression right, BinaryOperatorKind operatorKind)
+        private static BoundExpression Merge(BoundExpression? left, BoundExpression? right, BinaryOperatorKind operatorKind)
         {
+            if (left is null && right is null)
+                throw new ArgumentNullException(nameof(left));
+            
             if (left is null)
-                return right;
+                return right!;
 
             if (right is null)
                 return left;
@@ -78,22 +81,22 @@ namespace NQuery.Optimization
             return new BoundBinaryExpression(left, operatorKind, result, right);
         }
 
-        private static BoundExpression Merge(IEnumerable<BoundExpression> conditions, BinaryOperatorKind operatorKind)
+        private static BoundExpression? Merge(IEnumerable<BoundExpression> conditions, BinaryOperatorKind operatorKind)
         {
-            return conditions.Aggregate<BoundExpression, BoundExpression>(null, (c, n) => c is null ? n : Merge(c, n, operatorKind));
+            return conditions.Aggregate<BoundExpression?, BoundExpression?>(null, (c, n) => c is null ? n : Merge(c, n, operatorKind));
         }
 
-        public static IEnumerable<BoundExpression> SplitConjunctions(BoundExpression expression)
+        public static IEnumerable<BoundExpression> SplitConjunctions(BoundExpression? expression)
         {
             return Split(expression, BinaryOperatorKind.LogicalAnd);
         }
 
-        public static IEnumerable<BoundExpression> SplitDisjunctions(BoundExpression expression)
+        public static IEnumerable<BoundExpression> SplitDisjunctions(BoundExpression? expression)
         {
             return Split(expression, BinaryOperatorKind.LogicalOr);
         }
 
-        private static IEnumerable<BoundExpression> Split(BoundExpression expression, BinaryOperatorKind operatorKind)
+        private static IEnumerable<BoundExpression> Split(BoundExpression? expression, BinaryOperatorKind operatorKind)
         {
             if (expression is null)
                 yield break;

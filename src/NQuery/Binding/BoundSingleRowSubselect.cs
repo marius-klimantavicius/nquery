@@ -8,15 +8,9 @@ namespace NQuery.Binding
             Relation = relation;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.SingleRowSubselect; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.SingleRowSubselect;
 
-        public override Type Type
-        {
-            get { return Value.Type; }
-        }
+        public override Type Type => Value.Type;
 
         public ValueSlot Value { get; }
 

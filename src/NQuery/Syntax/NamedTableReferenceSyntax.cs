@@ -2,17 +2,14 @@ namespace NQuery.Syntax
 {
     public sealed class NamedTableReferenceSyntax : TableReferenceSyntax
     {
-        internal NamedTableReferenceSyntax(SyntaxTree syntaxTree, SyntaxToken tableName, AliasSyntax alias)
+        internal NamedTableReferenceSyntax(SyntaxTree syntaxTree, SyntaxToken tableName, AliasSyntax? alias)
             : base(syntaxTree)
         {
             TableName = tableName;
             Alias = alias;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.NamedTableReference; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.NamedTableReference;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {
@@ -23,6 +20,6 @@ namespace NQuery.Syntax
 
         public SyntaxToken TableName { get; }
 
-        public AliasSyntax Alias { get; }
+        public AliasSyntax? Alias { get; }
     }
 }

@@ -9,10 +9,7 @@ namespace NQuery.Syntax
             JoinKeyword = joinKeyword;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.CrossJoinedTableReference; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.CrossJoinedTableReference;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

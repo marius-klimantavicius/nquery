@@ -10,10 +10,7 @@ namespace NQuery.Syntax
             RightQuery = rightQuery;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.ExceptQuery; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.ExceptQuery;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

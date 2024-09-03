@@ -11,12 +11,9 @@ namespace NQuery.Symbols.Aggregation
             _isVar = isVar;
         }
 
-        public override string Name
-        {
-            get { return _isVar ? @"VAR" : @"STDEV"; }
-        }
+        public override string Name => _isVar ? @"VAR" : @"STDEV";
 
-        public override IAggregatable CreateAggregatable(Type argumentType)
+        public override IAggregatable? CreateAggregatable(Type argumentType)
         {
             if (argumentType == typeof(byte) ||
                 argumentType == typeof(sbyte) ||
@@ -48,15 +45,10 @@ namespace NQuery.Symbols.Aggregation
                 return new VarAndStdDevAggregator(_isVar);
             }
 
-            public Type ReturnType
-            {
-                get
-                {
-                    return _isVar
-                        ? typeof(decimal)
-                        : typeof(double);
-                }
-            }
+            public Type ReturnType =>
+                _isVar
+                    ? typeof(decimal)
+                    : typeof(double);
         }
 
         private sealed class VarAndStdDevAggregator : IAggregator
@@ -79,7 +71,7 @@ namespace NQuery.Symbols.Aggregation
                 _count = 0;
             }
 
-            public void Accumulate(object value)
+            public void Accumulate(object? value)
             {
                 var valueAsDecimal = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
                 _sum += valueAsDecimal;
@@ -87,7 +79,7 @@ namespace NQuery.Symbols.Aggregation
                 _count++;
             }
 
-            public object GetResult()
+            public object? GetResult()
             {
                 if (_count < 2)
                     return null;

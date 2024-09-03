@@ -88,7 +88,7 @@ namespace NQuery
                     }
                     else
                     {
-                        var token = nodesOrToken.AsToken();
+                        var token = nodesOrToken.AsToken;
                         var tokenText = token.Text.Replace("\"", "\"\"");
 
                         if (token.IsMissing)

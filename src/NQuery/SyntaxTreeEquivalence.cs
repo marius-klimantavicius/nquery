@@ -2,7 +2,7 @@ namespace NQuery
 {
     internal static class SyntaxTreeEquivalence
     {
-        public static bool AreEquivalent(SyntaxNode left, SyntaxNode right)
+        public static bool AreEquivalent(SyntaxNode? left, SyntaxNode? right)
         {
             if (left is null && right is null)
                 return true;
@@ -44,11 +44,11 @@ namespace NQuery
                 return false;
 
             return left.IsNode
-                       ? AreEquivalent(left.AsNode(), right.AsNode())
-                       : AreEquivalent(left.AsToken(), right.AsToken());
+                       ? AreEquivalent(left.AsNode, right.AsNode)
+                       : AreEquivalent(left.AsToken, right.AsToken);
         }
 
-        public static bool AreEquivalent(SyntaxToken left, SyntaxToken right)
+        public static bool AreEquivalent(SyntaxToken? left, SyntaxToken? right)
         {
             if (left is null && right is null)
                 return true;

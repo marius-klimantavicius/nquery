@@ -1,4 +1,4 @@
-﻿using NQuery.Authoring.QuickInfo;
+using NQuery.Authoring.QuickInfo;
 using NQuery.Text;
 
 namespace NQuery.Authoring.Tests.QuickInfo

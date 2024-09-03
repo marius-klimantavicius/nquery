@@ -9,10 +9,7 @@ namespace NQuery.Syntax
             Name = name;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.VariableExpression; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.VariableExpression;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

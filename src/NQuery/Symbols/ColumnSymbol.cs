@@ -10,10 +10,7 @@ namespace NQuery.Symbols
             Type = type;
         }
 
-        public override SymbolKind Kind
-        {
-            get { return SymbolKind.Column; }
-        }
+        public override SymbolKind Kind => SymbolKind.Column;
 
         public override Type Type { get; }
     }

@@ -411,7 +411,7 @@ namespace NQuery.Tests.Symbols
             AssertEvaluatesTo("TO_CHAR(32)", ' ');
             AssertEvaluatesTo("TO_CHAR(' ')", ' ');
 
-            AssertEvaluatesTo("TO_CHAR('ß', 'de-DE')", 'ß');
+            AssertEvaluatesTo("TO_CHAR('ï¿½', 'de-DE')", 'ï¿½');
         }
 
         [Fact]

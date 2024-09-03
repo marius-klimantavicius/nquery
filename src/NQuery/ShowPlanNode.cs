@@ -4,7 +4,7 @@ namespace NQuery
 {
     public sealed class ShowPlanNode
     {
-        internal ShowPlanNode(string operatorName, IEnumerable<KeyValuePair<string, string>> properties, IEnumerable<ShowPlanNode> children, bool isScalar = false)
+        internal ShowPlanNode(string? operatorName, IEnumerable<KeyValuePair<string, string>> properties, IEnumerable<ShowPlanNode> children, bool isScalar = false)
         {
             IsScalar = isScalar;
             OperatorName = operatorName;
@@ -14,7 +14,7 @@ namespace NQuery
 
         public bool IsScalar { get; }
 
-        public string OperatorName { get; }
+        public string? OperatorName { get; }
 
         public ImmutableArray<KeyValuePair<string, string>> Properties { get; }
 

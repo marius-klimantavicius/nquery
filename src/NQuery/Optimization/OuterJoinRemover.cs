@@ -6,7 +6,7 @@ namespace NQuery.Optimization
 {
     internal sealed class OuterJoinRemover : BoundTreeRewriter
     {
-        private readonly HashSet<ValueSlot> _nullRejectedRowBufferEntries = new();
+        private readonly HashSet<ValueSlot> _nullRejectedRowBufferEntries = new HashSet<ValueSlot>();
 
         private void AddNullRejectedTable(ValueSlot valueSlot)
         {
@@ -18,7 +18,7 @@ namespace NQuery.Optimization
             return valueSlots.Any(_nullRejectedRowBufferEntries.Contains);
         }
 
-        private static BoundRelation WrapWithFilter(BoundRelation input, BoundExpression predicate)
+        private static BoundRelation WrapWithFilter(BoundRelation input, BoundExpression? predicate)
         {
             return predicate is null
                 ? input

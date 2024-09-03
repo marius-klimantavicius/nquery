@@ -13,10 +13,7 @@ namespace NQuery.Syntax
             RightParenthesisToken = rightParenthesisToken;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.NullIfExpression; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.NullIfExpression;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

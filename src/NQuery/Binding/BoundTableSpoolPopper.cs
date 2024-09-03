@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 
 namespace NQuery.Binding
 {
@@ -11,15 +11,9 @@ namespace NQuery.Binding
             _outputs = outputs;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.TableSpoolPopper; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.TableSpoolPopper;
 
-        public ImmutableArray<ValueSlot> Outputs
-        {
-            get { return _outputs; }
-        }
+        public ImmutableArray<ValueSlot> Outputs => _outputs;
 
         public BoundTableSpoolPopper Update(IEnumerable<ValueSlot> outputs)
         {

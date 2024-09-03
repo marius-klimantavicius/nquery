@@ -1,6 +1,6 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Immutable;
-
+using System.Diagnostics.CodeAnalysis;
 using NQuery.Symbols;
 using NQuery.Symbols.Aggregation;
 
@@ -8,16 +8,14 @@ namespace NQuery.Binding
 {
     partial class Binder
     {
-        public virtual SymbolTable LocalSymbols
-        {
-            get { return SymbolTable.Empty; }
-        }
+        public virtual SymbolTable LocalSymbols => SymbolTable.Empty;
 
-        private static Type LookupType(SyntaxToken name)
+        [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+        private static Type? LookupType(SyntaxToken name)
         {
             var normalizedName = name.IsQuotedIdentifier()
-                                     ? name.ValueText
-                                     : name.ValueText.ToUpper();
+                ? name.ValueText
+                : name.ValueText.ToUpper();
 
             switch (normalizedName)
             {
@@ -69,7 +67,7 @@ namespace NQuery.Binding
             var text = name.ValueText;
             var isCaseSensitive = name.IsQuotedIdentifier();
 
-            IEnumerable<Symbol> result;
+            var result = default(IEnumerable<Symbol>);
             var binder = this;
             do
             {
@@ -89,8 +87,8 @@ namespace NQuery.Binding
         private IEnumerable<Symbol> LookupColumnTableOrVariable(SyntaxToken name)
         {
             return LookupSymbols(name, s => s is TableColumnInstanceSymbol ||
-                                            s is TableInstanceSymbol ||
-                                            s is VariableSymbol);
+                s is TableInstanceSymbol ||
+                s is VariableSymbol);
         }
 
         private IEnumerable<QueryColumnInstanceSymbol> LookupQueryColumn(SyntaxToken name)
@@ -118,12 +116,19 @@ namespace NQuery.Binding
             return LookupSymbols<TableInstanceSymbol>(name);
         }
 
-        public virtual IEnumerable<PropertySymbol> LookupProperties(Type type)
+        public virtual IEnumerable<PropertySymbol> LookupProperties(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
+            Type type)
         {
+            if (Parent == null)
+                return Enumerable.Empty<PropertySymbol>();
+
             return Parent.LookupProperties(type);
         }
 
-        private IEnumerable<PropertySymbol> LookupProperty(Type type, SyntaxToken name)
+        private IEnumerable<PropertySymbol> LookupProperty(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
+            Type type, SyntaxToken name)
         {
             return LookupProperties(type).Where(p => name.Matches(p.Name));
         }
@@ -138,13 +143,20 @@ namespace NQuery.Binding
             return LookupBinaryOperator(operatorKind, left.Type, right.Type);
         }
 
-        private static OverloadResolutionResult<BinaryOperatorSignature> LookupBinaryOperator(BinaryOperatorKind operatorKind, Type left, Type right)
+        private static OverloadResolutionResult<BinaryOperatorSignature> LookupBinaryOperator(BinaryOperatorKind operatorKind,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+            Type left,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+            Type right)
         {
             return BinaryOperator.Resolve(operatorKind, left, right);
         }
 
         public virtual IEnumerable<MethodSymbol> LookupMethods(Type type)
         {
+            if (Parent == null)
+                return Enumerable.Empty<MethodSymbol>();
+
             return Parent.LookupMethods(type);
         }
 
@@ -156,24 +168,25 @@ namespace NQuery.Binding
         private OverloadResolutionResult<MethodSymbolSignature> LookupMethod(Type type, SyntaxToken name, ImmutableArray<Type> argumentTypes)
         {
             if (name is null) throw new ArgumentNullException(nameof(name));
+
             var signatures = from m in LookupMethod(type, name)
-                             select new MethodSymbolSignature(m);
+                select new MethodSymbolSignature(m);
             return OverloadResolution.Perform(signatures, argumentTypes);
         }
 
         private OverloadResolutionResult<FunctionSymbolSignature> LookupFunction(SyntaxToken name, ImmutableArray<Type> argumentTypes)
         {
             var signatures = from f in LookupSymbols<FunctionSymbol>(name)
-                             where name.Matches(f.Name)
-                             select new FunctionSymbolSignature(f);
+                where name.Matches(f.Name)
+                select new FunctionSymbolSignature(f);
             return OverloadResolution.Perform(signatures, argumentTypes);
         }
 
         private IEnumerable<FunctionSymbol> LookupFunctionWithSingleParameter(SyntaxToken name)
         {
             return from f in LookupSymbols<FunctionSymbol>(name)
-                   where f.Parameters.Length == 1
-                   select f;
+                where f.Parameters.Length == 1
+                select f;
         }
 
         private IEnumerable<AggregateSymbol> LookupAggregate(SyntaxToken name)
@@ -181,9 +194,9 @@ namespace NQuery.Binding
             return LookupSymbols<AggregateSymbol>(name);
         }
 
-        public virtual IComparer LookupComparer(Type type)
+        public virtual IComparer? LookupComparer(Type type)
         {
-            return Parent.LookupComparer(type);
+            return Parent?.LookupComparer(type);
         }
     }
 }

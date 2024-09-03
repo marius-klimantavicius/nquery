@@ -11,10 +11,7 @@ namespace NQuery.Syntax
             ArgumentList = argumentList;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.MethodInvocationExpression; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.MethodInvocationExpression;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {

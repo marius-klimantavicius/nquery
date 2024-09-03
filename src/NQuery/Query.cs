@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NQuery
 {
     public sealed class Query
     {
-        private CompiledQuery _query;
+        private CompiledQuery? _query;
 
         private Query(DataContext dataContext, string text)
         {
@@ -18,6 +20,7 @@ namespace NQuery
             return new Query(dataContext, text);
         }
 
+        [MemberNotNull(nameof(_query))]
         private void EnsureCompiled()
         {
             if (_query is not null)
@@ -28,7 +31,7 @@ namespace NQuery
             Interlocked.CompareExchange(ref _query, compilation.Compile(), null);
         }
 
-        public object ExecuteScalar()
+        public object? ExecuteScalar()
         {
             using var reader = ExecuteReader();
             return !reader.Read() || reader.ColumnCount == 0
@@ -36,9 +39,9 @@ namespace NQuery
                 : reader[0];
         }
 
-        public T ExecuteScalar<T>()
+        public T? ExecuteScalar<T>()
         {
-            return (T)ExecuteScalar();
+            return (T?)ExecuteScalar();
         }
 
         public QueryReader ExecuteReader()

@@ -2,7 +2,7 @@ namespace NQuery.Syntax
 {
     public sealed class UnionQuerySyntax : QuerySyntax
     {
-        internal UnionQuerySyntax(SyntaxTree syntaxTree, QuerySyntax leftQuery, SyntaxToken unionKeyword, SyntaxToken allKeyword, QuerySyntax rightQuery)
+        internal UnionQuerySyntax(SyntaxTree syntaxTree, QuerySyntax leftQuery, SyntaxToken unionKeyword, SyntaxToken? allKeyword, QuerySyntax rightQuery)
             : base(syntaxTree)
         {
             LeftQuery = leftQuery;
@@ -11,10 +11,7 @@ namespace NQuery.Syntax
             RightQuery = rightQuery;
         }
 
-        public override SyntaxKind Kind
-        {
-            get { return SyntaxKind.UnionQuery; }
-        }
+        public override SyntaxKind Kind => SyntaxKind.UnionQuery;
 
         public override IEnumerable<SyntaxNodeOrToken> ChildNodesAndTokens()
         {
@@ -29,7 +26,7 @@ namespace NQuery.Syntax
 
         public SyntaxToken UnionKeyword { get; }
 
-        public SyntaxToken AllKeyword { get; }
+        public SyntaxToken? AllKeyword { get; }
 
         public QuerySyntax RightQuery { get; }
     }

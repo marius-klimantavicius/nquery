@@ -1,4 +1,4 @@
-﻿using NQuery.Syntax;
+using NQuery.Syntax;
 using NQuery.Text;
 
 namespace NQuery.Authoring.Highlighting

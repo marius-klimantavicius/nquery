@@ -1,4 +1,4 @@
-﻿namespace NQuery.Iterators
+namespace NQuery.Iterators
 {
     internal sealed class AssertIterator : Iterator
     {
@@ -13,10 +13,7 @@
             _message = message;
         }
 
-        public override RowBuffer RowBuffer
-        {
-            get { return _input.RowBuffer; }
-        }
+        public override RowBuffer RowBuffer => _input.RowBuffer;
 
         public override void Open()
         {

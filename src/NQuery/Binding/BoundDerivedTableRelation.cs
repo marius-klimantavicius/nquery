@@ -10,10 +10,7 @@ namespace NQuery.Binding
             Relation = relation;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.DerivedTableRelation; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.DerivedTableRelation;
 
         public TableInstanceSymbol TableInstance { get; }
 

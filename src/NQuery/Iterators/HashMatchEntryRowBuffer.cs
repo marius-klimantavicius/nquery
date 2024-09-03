@@ -1,22 +1,18 @@
-﻿namespace NQuery.Iterators
+namespace NQuery.Iterators
 {
     internal sealed class HashMatchEntryRowBuffer : RowBuffer
     {
-        public HashMatchEntry Entry { get; set; }
+        public HashMatchEntry? Entry { get; set; }
 
-        public override int Count
-        {
-            get { return Entry.RowValues.Length; }
-        }
+        private object?[] RowValues => Entry?.RowValues ?? Array.Empty<object?>();
 
-        public override object this[int index]
-        {
-            get { return Entry.RowValues[index]; }
-        }
+        public override int Count => RowValues.Length;
 
-        public override void CopyTo(object[] array, int destinationIndex)
+        public override object? this[int index] => RowValues[index];
+
+        public override void CopyTo(object?[] array, int destinationIndex)
         {
-            var source = Entry.RowValues;
+            var source = RowValues;
             Array.Copy(source, 0, array, destinationIndex, source.Length);
         }
     }

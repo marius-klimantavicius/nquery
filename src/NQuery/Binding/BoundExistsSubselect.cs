@@ -7,17 +7,11 @@ namespace NQuery.Binding
             Relation = relation;
         }
 
-        public override BoundNodeKind Kind
-        {
-            get { return BoundNodeKind.ExistsSubselect; }
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.ExistsSubselect;
 
         public BoundRelation Relation { get; }
 
-        public override Type Type
-        {
-            get { return typeof(bool); }
-        }
+        public override Type Type => typeof(bool);
 
         public BoundExistsSubselect Update(BoundRelation relation)
         {

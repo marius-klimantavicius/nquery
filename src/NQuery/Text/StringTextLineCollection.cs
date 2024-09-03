@@ -16,14 +16,8 @@ namespace NQuery.Text
             return _lines.GetEnumerator();
         }
 
-        public override int Count
-        {
-            get { return _lines.Count; }
-        }
+        public override int Count => _lines.Count;
 
-        public override TextLine this[int index]
-        {
-            get { return _lines[index]; }
-        }
+        public override TextLine this[int index] => _lines[index];
     }
 }
