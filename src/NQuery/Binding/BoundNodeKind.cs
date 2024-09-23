@@ -41,6 +41,7 @@ namespace NQuery.Binding
         AssertRelation,
         TableSpoolPusher,
         TableSpoolPopper,
+        WindowFunctionRelation,
 
         // Other
         Query,
@@ -50,6 +51,6 @@ namespace NQuery.Binding
         CommonTableExpression,
         
         // Window
-        RowNumberExpression,
+        WindowFunctionExpression,
     }
 }

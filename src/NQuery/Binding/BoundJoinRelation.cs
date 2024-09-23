@@ -49,7 +49,7 @@ namespace NQuery.Binding
             return Update(JoinType, Left, right, Condition, Probe, PassthruPredicate);
         }
 
-        public BoundJoinRelation WithCondition(BoundExpression condition)
+        public BoundJoinRelation WithCondition(BoundExpression? condition)
         {
             return Update(JoinType, Left, Right, condition, Probe, PassthruPredicate);
         }

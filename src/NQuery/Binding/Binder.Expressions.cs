@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using NQuery.Iterators;
 using NQuery.Symbols;
 using NQuery.Symbols.Aggregation;
 using NQuery.Syntax;
@@ -808,35 +809,8 @@ namespace NQuery.Binding
         {
             if (node.ArgumentList.Arguments.Count == 0 && "ROW_NUMBER".Equals(node.Name.ValueText, StringComparison.OrdinalIgnoreCase))
             {
-                var partitionBy = ImmutableArray<BoundExpression>.Empty;
-                var orderBy = ImmutableArray<BoundExpression>.Empty;
-                if (node.OverClause == null)
-                {
-                    // Diagnostics.Repo
-                }
-                else
-                {
-                    var overClause = node.OverClause;
-                    if (overClause.PartitionBy != null)
-                        partitionBy = overClause.PartitionBy.Columns.Select(s => BindExpression(s.ColumnSelector)).ToImmutableArray();
-
-                    if (overClause.OrderBy != null)
-                        orderBy = overClause.OrderBy.Columns.Select(s => BindExpression(s.ColumnSelector)).ToImmutableArray();
-                }
-
-                var queryState = QueryState;
-                if (queryState != null)
-                {
-                    var rowNumber = new BoundRowNumberExpression(partitionBy, orderBy);
-                    var existingSlot = FindComputedValue(node, queryState.ComputedWindowFunctions);
-                    if (existingSlot is null)
-                    {
-                        var slot = ValueSlotFactory.CreateTemporary(rowNumber.Type);
-                        queryState.ComputedWindowFunctions.Add(new BoundComputedValueWithSyntax(node, rowNumber, slot));
-                    }
-
-                    return rowNumber;
-                }
+                if (BindWindowFunction(node, out var boundWindowFunctionExpression))
+                    return boundWindowFunctionExpression;
             }
 
             if (node.ArgumentList.Arguments.Count == 1)
@@ -895,6 +869,78 @@ namespace NQuery.Binding
             var convertedArguments = arguments.Select((a, i) => BindArgument(a, result, i)).ToImmutableArray();
 
             return new BoundFunctionInvocationExpression(convertedArguments, result);
+        }
+
+        private bool BindWindowFunction(FunctionInvocationExpressionSyntax node, [NotNullWhen(true)] out BoundExpression? boundWindowFunctionExpression)
+        {
+            var partitionBy = ImmutableArray<BoundComparedValue>.Empty;
+            var orderBy = ImmutableArray<BoundComparedValue>.Empty;
+            if (node.OverClause == null)
+            {
+                // Diagnostics.Repo
+            }
+            else
+            {
+                var overClause = node.OverClause;
+                if (overClause.PartitionBy != null)
+                {
+                    partitionBy = overClause.PartitionBy.Columns.Select(s =>
+                    {
+                        var boundExpression = BindExpression(s.ColumnSelector);
+                        var comparer = BindComparer(s.Span, boundExpression.Type, DiagnosticId.InvalidDataTypeInGroupBy);
+
+                        if (!TryGetExistingValue(boundExpression, out var valueSlot))
+                            valueSlot = ValueSlotFactory.CreateTemporary(boundExpression.Type);
+
+                        Debug.Assert(QueryState != null);
+                        QueryState.ComputedProjections.Add(new BoundComputedValueWithSyntax(s.ColumnSelector, boundExpression, valueSlot));
+                        return new BoundComparedValue(valueSlot, comparer);
+                    }).ToImmutableArray();
+                }
+
+                if (overClause.OrderBy != null)
+                {
+                    orderBy = overClause.OrderBy.Columns.Select(s =>
+                    {
+                        var boundExpression = BindExpression(s.ColumnSelector);
+                        var comparer = BindComparer(s.Span, boundExpression.Type, DiagnosticId.InvalidDataTypeInGroupBy);
+
+                        var isAscending = s.Modifier is null ||
+                            s.Modifier.Kind == SyntaxKind.AscKeyword;
+
+                        comparer = isAscending
+                            ? comparer
+                            : new NegatedComparer(comparer);
+                        
+                        if (!TryGetExistingValue(boundExpression, out var valueSlot))
+                            valueSlot = ValueSlotFactory.CreateTemporary(boundExpression.Type);
+
+                        Debug.Assert(QueryState != null);
+                        QueryState.ComputedProjections.Add(new BoundComputedValueWithSyntax(s.ColumnSelector, boundExpression, valueSlot));
+                        return new BoundComparedValue(valueSlot, comparer);
+                    }).ToImmutableArray();
+                }
+            }
+
+            var queryState = QueryState;
+            if (queryState != null)
+            {
+                var windowFunction = new BoundWindowFunctionExpression(partitionBy, orderBy);
+                var existingSlot = FindComputedValue(node, queryState.ComputedWindowFunctions);
+                if (existingSlot is null)
+                {
+                    var slot = ValueSlotFactory.CreateTemporary(windowFunction.Type);
+                    queryState.ComputedWindowFunctions.Add(new BoundComputedValueWithSyntax(node, windowFunction, slot));
+                }
+
+                {
+                    boundWindowFunctionExpression = windowFunction;
+                    return true;
+                }
+            }
+
+            boundWindowFunctionExpression = null;
+            return false;
         }
 
         private BoundExpression BindAggregateInvocationExpression(FunctionInvocationExpressionSyntax node, AggregateSymbol aggregate)

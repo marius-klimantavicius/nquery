@@ -900,6 +900,11 @@ namespace NQuery.Binding
 
             var groups = groupByClause?.Groups ?? ImmutableArray<BoundComparedValue>.Empty;
 
+            var computedWindowFunctions = queryBinder.QueryState?.ComputedWindowFunctions ?? Enumerable.Empty<BoundComputedValueWithSyntax>();
+            var windowFunctions = (from t in computedWindowFunctions
+                let expression = (BoundWindowFunctionExpression)t.Expression
+                select new BoundWindowFunctionValue(t.Result, expression.PartitionBy, expression.OrderBy)).ToImmutableArray();
+            
             var computedProjections = queryBinder.QueryState?.ComputedProjections ?? Enumerable.Empty<BoundComputedValueWithSyntax>();
             var projections = (from t in computedProjections
                 select new BoundComputedValue(t.Expression, t.Result)).ToImmutableArray();
@@ -958,7 +963,6 @@ namespace NQuery.Binding
                 ? fromRelation
                 : new BoundFilterRelation(fromRelation, whereClause);
 
-
             var computedGroupings = queryBinder.QueryState?.ComputedGroupings ?? Enumerable.Empty<BoundComputedValueWithSyntax>();
 
             var computedGroups = computedGroupings
@@ -981,13 +985,17 @@ namespace NQuery.Binding
                 ? havingRelation
                 : new BoundComputeRelation(havingRelation, projections);
 
+            var windowFunctionRelation = windowFunctions.Length == 0
+                ? selectComputeRelation
+                : BoundWindowFunctionRelation.Build(selectComputeRelation, windowFunctions);
+            
             var sortedValues = orderByClause is null
                 ? ImmutableArray<BoundComparedValue>.Empty
                 : orderByClause.Columns.Select(c => c.ComparedValue).Concat(distinctSortValues).ToImmutableArray();
 
             var sortRelation = sortedValues.IsEmpty
-                ? selectComputeRelation
-                : new BoundSortRelation(isDistinct, selectComputeRelation, sortedValues);
+                ? windowFunctionRelation
+                : new BoundSortRelation(isDistinct, windowFunctionRelation, sortedValues);
 
             var tieEntries = top is null || sortedValues.IsEmpty || !withTies
                 ? ImmutableArray<BoundComparedValue>.Empty

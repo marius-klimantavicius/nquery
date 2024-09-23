@@ -44,6 +44,8 @@ namespace NQuery.Binding
                     return RewriteTableSpoolPusher((BoundTableSpoolPusher)node);
                 case BoundNodeKind.TableSpoolPopper:
                     return RewriteTableSpoolPopper((BoundTableSpoolPopper)node);
+                case BoundNodeKind.WindowFunctionRelation:
+                    return RewriteWindowFunctionRelation((BoundWindowFunctionRelation)node);
                 default:
                     throw ExceptionBuilder.UnexpectedValue(node.Kind);
             }
@@ -173,6 +175,15 @@ namespace NQuery.Binding
         protected virtual BoundRelation RewriteTableSpoolPopper(BoundTableSpoolPopper node)
         {
             return node.Update(RewriteValueSlots(node.Outputs));
+        }
+
+        protected virtual BoundRelation RewriteWindowFunctionRelation(BoundWindowFunctionRelation node)
+        {
+            return node.Update(
+                RewriteRelation(node.Input),
+                RewriteValueSlot(node.Output),
+                RewriteComparedValues(node.OrderBy),
+                RewriteComparedValues(node.PartitionBy));
         }
     }
 }

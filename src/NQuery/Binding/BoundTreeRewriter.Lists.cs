@@ -70,33 +70,38 @@ namespace NQuery.Binding
             return RewriteArray(list, RewriteRelation);
         }
 
+        protected virtual IEnumerable<BoundWindowFunctionValue> RewriteWindowFunctionValues(ImmutableArray<BoundWindowFunctionValue> list)
+        {
+            return RewriteArray(list, RewriteWindowFunctionValue);
+        }
+
         protected virtual BoundAggregatedValue RewriteAggregatedValue(BoundAggregatedValue value)
         {
             return value.Update(RewriteValueSlot(value.Output),
-                               value.Aggregate,
-                               value.Aggregatable,
-                               RewriteExpression(value.Argument));
+                value.Aggregate,
+                value.Aggregatable,
+                RewriteExpression(value.Argument));
         }
 
         protected virtual BoundComputedValue RewriteComputedValue(BoundComputedValue value)
         {
             return value.Update(RewriteExpression(value.Expression),
-                               RewriteValueSlot(value.ValueSlot));
+                RewriteValueSlot(value.ValueSlot));
         }
 
         protected virtual BoundUnifiedValue RewriteUnifiedValue(BoundUnifiedValue value)
         {
             return value.Update(RewriteValueSlot(value.ValueSlot),
-                               RewriteValueSlots(value.InputValueSlots));
+                RewriteValueSlots(value.InputValueSlots));
         }
 
         protected virtual BoundComparedValue RewriteComparedValue(BoundComparedValue value)
         {
             return value.Update(RewriteValueSlot(value.ValueSlot),
-                                value.Comparer);
+                value.Comparer);
         }
 
-        [return:NotNullIfNotNull(nameof(valueSlot))]
+        [return: NotNullIfNotNull(nameof(valueSlot))]
         protected virtual ValueSlot? RewriteValueSlot(ValueSlot? valueSlot)
         {
             return valueSlot;
@@ -105,7 +110,14 @@ namespace NQuery.Binding
         protected virtual BoundCaseLabel RewriteCaseLabel(BoundCaseLabel node)
         {
             return node.Update(RewriteExpression(node.Condition),
-                               RewriteExpression(node.ThenExpression));
+                RewriteExpression(node.ThenExpression));
+        }
+
+        protected virtual BoundWindowFunctionValue RewriteWindowFunctionValue(BoundWindowFunctionValue node)
+        {
+            return node.Update(RewriteValueSlot(node.Output),
+                RewriteComparedValues(node.PartitionBy),
+                RewriteComparedValues(node.OrderBy));
         }
     }
 }

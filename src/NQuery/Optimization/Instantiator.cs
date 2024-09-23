@@ -38,7 +38,7 @@ namespace NQuery.Optimization
                 }
             }
 
-            [return:NotNullIfNotNull(nameof(valueSlot))]
+            [return: NotNullIfNotNull(nameof(valueSlot))]
             protected override ValueSlot? RewriteValueSlot(ValueSlot? valueSlot)
             {
                 if (valueSlot is null)

@@ -51,7 +51,7 @@ namespace NQuery.Optimization
             return Merge(left, right, BinaryOperatorKind.LogicalAnd);
         }
 
-        public static BoundExpression? And(IEnumerable<BoundExpression> conditions)
+        public static BoundExpression? And(IEnumerable<BoundExpression?> conditions)
         {
             return Merge(conditions, BinaryOperatorKind.LogicalAnd);
         }
@@ -61,7 +61,7 @@ namespace NQuery.Optimization
             return Merge(left, right, BinaryOperatorKind.LogicalOr);
         }
 
-        public static BoundExpression? Or(IEnumerable<BoundExpression> conditions)
+        public static BoundExpression? Or(IEnumerable<BoundExpression?> conditions)
         {
             return Merge(conditions, BinaryOperatorKind.LogicalOr);
         }
@@ -81,7 +81,7 @@ namespace NQuery.Optimization
             return new BoundBinaryExpression(left, operatorKind, result, right);
         }
 
-        private static BoundExpression? Merge(IEnumerable<BoundExpression> conditions, BinaryOperatorKind operatorKind)
+        private static BoundExpression? Merge(IEnumerable<BoundExpression?> conditions, BinaryOperatorKind operatorKind)
         {
             return conditions.Aggregate<BoundExpression?, BoundExpression?>(null, (c, n) => c is null ? n : Merge(c, n, operatorKind));
         }

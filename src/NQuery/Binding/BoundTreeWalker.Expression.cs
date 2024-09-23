@@ -1,4 +1,4 @@
-namespace NQuery.Binding
+﻿namespace NQuery.Binding
 {
     partial class BoundTreeWalker
     {
@@ -57,8 +57,8 @@ namespace NQuery.Binding
                 case BoundNodeKind.ValueSlotExpression:
                     VisitValueSlotExpression((BoundValueSlotExpression)node);
                     break;
-                case BoundNodeKind.RowNumberExpression:
-                    VisitRowNumberExpression((BoundRowNumberExpression)node);
+                case BoundNodeKind.WindowFunctionExpression:
+                    VisitWindowFunctionExpression((BoundWindowFunctionExpression)node);
                     break;
                 default:
                     throw ExceptionBuilder.UnexpectedValue(node.Kind);
@@ -155,13 +155,8 @@ namespace NQuery.Binding
         {
         }
 
-        protected virtual void VisitRowNumberExpression(BoundRowNumberExpression node)
+        protected virtual void VisitWindowFunctionExpression(BoundWindowFunctionExpression node)
         {
-            foreach (var item in node.PartitionBy)
-                VisitExpression(item);
-            
-            foreach (var item in node.OrderBy)
-                VisitExpression(item);
         }
     }
 }

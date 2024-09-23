@@ -23,6 +23,11 @@ namespace NQuery.Iterators
             return new RowBufferAllocation(_outerRowBufferAllocation, rowBuffer, input.GetOutputValues());
         }
 
+        private RowBufferAllocation BuildRowBufferAllocation(IEnumerable<ValueSlot> outputValues, RowBuffer rowBuffer)
+        {
+            return new RowBufferAllocation(_outerRowBufferAllocation, rowBuffer, outputValues);
+        }
+
         private static IteratorFunction BuildFunction(BoundExpression expression, RowBufferAllocation allocation)
         {
             return ExpressionBuilder.BuildIteratorFunction(expression, allocation);
@@ -67,6 +72,8 @@ namespace NQuery.Iterators
                     return BuildTableSpoolPusher((BoundTableSpoolPusher)relation);
                 case BoundNodeKind.TableSpoolPopper:
                     return BuildTableSpoolPopper((BoundTableSpoolPopper)relation);
+                case BoundNodeKind.WindowFunctionRelation:
+                    return BuildWindowFunction((BoundWindowFunctionRelation)relation);
                 default:
                     throw ExceptionBuilder.UnexpectedValue(relation.Kind);
             }
@@ -269,6 +276,26 @@ namespace NQuery.Iterators
         {
             var stack = _tableSpoolStack.Peek();
             return new TableSpoolRefIterator(stack);
+        }
+
+        private Iterator BuildWindowFunction(BoundWindowFunctionRelation relation)
+        {
+            var input = BuildRelation(relation.Input);
+            var inputRowBufferAllocation = BuildRowBufferAllocation(relation.Input, input.RowBuffer);
+
+            var sortedValues = relation.PartitionBy.Concat(relation.OrderBy).ToList();
+            var sortEntries = sortedValues
+                .Select(v => inputRowBufferAllocation[v.ValueSlot])
+                .ToImmutableArray();
+            var comparers = sortedValues.Select(v => v.Comparer).ToImmutableArray();
+            var sortedInput = new SortIterator(input, sortEntries, comparers);
+
+            var sortedRowBufferAllocation = BuildRowBufferAllocation(relation.Input, sortedInput.RowBuffer);
+            var partitionByEntries = relation.PartitionBy
+                .Select(v => sortedRowBufferAllocation[v.ValueSlot])
+                .ToImmutableArray();
+            var partitionByComparers = relation.PartitionBy.Select(v => v.Comparer).ToImmutableArray();
+            return new SegmentIterator(sortedInput, partitionByEntries, partitionByComparers);
         }
     }
 }

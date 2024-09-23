@@ -184,6 +184,15 @@ namespace NQuery.Optimization
             return base.RewriteSingleRowSubselect(node);
         }
 
+        protected override BoundRelation RewriteWindowFunctionRelation(BoundWindowFunctionRelation node)
+        {
+            _recorder.Record(node.Output);
+            _recorder.Record(node.PartitionBy);
+            _recorder.Record(node.OrderBy);
+
+            return base.RewriteWindowFunctionRelation(node);
+        }
+
         private sealed class ValueSlotRecorder
         {
             private readonly ValueSlotDependencyFinder _finder;

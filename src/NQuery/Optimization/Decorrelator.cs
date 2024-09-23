@@ -166,10 +166,10 @@ namespace NQuery.Optimization
 
             // If we found any conjunctions that could be pulled up, merge them with the join predicate.
 
-            if (extractedConjunctions.Any() && node.Condition != null)
+            if (extractedConjunctions.Any())
             {
                 var newCondition = Expression.And(new[] { node.Condition }.Concat(extractedConjunctions));
-                node = node.WithCondition(newCondition!);
+                node = node.WithCondition(newCondition);
             }
 
             // Now we try to extract conjunctions that contain outer references from the join
@@ -204,8 +204,6 @@ namespace NQuery.Optimization
                 if (conjunctionsAboveJoin.Any())
                 {
                     var newCondition = Expression.And(remainingConjunctions);
-                    Debug.Assert(newCondition != null);
-                    
                     node = node.WithCondition(newCondition);
 
                     var filterCondition = Expression.And(conjunctionsAboveJoin);

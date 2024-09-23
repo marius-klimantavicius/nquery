@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Text;
 using NQuery.Binding;
 using NQuery.Optimization;
@@ -83,8 +82,8 @@ namespace NQuery
                     return BuildSingleRowSubselect((BoundSingleRowSubselect)node);
                 case BoundNodeKind.ExistsSubselect:
                     return BuildExistsSubselect((BoundExistsSubselect)node);
-                case BoundNodeKind.RowNumberExpression:
-                    return BuildRowNumber((BoundRowNumberExpression)node);
+                case BoundNodeKind.WindowFunctionExpression:
+                    return BuildWindowFunction((BoundWindowFunctionExpression)node);
                 default:
                     throw ExceptionBuilder.UnexpectedValue(node.Kind);
             }
@@ -396,12 +395,12 @@ namespace NQuery
             return new ShowPlanNode(@"Exists", properties, children, true);
         }
 
-        private static ShowPlanNode BuildRowNumber(BoundRowNumberExpression node)
+        private static ShowPlanNode BuildWindowFunction(BoundWindowFunctionExpression node)
         {
             var properties = Enumerable.Empty<KeyValuePair<string, string>>();
 
-            var partitionBy = node.PartitionBy.Select(Build).ToImmutableArray();
-            var orderBy = node.OrderBy.Select(Build).ToImmutableArray();
+            var partitionBy = node.PartitionBy.Select(v => new ShowPlanNode(v.ValueSlot.Name, properties, Enumerable.Empty<ShowPlanNode>()));
+            var orderBy = node.OrderBy.Select(v => new ShowPlanNode(v.ValueSlot.Name, properties, Enumerable.Empty<ShowPlanNode>()));
             return new ShowPlanNode(@"RowNumber", properties, new[]
             {
                 new ShowPlanNode(@"Partition by", properties, partitionBy),

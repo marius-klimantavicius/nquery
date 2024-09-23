@@ -14,7 +14,6 @@ namespace NQuery.Symbols.Aggregation
                 new AggregateSymbol(new StdDevAggregateDefinition()),
                 new AggregateSymbol(new VarAggregateDefinition()),
                 new AggregateSymbol(new ConcatAggregateDefinition()),
-                new AggregateSymbol(new RowNumberAggregateDefinition()),
             };
         }
 

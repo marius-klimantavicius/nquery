@@ -1,5 +1,4 @@
 using System.Text;
-
 using NQuery.Binding;
 using NQuery.Syntax;
 
@@ -37,14 +36,14 @@ namespace NQuery
         public static bool IsLiteral(this SyntaxKind kind)
         {
             return kind == SyntaxKind.DateLiteralToken ||
-                   kind == SyntaxKind.NumericLiteralToken ||
-                   kind == SyntaxKind.StringLiteralToken;
+                kind == SyntaxKind.NumericLiteralToken ||
+                kind == SyntaxKind.StringLiteralToken;
         }
 
         public static bool IsComment(this SyntaxKind kind)
         {
             return kind == SyntaxKind.SingleLineCommentTrivia ||
-                   kind == SyntaxKind.MultiLineCommentTrivia;
+                kind == SyntaxKind.MultiLineCommentTrivia;
         }
 
         public static IEnumerable<SyntaxKind> GetKeywordKinds()
@@ -110,6 +109,7 @@ namespace NQuery
         {
             yield return SyntaxKind.LeftKeyword;
             yield return SyntaxKind.RightKeyword;
+            yield return SyntaxKind.PartitionKeyword;
         }
 
         public static string GetText(this SyntaxKind kind)
@@ -270,6 +270,10 @@ namespace NQuery
                     return @"TIES";
                 case SyntaxKind.RecursiveKeyword:
                     return @"RECURSIVE";
+                case SyntaxKind.OverKeyword:
+                    return @"OVER";
+                case SyntaxKind.PartitionKeyword:
+                    return @"PARTITION";
                 default:
                     return string.Empty;
             }
@@ -372,6 +376,8 @@ namespace NQuery
                 case SyntaxKind.WithKeyword:
                 case SyntaxKind.TiesKeyword:
                 case SyntaxKind.RecursiveKeyword:
+                case SyntaxKind.OverKeyword:
+                case SyntaxKind.PartitionKeyword:
                     return true;
 
                 default:
@@ -419,8 +425,8 @@ namespace NQuery
             ArgumentNullException.ThrowIfNull(name);
 
             return IsValidIdentifier(name)
-                       ? name
-                       : GetParenthesizedIdentifier(name);
+                ? name
+                : GetParenthesizedIdentifier(name);
         }
 
         public static bool IsValidIdentifier(string? name)
@@ -666,8 +672,8 @@ namespace NQuery
             ArgumentNullException.ThrowIfNull(token);
 
             return token.Kind == SyntaxKind.IdentifierToken &&
-                   token.Text.Length > 0 &&
-                   token.Text[0] == '"';
+                token.Text.Length > 0 &&
+                token.Text[0] == '"';
         }
 
         public static bool IsParenthesizedIdentifier(this SyntaxToken token)
@@ -675,8 +681,8 @@ namespace NQuery
             ArgumentNullException.ThrowIfNull(token);
 
             return token.Kind == SyntaxKind.IdentifierToken &&
-                   token.Text.Length > 0 &&
-                   token.Text[0] == '[';
+                token.Text.Length > 0 &&
+                token.Text[0] == '[';
         }
 
         public static bool Matches(this SyntaxToken token, string? text)
@@ -685,8 +691,8 @@ namespace NQuery
             ArgumentNullException.ThrowIfNull(text);
 
             var comparison = token.IsQuotedIdentifier()
-                                 ? StringComparison.Ordinal
-                                 : StringComparison.OrdinalIgnoreCase;
+                ? StringComparison.Ordinal
+                : StringComparison.OrdinalIgnoreCase;
             return string.Equals(token.ValueText, text, comparison);
         }
 
@@ -701,6 +707,7 @@ namespace NQuery
                         return EndsWithUnescapedChar(token.Text, '"');
                     if (token.IsParenthesizedIdentifier())
                         return EndsWithUnescapedChar(token.Text, ']');
+
                     return true;
                 case SyntaxKind.StringLiteralToken:
                     return EndsWithUnescapedChar(token.Text, '\'');
@@ -733,6 +740,7 @@ namespace NQuery
                 numberOfChars++;
                 i--;
             }
+
             return numberOfChars % 2 != 0;
         }
 
@@ -1220,52 +1228,52 @@ namespace NQuery
         public static bool IsValidAllAnyOperator(this SyntaxKind binaryExpressionKind)
         {
             return binaryExpressionKind == SyntaxKind.EqualExpression ||
-                   binaryExpressionKind == SyntaxKind.NotEqualExpression ||
-                   binaryExpressionKind == SyntaxKind.NotLessExpression ||
-                   binaryExpressionKind == SyntaxKind.NotGreaterExpression ||
-                   binaryExpressionKind == SyntaxKind.LessExpression ||
-                   binaryExpressionKind == SyntaxKind.LessOrEqualExpression ||
-                   binaryExpressionKind == SyntaxKind.GreaterExpression ||
-                   binaryExpressionKind == SyntaxKind.GreaterOrEqualExpression;
+                binaryExpressionKind == SyntaxKind.NotEqualExpression ||
+                binaryExpressionKind == SyntaxKind.NotLessExpression ||
+                binaryExpressionKind == SyntaxKind.NotGreaterExpression ||
+                binaryExpressionKind == SyntaxKind.LessExpression ||
+                binaryExpressionKind == SyntaxKind.LessOrEqualExpression ||
+                binaryExpressionKind == SyntaxKind.GreaterExpression ||
+                binaryExpressionKind == SyntaxKind.GreaterOrEqualExpression;
         }
 
         public static bool CanHaveLeadingNot(this SyntaxKind syntaxKind)
         {
             return syntaxKind == SyntaxKind.BetweenKeyword ||
-                   syntaxKind == SyntaxKind.InKeyword ||
-                   syntaxKind == SyntaxKind.LikeKeyword ||
-                   syntaxKind == SyntaxKind.SimilarKeyword ||
-                   syntaxKind == SyntaxKind.SoundsKeyword;
+                syntaxKind == SyntaxKind.InKeyword ||
+                syntaxKind == SyntaxKind.LikeKeyword ||
+                syntaxKind == SyntaxKind.SimilarKeyword ||
+                syntaxKind == SyntaxKind.SoundsKeyword;
         }
 
         public static IEnumerable<string> GetTypeNames()
         {
             return new[]
-                       {
-                           @"BOOL",
-                           @"BOOLEAN",
-                           @"BYTE",
-                           @"SBYTE",
-                           @"CHAR",
-                           @"SHORT",
-                           @"INT16",
-                           @"USHORT",
-                           @"UINT16",
-                           @"INT",
-                           @"INT32",
-                           @"UINT",
-                           @"UINT32",
-                           @"LONG",
-                           @"INT64",
-                           @"ULONG",
-                           @"UINT64",
-                           @"FLOAT",
-                           @"SINGLE",
-                           @"DOUBLE",
-                           @"DECIMAL",
-                           @"STRING",
-                           @"OBJECT",
-                       };
+            {
+                @"BOOL",
+                @"BOOLEAN",
+                @"BYTE",
+                @"SBYTE",
+                @"CHAR",
+                @"SHORT",
+                @"INT16",
+                @"USHORT",
+                @"UINT16",
+                @"INT",
+                @"INT32",
+                @"UINT",
+                @"UINT32",
+                @"LONG",
+                @"INT64",
+                @"ULONG",
+                @"UINT64",
+                @"FLOAT",
+                @"SINGLE",
+                @"DOUBLE",
+                @"DECIMAL",
+                @"STRING",
+                @"OBJECT",
+            };
         }
 
         public static bool CanStartExpression(SyntaxKind kind)
@@ -1299,35 +1307,35 @@ namespace NQuery
         public static bool CanFollowSelectColumn(SyntaxKind kind)
         {
             return CanStartExpression(kind) ||
-                   kind == SyntaxKind.CommaToken ||
-                   CanFollowSelectColumnList(kind);
+                kind == SyntaxKind.CommaToken ||
+                CanFollowSelectColumnList(kind);
         }
 
         public static bool CanFollowSelectColumnList(SyntaxKind kind)
         {
             return CanStartQueryClause(kind) ||
-                   kind == SyntaxKind.UnionKeyword ||
-                   kind == SyntaxKind.ExceptKeyword ||
-                   kind == SyntaxKind.RightParenthesisToken ||
-                   kind == SyntaxKind.EndOfFileToken;
+                kind == SyntaxKind.UnionKeyword ||
+                kind == SyntaxKind.ExceptKeyword ||
+                kind == SyntaxKind.RightParenthesisToken ||
+                kind == SyntaxKind.EndOfFileToken;
         }
 
         private static bool CanStartQueryClause(SyntaxKind kind)
         {
             return kind == SyntaxKind.FromKeyword ||
-                   kind == SyntaxKind.WhereKeyword ||
-                   kind == SyntaxKind.GroupKeyword ||
-                   kind == SyntaxKind.HavingClause ||
-                   kind == SyntaxKind.OrderKeyword;
+                kind == SyntaxKind.WhereKeyword ||
+                kind == SyntaxKind.GroupKeyword ||
+                kind == SyntaxKind.HavingClause ||
+                kind == SyntaxKind.OrderKeyword;
         }
 
         public static bool CanFollowArgument(SyntaxKind kind)
         {
             return CanStartExpression(kind) ||
-                   kind == SyntaxKind.CommaToken ||
-                   kind == SyntaxKind.RightParenthesisToken ||
-                   CanStartQueryClause(kind) ||
-                   kind == SyntaxKind.EndOfFileToken;
+                kind == SyntaxKind.CommaToken ||
+                kind == SyntaxKind.RightParenthesisToken ||
+                CanStartQueryClause(kind) ||
+                kind == SyntaxKind.EndOfFileToken;
         }
 
         public static bool ParenthesisIsRedundant(ParenthesizedExpressionSyntax expression)
@@ -1344,8 +1352,8 @@ namespace NQuery
             var parentPrecedence = GetPrecedence(parentExpression);
             var childPrecedence = GetPrecedence(childExpression);
             var parentRequiresPrimary = parentExpression is MethodInvocationExpressionSyntax ||
-                                        parentExpression is PropertyAccessExpressionSyntax ||
-                                        parentExpression is IsNullExpressionSyntax;
+                parentExpression is PropertyAccessExpressionSyntax ||
+                parentExpression is IsNullExpressionSyntax;
 
             if (childPrecedence == 0)
             {

@@ -16,9 +16,9 @@ namespace NQuery.Binding
             : base(sharedBinderState, null)
         {
             var symbols = dataContext.Tables.Cast<Symbol>()
-                                     .Concat(dataContext.Functions)
-                                     .Concat(dataContext.Aggregates)
-                                     .Concat(dataContext.Variables);
+                .Concat(dataContext.Functions)
+                .Concat(dataContext.Aggregates)
+                .Concat(dataContext.Variables);
 
             _dataContext = dataContext;
             LocalSymbols = SymbolTable.Create(symbols);
@@ -66,6 +66,9 @@ namespace NQuery.Binding
             if (registeredComparer is not null)
                 return registeredComparer;
 
+            if (type == TypeFacts.Null)
+                return NullComparer.Default;
+
             return type.IsComparable() ? Comparer.Default : null;
         }
 
@@ -80,6 +83,25 @@ namespace NQuery.Binding
             }
 
             return null;
+        }
+
+        private sealed class NullComparer : IComparer
+        {
+            public static readonly NullComparer Default = new NullComparer();
+
+            public int Compare(object? x, object? y)
+            {
+                if (x == null && y == null)
+                    return 0;
+
+                if (x != null && y != null)
+                    return 0;
+                
+                if (x == null)
+                    return 1;
+
+                return -1;
+            }
         }
     }
 }

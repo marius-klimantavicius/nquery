@@ -46,8 +46,8 @@ namespace NQuery.Binding
                     return RewriteExistsSubselect((BoundExistsSubselect)node);
                 case BoundNodeKind.ValueSlotExpression:
                     return RewriteValueSlotExpression((BoundValueSlotExpression)node);
-                case BoundNodeKind.RowNumberExpression:
-                    return RewriteRowNumberExpression((BoundRowNumberExpression)node);
+                case BoundNodeKind.WindowFunctionExpression:
+                    return RewriteWindowFunctionExpression((BoundWindowFunctionExpression)node);
                 default:
                     throw ExceptionBuilder.UnexpectedValue(node.Kind);
             }
@@ -153,9 +153,9 @@ namespace NQuery.Binding
             return node.Update(RewriteValueSlot(node.ValueSlot));
         }
 
-        protected virtual BoundExpression RewriteRowNumberExpression(BoundRowNumberExpression node)
+        protected virtual BoundExpression RewriteWindowFunctionExpression(BoundWindowFunctionExpression node)
         {
-            return node.Update(RewriteExpressions(node.PartitionBy), RewriteExpressions(node.OrderBy));
+            return node.Update(RewriteComparedValues(node.PartitionBy), RewriteComparedValues(node.OrderBy));
         }
     }
 }

@@ -191,8 +191,8 @@ namespace NQuery.Iterators
                     return BuildIsNullExpression((BoundIsNullExpression)expression);
                 case BoundNodeKind.CaseExpression:
                     return BuildCaseExpression((BoundCaseExpression)expression);
-                case BoundNodeKind.RowNumberExpression:
-                    return BuildRowNumberExpression((BoundRowNumberExpression)expression);
+                case BoundNodeKind.WindowFunctionExpression:
+                    return BuildWindowFunctionExpression((BoundWindowFunctionExpression)expression);
                 default:
                     throw ExceptionBuilder.UnexpectedValue(expression.Kind);
             }
@@ -489,7 +489,7 @@ namespace NQuery.Iterators
                 );
         }
 
-        private Expression BuildRowNumberExpression(BoundRowNumberExpression expression)
+        private Expression BuildWindowFunctionExpression(BoundWindowFunctionExpression expression)
         {
             throw new NotImplementedException();
         }
