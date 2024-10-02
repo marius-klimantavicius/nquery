@@ -17,7 +17,7 @@ namespace NQuery.Tests.Binding
                 var syntaxTree = SyntaxTree.ParseExpression(source);
                 var syntaxTreeSource = syntaxTree.Root.ToString();
                 if (syntaxTreeSource != source)
-                    Assert.True(false, $"Source should have been {syntaxTreeSource} but is {source}");
+                    Assert.Fail($"Source should have been {syntaxTreeSource} but is {source}");
 
                 var expression = (UnaryExpressionSyntax)syntaxTree.Root.Root;
                 var compilation = Compilation.Empty.WithSyntaxTree(syntaxTree);
@@ -25,7 +25,7 @@ namespace NQuery.Tests.Binding
 
                 var argumentType = GetExpressionTypeString(semanticModel.GetExpressionType(expression.Expression));
                 if (testCase.Argument != argumentType)
-                    Assert.True(false, $"Left should be of type '{testCase.Argument}' but has type '{argumentType}");
+                    Assert.Fail($"Left should be of type '{testCase.Argument}' but has type '{argumentType}");
 
                 var diagnostic = syntaxTree.GetDiagnostics().Concat(semanticModel.GetDiagnostics()).SingleOrDefault();
                 var expressionType = semanticModel.GetExpressionType(expression);
@@ -44,7 +44,7 @@ namespace NQuery.Tests.Binding
             {
                 issues.Insert(0, $"{issues.Count} errors:");
                 var issueText = string.Join(Environment.NewLine, issues);
-                Assert.True(false, issueText);
+                Assert.Fail(issueText);
             }
         }
 
@@ -62,7 +62,7 @@ namespace NQuery.Tests.Binding
                 var syntaxTree = SyntaxTree.ParseExpression(source);
                 var syntaxTreeSource = syntaxTree.Root.ToString();
                 if (syntaxTreeSource != source)
-                    Assert.True(false, $"Source should have been {syntaxTreeSource} but is {source}");
+                    Assert.Fail($"Source should have been {syntaxTreeSource} but is {source}");
 
                 var expression = (BinaryExpressionSyntax)syntaxTree.Root.Root;
                 var compilation = Compilation.Empty.WithSyntaxTree(syntaxTree);
@@ -70,11 +70,11 @@ namespace NQuery.Tests.Binding
 
                 var leftType = GetExpressionTypeString(semanticModel.GetExpressionType(expression.Left));
                 if (testCase.Left != leftType)
-                    Assert.True(false, $"Left should be of type '{testCase.Left}' but has type '{leftType}");
+                    Assert.Fail($"Left should be of type '{testCase.Left}' but has type '{leftType}");
 
                 var rightType = GetExpressionTypeString(semanticModel.GetExpressionType(expression.Right));
                 if (testCase.Right != rightType)
-                    Assert.True(false, $"Right should be of type '{testCase.Right}' but has type '{rightType}");
+                    Assert.Fail($"Right should be of type '{testCase.Right}' but has type '{rightType}");
 
                 var diagnostic = syntaxTree.GetDiagnostics().Concat(semanticModel.GetDiagnostics()).SingleOrDefault();
                 var expressionType = semanticModel.GetExpressionType(expression);
@@ -93,7 +93,7 @@ namespace NQuery.Tests.Binding
             {
                 issues.Insert(0, $"{issues.Count} errors:");
                 var issueText = string.Join(Environment.NewLine, issues);
-                Assert.True(false, issueText);
+                Assert.Fail(issueText);
             }
         }
 

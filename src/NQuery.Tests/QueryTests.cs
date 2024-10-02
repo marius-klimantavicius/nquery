@@ -43,7 +43,7 @@ namespace NQuery.Tests
             try
             {
                 query.ExecuteSchemaReader();
-                Assert.True(false, "Should have thrown an exception.");
+                Assert.Fail("Should have thrown an exception.");
             }
             catch (CompilationException ex)
             {
@@ -59,7 +59,7 @@ namespace NQuery.Tests
             try
             {
                 query.ExecuteReader();
-                Assert.True(false, "Should have thrown an exception.");
+                Assert.Fail("Should have thrown an exception.");
             }
             catch (CompilationException ex)
             {
