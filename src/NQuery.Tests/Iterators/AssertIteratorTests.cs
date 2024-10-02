@@ -60,7 +60,7 @@ namespace NQuery.Tests.Iterators
             iterator.Open();
 
             var exception = Assert.Throws<InvalidOperationException>(() => iterator.Read());
-            Assert.Equal(exception.Message, message);
+            Assert.Equal(message, exception.Message);
         }
     }
 }
