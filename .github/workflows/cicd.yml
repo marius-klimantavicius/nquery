@@ -37,7 +37,7 @@ jobs:
   push-to-github:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository_owner == 'terrajobst'
     needs: build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v4.1.7
