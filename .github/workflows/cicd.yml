@@ -43,5 +43,6 @@ jobs:
         uses: actions/download-artifact@v4.1.7
         with:
           name: bin
+          path: .artifacts/bin
       - run: |
-          dotnet nuget push bin\*.nupkg -s "https://nuget.pkg.github.com/terrajobst/index.json" -k ${{ secrets.GH_TOKEN }}
+          dotnet nuget push .artifacts/bin/*.nupkg -s "https://nuget.pkg.github.com/terrajobst/index.json" -k ${{ secrets.GH_TOKEN }}
