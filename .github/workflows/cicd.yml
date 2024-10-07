@@ -15,13 +15,13 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Get code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # We need the full history in order to use Git versioning
       - name: Get .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '6.0.*'
+          dotnet-version: '8.0.*'
       - name: dotnet build
         run: |
           dotnet build ${env:SLN} -c Release --nologo -o ${env:BIN}
@@ -30,18 +30,21 @@ jobs:
           dotnet test ${env:SLN} --nologo
       - name: Upload binaries
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository_owner == 'terrajobst'
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: bin
           path: bin
   push-to-github:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository_owner == 'terrajobst'
     needs: build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - name: Download binaries
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4.1.7
         with:
           name: bin
+          path: .artifacts/bin
       - run: |
-          dotnet nuget push bin\*.nupkg -s "https://nuget.pkg.github.com/terrajobst/index.json" -k ${{ secrets.GH_TOKEN }}
+          dotnet nuget push .artifacts/bin/*.nupkg -s "https://nuget.pkg.github.com/terrajobst/index.json" -k ${{ secrets.GITHUB_TOKEN }}
